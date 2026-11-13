@@ -148,7 +148,7 @@ const fetchAndStore = Effect.fnUntraced(function* (
 })
 
 /** Parse the body and prepare its items for storing (span `feed.parse`). */
-const parse = Effect.fn('feed.parse')(function* (
+export const parse = Effect.fn('feed.parse')(function* (
   body: string,
   feedUrl: string,
   now: number

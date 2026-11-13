@@ -7,6 +7,7 @@ import * as Config from 'effect/Config'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 
+import { SETTING_DEFAULTS } from './apps/sync/src/config.ts'
 import { Sync } from './apps/sync/src/contract.ts'
 import SyncLive, { COMPATIBILITY_DATE } from './apps/sync/src/worker.ts'
 import { Database } from './infra/database.ts'
@@ -34,6 +35,15 @@ const deployedAccess = Effect.fn(function* (dev: boolean, ownerEmail: string) {
   return { teamDomain, application }
 })
 
+const healthSetting = (
+  name: 'FEED_FAILING_AFTER_HOURS' | 'FEED_STALE_AFTER_DAYS'
+) =>
+  Config.Int(name).pipe(
+    Config.withDefault(SETTING_DEFAULTS[name]),
+    Config.map(String),
+    Effect.orDie
+  )
+
 /**
  * The web app: a TanStack Start SPA plus its server functions, in one Worker.
  *
@@ -52,6 +62,15 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
     const ownerEmail = yield* Config.String('OWNER_EMAIL').pipe(Effect.orDie)
 
     const access = yield* deployedAccess(dev, ownerEmail)
+
+    // The subscriptions view shows health; it must use the same thresholds
+    // as the sync service's metrics.
+    const healthEnv = {
+      FEED_FAILING_AFTER_HOURS: yield* healthSetting(
+        'FEED_FAILING_AFTER_HOURS'
+      ),
+      FEED_STALE_AFTER_DAYS: yield* healthSetting('FEED_STALE_AFTER_DAYS'),
+    }
 
     return {
       rootDir: resolve(import.meta.dirname, 'apps/web'),
@@ -74,6 +93,7 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
         OWNER_EMAIL: ownerEmail,
         ACCESS_TEAM_DOMAIN: access?.teamDomain ?? '',
         ACCESS_AUD: access?.application.aud ?? '',
+        ...healthEnv,
       },
     }
   })

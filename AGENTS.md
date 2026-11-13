@@ -11,6 +11,7 @@ made after the spec are recorded below and in `docs/`.
 | `alchemy.run.ts`            | The whole deployment: D1, both Workers, Access, cron.                                                                                   |
 | `infra/`                    | Shared infra declarations (the D1 database, dev ports).                                                                                 |
 | `apps/web`                  | TanStack Start, SPA mode (no SSR) plus server functions. `src/worker.ts` is the Worker entry: auth runs first on every request.         |
+| `apps/web/src/components/`  | React components; plain helpers (sorting, wording) sit next to them and are unit tested in `apps/web/test/`.                            |
 | `apps/web/src/server/auth/` | The only place that knows how login works. Everything else asks it "owner or nobody?".                                                  |
 | `apps/sync`                 | Sync service: an Effect-native Worker. Cron trigger plus a typed RPC method (`syncNow`) reached only via the web app's service binding. |
 | `packages/db`               | Drizzle schema, migrations and the SQL both apps share. Plain async functions over D1.                                                  |

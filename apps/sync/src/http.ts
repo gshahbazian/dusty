@@ -39,6 +39,9 @@ export type FetchResult =
       readonly lastModified: string | null
     }
 
+/** What a fetch needs: the URL, and what the last fetch said about it. */
+export type FetchTarget = Pick<FeedToSync, 'url' | 'etag' | 'lastModified'>
+
 export interface FetchSettings {
   readonly userAgent: string
   readonly timeoutMs: number
@@ -60,15 +63,12 @@ const ACCEPT = [
  * whole fetch, body included, has a time limit and a size cap.
  */
 export const fetchFeed = Effect.fn('feed.fetch')(function* (
-  feed: FeedToSync,
+  feed: FetchTarget,
   settings: FetchSettings
 ) {
   const http = yield* HttpFetch
 
-  yield* Effect.annotateCurrentSpan({
-    'feed.id': feed.id,
-    'url.full': feed.url,
-  })
+  yield* Effect.annotateCurrentSpan('url.full', feed.url)
 
   const result = yield* Effect.tryPromise({
     try: async (signal) => {
@@ -105,7 +105,10 @@ export const fetchFeed = Effect.fn('feed.fetch')(function* (
   return result
 })
 
-const requestHeaders = (feed: FeedToSync, settings: FetchSettings): Headers => {
+const requestHeaders = (
+  feed: FetchTarget,
+  settings: FetchSettings
+): Headers => {
   const headers = new Headers({
     'user-agent': settings.userAgent,
     accept: ACCEPT,

@@ -55,6 +55,11 @@ export interface FeedChanged {
   readonly lastModified: string | null
   readonly httpStatus: number
   readonly now: number
+  /**
+   * Store new articles as already read. Used by OPML import, so importing a
+   * feed does not flood the unread list with its back catalogue.
+   */
+  readonly newArticlesRead?: boolean
 }
 
 /**
@@ -140,7 +145,7 @@ export const recordFeedChanged = async (
     db.all<{ itemKey: string; firstSeenAt: number }>(sql`
       insert into articles (
         feed_id, item_key, url, title, author, excerpt,
-        published_at, first_seen_at, updated_at, content_hash
+        published_at, first_seen_at, updated_at, content_hash, read_at
       )
       select
         ${feedId},
@@ -152,7 +157,8 @@ export const recordFeedChanged = async (
         coalesce(json_extract(item.value, '$.publishedAt'), ${now}),
         ${now},
         ${now},
-        json_extract(item.value, '$.contentHash')
+        json_extract(item.value, '$.contentHash'),
+        ${change.newArticlesRead === true ? now : null}
       from json_each(${chunk}) as item
       where not exists (
         select 1 from pruned_items
