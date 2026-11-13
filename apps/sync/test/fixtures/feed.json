@@ -1,0 +1,21 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Example JSON Feed",
+  "home_page_url": "https://json.example.com/",
+  "items": [
+    {
+      "id": "json-1",
+      "url": "https://json.example.com/one",
+      "title": "JSON one",
+      "content_html": "<p>JSON <b>content</b></p>",
+      "date_published": "2026-11-05T00:00:00Z",
+      "authors": [{ "name": "Di" }]
+    },
+    {
+      "id": "json-2",
+      "title": "JSON text only",
+      "content_text": "Plain <text>",
+      "date_published": "2026-11-06T00:00:00Z"
+    }
+  ]
+}

@@ -10,7 +10,15 @@ export type { SyncTrigger }
 export type OnDemandTrigger = Exclude<SyncTrigger, 'scheduled'>
 
 export type SyncRunResult =
-  | { readonly status: 'ran'; readonly outcome: 'completed' | 'cut_short' }
+  | {
+      readonly status: 'ran'
+      readonly outcome: 'completed' | 'cut_short'
+      readonly feedsSynced: number
+      readonly feedsFailed: number
+      /** Not started because the run's time budget ran out. */
+      readonly feedsSkipped: number
+      readonly itemsNew: number
+    }
   | { readonly status: 'skipped'; readonly reason: 'running' | 'recent' }
 
 /**

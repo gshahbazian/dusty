@@ -48,8 +48,8 @@ in `packages/db/migrations` are applied on every start.
 Run it in the background when you need to keep working:
 
 ```sh
-.agents/skills/local-dev/scripts/dev-start.sh   # returns once :5173 answers 200
-.agents/skills/local-dev/scripts/dev-stop.sh    # stops it and checks the ports are free
+.agents/skills/local-dev/scripts/dev-start.sh   # returns once :5173 answers 200; also starts the feed server
+.agents/skills/local-dev/scripts/dev-stop.sh    # stops both and checks ports 5173-5175 are free
 ```
 
 Logs go to `.alchemy/dev.log`. They contain NUL bytes (Vite's virtual
@@ -69,6 +69,52 @@ control ignores SIGINT, so it is hard to stop cleanly.
 | `.agents/skills/local-dev/scripts/db.sh "select * from sync_state"` | Query the local D1 database with Node's built-in SQLite (no argument: interactive shell, needs the `sqlite3` CLI) |
 | `.agents/skills/local-dev/scripts/trigger-cron.sh`                  | Fire the scheduled sync now                                  |
 | `.agents/skills/local-dev/scripts/reset.sh`                         | Delete all local state (stop `pnpm dev` first)               |
+| `node .agents/skills/local-dev/scripts/feed-server.mjs`             | Serve the fixture feeds on :5175 (`dev-start.sh` runs it for you) |
+| `.agents/skills/local-dev/scripts/seed-feeds.sh`                    | Subscribe the dev database to the fixture feeds              |
+
+## Syncing real feeds locally (no internet needed)
+
+The sync service fetches real HTTP, so give it something to fetch:
+
+```sh
+.agents/skills/local-dev/scripts/dev-start.sh   # also starts the feed server on :5175
+.agents/skills/local-dev/scripts/seed-feeds.sh
+.agents/skills/local-dev/scripts/trigger-cron.sh
+.agents/skills/local-dev/scripts/db.sh "select id, last_outcome, last_http_status, last_error, title from feeds"
+.agents/skills/local-dev/scripts/db.sh "select feed_id, count(*) from articles group by feed_id"
+```
+
+- The feed server serves `apps/sync/test/fixtures/` (the same files the
+  tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) with ETags,
+  so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
+  you an HTTP error, a timeout and a page that is not a feed.
+- `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
+  first sync shows six feeds `ok`, one `http` (404 not found) and one
+  `invalid_feed`.
+- To add a fixture, put the file in `apps/sync/test/fixtures/`; the server
+  picks it up without a restart.
+- Want to sync again right away? The scheduled trigger ignores the 5-minute
+  skip window (`trigger-cron.sh`); on-demand triggers don't. To refetch
+  bodies instead of 304s: `db.sh "update feeds set etag = null, last_modified = null"`.
+- Settings (`SYNC_SKIP_WINDOW_MINUTES`, budgets, retention...) come from
+  `.env` or the shell when `pnpm dev` starts; see `.env.example`. Restart
+  the stack to change them.
+
+Sync logs are one JSON object per line, behind Alchemy's `[Sync]` prefix:
+
+```sh
+grep -a '"message":"sync run finished"' .alchemy/dev.log | tail -1
+grep -a '"message":"feed fetch failed"' .alchemy/dev.log
+```
+
+Each run logs `sync run finished` (or `skipped`, or `cut short`) with its
+counts, and each feed logs `feed synced` with its outcome, status, duration
+and items found and new. Alchemy prefixes every line with `INFO:`, even
+warnings; the real level is the JSON `level` field. Lines without JSON
+after `[Sync]` (`create (local)`, `ready at ...`) are Alchemy's own, not
+sync logs. Tests for the sync engine are in
+`apps/sync/test/`; they serve the same fixtures through a fake `HttpFetch`
+(`apps/sync/test/support.ts`), so they never touch the network.
 
 ## Tests
 
@@ -77,8 +123,20 @@ control ignores SIGINT, so it is hard to stop cleanly.
   they do not need `pnpm dev`.
 - `pnpm test:e2e`: Playwright against the running stack. Start
   `pnpm dev` first. It loads the page as the owner and expects the
-  background sync request to return 200; afterwards `db.sh "select * from
-  sync_state"` shows `last_trigger = on_load`.
+  background sync request to return 200. The request returns 200 even
+  when the run is skipped, so check the outcome in the log:
+  `grep -a '"trigger":"on_load"' .alchemy/dev.log`.
+  - If any run finished in the last 5 minutes (a `trigger-cron.sh`, say),
+    the on-load run is skipped (`"reason":"recent"`) and `sync_state` keeps
+    the earlier run's `last_trigger`. Only a run that really starts sets
+    `last_trigger = on_load`. Start the stack with
+    `SYNC_SKIP_WINDOW_MINUTES=0` to see one finish.
+  - In dev each page load sends **two** sync requests: TanStack Start's
+    default client entry wraps the app in React `StrictMode`, which runs
+    the on-load effect twice in development (not in a production build).
+    Expect two `on_load` lines, and with the skip window off, one run
+    finishes and the other is skipped with `"reason":"running"`. That is
+    the run lock working, not a bug.
 
 ## Changing the database schema
 
@@ -86,4 +144,7 @@ control ignores SIGINT, so it is hard to stop cleanly.
 2. `pnpm --filter @dusty/db generate` writes a new migration folder.
 3. Commit both. `pnpm dev` applies it on the next start.
 
-Never edit a migration that has been deployed; add a new one.
+Never edit a migration that has been deployed; add a new one. If a
+migration that was never deployed is regenerated (as happens on a feature
+branch), local databases that already applied the old one won't match:
+run `reset.sh` and start again.
