@@ -350,20 +350,24 @@ describe('a run', () => {
 
     const routes = {
       'https://slow.example.com/feed': async () => {
-        await new Promise((resolve) => setTimeout(resolve, 80))
+        await new Promise((resolve) => setTimeout(resolve, 400))
 
         return new Response(null, { status: 304 })
       },
       'https://rss.example.com/feed.xml': serve('rss.xml'),
     } satisfies Readonly<Record<string, Handler>>
 
-    // The first feed starts at 0 (0 + 100 ms timeout fits in 150 ms) and
-    // takes 80 ms. At 80 ms a second fetch could run until 180 ms, past the
-    // budget, so it does not start.
+    // The first feed starts almost at once (its 500 ms timeout fits in the
+    // 800 ms budget) and takes 400 ms. By then a second fetch could run past
+    // 900 ms, beyond the budget, so it does not start.
+    //
+    // Each local D1 call takes 10 to 40 ms (Miniflare over HTTP), and a run
+    // makes about six of them around the feed. The budget leaves ~300 ms for
+    // them so this measures the engine, not how fast the machine is.
     const budget = {
       concurrency: 1,
-      feedTimeoutMs: 100,
-      scheduledBudgetMs: 150,
+      feedTimeoutMs: 500,
+      scheduledBudgetMs: 800,
     }
 
     const first = await sync(routes, { settings: budget })
@@ -377,7 +381,7 @@ describe('a run', () => {
     expect(first.metrics.runs).toMatchObject([
       { outcome: 'cut_short', feedsSkipped: 1 },
     ])
-    expect(first.metrics.runs[0]?.durationMs).toBeLessThan(150)
+    expect(first.metrics.runs[0]?.durationMs).toBeLessThan(800)
     expect(await articlesOf(waiting)).toHaveLength(0)
 
     const second = await sync(routes, { settings: { concurrency: 1 } })
