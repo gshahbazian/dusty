@@ -104,7 +104,9 @@ function Subscriptions() {
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-medium">
-            {subscriptions.length} feeds
+            {subscriptions.length === 1
+              ? '1 feed'
+              : `${subscriptions.length} feeds`}
             {attentionCount > 0 && (
               <span className="text-neutral-500">
                 {' '}

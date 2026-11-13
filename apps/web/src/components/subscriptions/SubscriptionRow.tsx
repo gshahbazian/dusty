@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 
 import type { Subscription } from '@dusty/db'
 
@@ -169,6 +169,13 @@ function RenameForm({
   onDone: (changed: boolean) => void
 }) {
   const [title, setTitle] = useState(subscription.customTitle ?? '')
+  const input = useRef<HTMLInputElement>(null)
+
+  // Opening the form is asking to type a name, so put the cursor there.
+  useEffect(() => {
+    input.current?.focus()
+    input.current?.select()
+  }, [])
 
   const save = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -182,6 +189,7 @@ function RenameForm({
         New name for {subscription.title}
       </label>
       <input
+        ref={input}
         id={`rename-${subscription.id}`}
         value={title}
         onChange={(event) => setTitle(event.target.value)}

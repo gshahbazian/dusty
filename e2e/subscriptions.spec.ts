@@ -67,9 +67,9 @@ test('add, refuse, rename and remove feeds', async ({ page }) => {
 
   // Rename, keeping the feed's own name visible.
   await row(page, rss).getByRole('button', { name: 'Rename' }).click()
-  await row(page, rss)
-    .getByLabel(/New name for/)
-    .fill(`My RSS ${run}`)
+  // The field takes the cursor, so you can just type.
+  await expect(row(page, rss).getByLabel(/New name for/)).toBeFocused()
+  await page.keyboard.type(`My RSS ${run}`)
   await row(page, rss).getByRole('button', { name: 'Save' }).click()
   await expect(row(page, rss)).toContainText(`My RSS ${run}`)
   await expect(row(page, rss)).toContainText(
