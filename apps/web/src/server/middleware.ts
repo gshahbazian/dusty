@@ -7,8 +7,9 @@ import { createMiddleware } from '@tanstack/react-start'
  */
 export const ownerOnly = createMiddleware({ type: 'function' }).server(
   ({ context, next }) => {
-    if (context.viewer.kind !== 'owner')
+    if (context.viewer.kind !== 'owner') {
       throw new Response('Forbidden', { status: 403 })
+    }
 
     return next()
   }

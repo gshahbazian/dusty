@@ -13,6 +13,28 @@ import { Database } from './infra/database.ts'
 import { DEV_WEB_PORT } from './infra/dev.ts'
 
 /**
+ * Deployed stages get one Access application allowing only the owner. Workers
+ * with static assets get no `ctx.access`, so its audience tag goes to the
+ * Worker as config for checking the Access token. `alchemy dev` has no Access.
+ */
+const deployedAccess = Effect.fn(function* (dev: boolean, ownerEmail: string) {
+  if (dev) return undefined
+
+  const teamDomain = yield* Config.String('ACCESS_TEAM_DOMAIN').pipe(
+    Effect.orDie
+  )
+
+  const application = yield* Cloudflare.Access.Application('Access', {
+    type: 'self_hosted',
+    policies: [{ decision: 'allow', include: [{ email: ownerEmail }] }],
+    // A trusted device stays logged in for a month.
+    sessionDuration: '720h',
+  })
+
+  return { teamDomain, application }
+})
+
+/**
  * The web app: a TanStack Start SPA plus its server functions, in one Worker.
  *
  * - Every request, static assets included, runs the Worker first so the
@@ -29,22 +51,7 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
     const { dev } = yield* AlchemyContext
     const ownerEmail = yield* Config.String('OWNER_EMAIL').pipe(Effect.orDie)
 
-    // Deployed: one Access application allowing only the owner. Workers with
-    // static assets get no `ctx.access`, so its audience tag goes to the
-    // Worker as config for checking the Access token.
-    const access = dev
-      ? undefined
-      : {
-          teamDomain: yield* Config.String('ACCESS_TEAM_DOMAIN').pipe(
-            Effect.orDie
-          ),
-          application: yield* Cloudflare.Access.Application('Access', {
-            type: 'self_hosted',
-            policies: [{ decision: 'allow', include: [{ email: ownerEmail }] }],
-            // A trusted device stays logged in for a month.
-            sessionDuration: '720h',
-          }),
-        }
+    const access = yield* deployedAccess(dev, ownerEmail)
 
     return {
       rootDir: resolve(import.meta.dirname, 'apps/web'),

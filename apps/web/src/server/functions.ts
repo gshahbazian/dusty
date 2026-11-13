@@ -15,8 +15,9 @@ const isOnDemandTrigger = (value: string): value is OnDemandTrigger =>
 
 /** Input arrives from the browser, so check it is a trigger the web app may start. */
 const parseTrigger = (input: string): OnDemandTrigger => {
-  if (!isOnDemandTrigger(input))
+  if (!isOnDemandTrigger(input)) {
     throw new Error(`Unknown sync trigger: ${input}`)
+  }
 
   return input
 }

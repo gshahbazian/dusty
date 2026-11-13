@@ -49,11 +49,11 @@ const token = (options: TokenOptions = {}) =>
     .setExpirationTime(options.expiresIn ?? '1h')
     .sign(options.key ?? signingKey)
 
-const request = (jwt?: string, url = APP_URL) =>
-  new Request(
-    url,
-    jwt === undefined ? {} : { headers: { 'Cf-Access-Jwt-Assertion': jwt } }
-  )
+const request = (jwt?: string, url = APP_URL) => {
+  if (jwt === undefined) return new Request(url)
+
+  return new Request(url, { headers: { 'Cf-Access-Jwt-Assertion': jwt } })
+}
 
 describe('Access provider', () => {
   const auth = () =>

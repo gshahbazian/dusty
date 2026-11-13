@@ -21,8 +21,9 @@ export default {
 
     const viewer = await auth.identify(request)
 
-    if (viewer === null)
+    if (viewer === null) {
       return withSecurityHeaders(new Response('Forbidden', { status: 403 }))
+    }
 
     if (
       env.ASSETS !== undefined &&

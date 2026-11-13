@@ -40,4 +40,8 @@ Read the matching `SKILL.md` before doing these:
 - Times are integer epoch milliseconds in the database.
 - Sync work must be traced: wrap units of work in `Effect.fn` /
   `Effect.withSpan` and annotate spans with the same details as logs.
+- Code style: return early instead of `if`/`else` chains; braces on any
+  `if` whose body is on its own line (one-line `if (x) return y` is fine);
+  ternaries only when both branches are short and obvious; React props typed
+  inline at the component. Lint enforces the first two.
 - Commit titles are all lowercase; bodies use normal punctuation.

@@ -79,16 +79,19 @@ export const createAccessAuth = (options: AccessAuthOptions): AuthProvider => {
 
       if (Option.isNone(claims)) return deny('token has no email claim')
 
-      if (claims.value.email.toLowerCase() !== ownerEmail)
+      if (claims.value.email.toLowerCase() !== ownerEmail) {
         return deny('token email is not the owner')
+      }
 
       return { kind: 'owner', email: ownerEmail }
     } catch (error) {
-      if (error instanceof errors.JWTClaimValidationFailed)
+      if (error instanceof errors.JWTClaimValidationFailed) {
         return deny(`token claim '${error.claim}' failed: ${error.reason}`)
+      }
 
-      if (error instanceof errors.JOSEError)
+      if (error instanceof errors.JOSEError) {
         return deny(`token rejected: ${error.code}`)
+      }
 
       return deny('token check failed')
     }

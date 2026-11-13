@@ -31,6 +31,12 @@ export default defineConfig({
     'packages/db/migrations/**',
   ],
   rules: {
+    // Gabe style: braces on any `if` that spans lines, return early instead
+    // of `else`, and no nested ternaries.
+    'eslint/curly': ['error', 'multi-line'],
+    'eslint/no-else-return': ['error', { allowElseIf: false }],
+    'eslint/no-nested-ternary': 'error',
+
     '@tanstack/router/create-route-property-order': 'error',
     '@tanstack/router/route-param-names': 'error',
 
