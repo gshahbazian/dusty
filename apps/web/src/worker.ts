@@ -34,7 +34,12 @@ export default {
     }
 
     const response = await startHandler.fetch(request, {
-      context: { viewer, env, waitUntil: (promise) => ctx.waitUntil(promise) },
+      context: {
+        viewer,
+        logoutUrl: auth.logoutUrl,
+        env,
+        waitUntil: (promise) => ctx.waitUntil(promise),
+      },
     })
 
     return withSecurityHeaders(response)

@@ -7,6 +7,8 @@ import type { Viewer } from './auth/index.ts'
  */
 export interface RequestContext {
   readonly viewer: Viewer
+  /** Where to send the browser to log out; comes from the auth provider. */
+  readonly logoutUrl: string
   readonly env: WebEnv
   readonly waitUntil: (promise: Promise<unknown>) => void
 }

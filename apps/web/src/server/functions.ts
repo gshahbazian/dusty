@@ -25,8 +25,7 @@ export const getSession = createServerFn({ method: 'GET' })
   .middleware([ownerOnly])
   .handler(({ context }) => ({
     email: context.viewer.email,
-    logoutUrl:
-      context.env.AUTH_MODE === 'access' ? '/cdn-cgi/access/logout' : '/',
+    logoutUrl: context.logoutUrl,
   }))
 
 /**
