@@ -81,17 +81,31 @@ test('add, refuse, rename and remove feeds', async ({ page }) => {
 })
 
 test("a site's home page leads to its feed", async ({ page }) => {
+  // site.html advertises /rss.xml itself (its link drops the query string),
+  // so this run cannot have a URL of its own. A seeded dev database may
+  // already have that feed; only remove it again if this run added it.
+  const advertised = `${FEEDS}/rss.xml`
+
   await page.goto('/subscriptions')
+  await expect(
+    page.getByRole('heading', { name: 'Subscriptions' })
+  ).toBeVisible()
+  const alreadyThere = (await row(page, advertised).count()) > 0
+
   await addFeed(page, `${FEEDS}/site.html?run=${run}`)
 
-  // site.html advertises /rss.xml, which a seeded dev database may already
-  // have; either way the advertised feed is the one used.
+  if (alreadyThere) {
+    await expect(page.getByText(/^Already subscribed as .+\.$/)).toBeVisible()
+    await expect(row(page, advertised)).toHaveCount(1)
+
+    return
+  }
+
   await expect(
-    page.getByText(
-      /^(Added Example RSS with \d+ articles|Already subscribed as .+)\.$/
-    )
+    page.getByText('Added Example RSS with 3 articles.')
   ).toBeVisible()
-  await expect(row(page, `${FEEDS}/rss.xml`)).toHaveCount(1)
+  await expect(row(page, advertised)).toHaveCount(1)
+  await remove(page, advertised)
 })
 
 test('import from an OPML file', async ({ page }) => {
