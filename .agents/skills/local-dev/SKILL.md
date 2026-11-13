@@ -88,6 +88,10 @@ The sync service fetches real HTTP, so give it something to fetch:
   tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) with ETags,
   so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
   you an HTTP error, a timeout and a page that is not a feed.
+- `/generated.xml?run=<id>` is a feed that changes on demand: it starts
+  with three items, and each `curl localhost:5175/generated/add?run=<id>`
+  adds one newer than the rest. Use it to land new articles mid-test (the
+  unread browser tests do), then `trigger-cron.sh` to sync them in.
 - `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
   first sync shows six feeds `ok`, one `http` (404 not found) and one
   `invalid_feed`.
@@ -132,6 +136,11 @@ sync logs. Tests for the sync engine are in
   itself, so that test uses the plain `/rss.xml`, and removes it only if it
   added it (a seeded database keeps its own). A run that fails midway can
   leave a few feeds behind; `reset.sh` clears them.
+- `e2e/unread.spec.ts` covers the unread lists: opening an article marks
+  it read, marking it unread again, and "mark all above as read" with
+  undo, including a sync landing between loading the list and the action
+  (the spec's must-have). Each test subscribes to its own generated feed,
+  since tests run in parallel.
 - The smoke test (`e2e/smoke.spec.ts`) loads the page as the owner and expects the
   background sync request to return 200. The request returns 200 even
   when the run is skipped, so check the outcome in the log:

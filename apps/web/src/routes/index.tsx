@@ -1,21 +1,31 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
+import { UnreadPage } from '../components/unread/UnreadPage.tsx'
+import { parseArticleSearch } from '../lib/article-search.ts'
+import { getUnreadList } from '../server/articles.ts'
+
+/** Every unread article, oldest first: the daily triage pass. */
 export const Route = createFileRoute('/')({
-  component: Unread,
+  validateSearch: parseArticleSearch,
+  // Opening an article changes the search, not the list: no reload.
+  loaderDeps: () => ({}),
+  loader: () => getUnreadList({ data: { feedId: null } }),
+  component: AllUnread,
 })
 
-/** The unread list arrives in M3; until then, point at subscriptions. */
-function Unread() {
+function AllUnread() {
+  const data = Route.useLoaderData()
+  const { article } = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
+
   return (
-    <section>
-      <h1 className="text-xl font-semibold">Unread</h1>
-      <p className="mt-2 text-neutral-500">
-        The unread list is coming next. For now, manage your feeds on the{' '}
-        <Link to="/subscriptions" className="underline">
-          subscriptions
-        </Link>{' '}
-        page.
-      </p>
-    </section>
+    <UnreadPage
+      data={data}
+      feedId={null}
+      articleId={article ?? null}
+      onOpenArticle={(id) =>
+        void navigate({ search: { article: id ?? undefined } })
+      }
+    />
   )
 }

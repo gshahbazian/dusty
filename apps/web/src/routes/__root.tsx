@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
@@ -50,8 +51,18 @@ const activeNavLink = {
     'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
 }
 
+/** "Unread" covers the global list and every feed's list. */
+const isUnreadPath = (pathname: string): boolean =>
+  pathname === '/' || pathname.startsWith('/feeds/')
+
 function AppLayout() {
   const session = Route.useLoaderData()
+
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+
+  const unreadActive = isUnreadPath(pathname)
 
   // Loading the app starts a background sync; pages never wait for it.
   useEffect(() => {
@@ -65,9 +76,8 @@ function AppLayout() {
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
-            className={navLink}
-            activeProps={activeNavLink}
-            activeOptions={{ exact: true }}
+            className={`${navLink} ${unreadActive ? activeNavLink.className : ''}`}
+            aria-current={unreadActive ? 'page' : undefined}
           >
             Unread
           </Link>

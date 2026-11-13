@@ -9,6 +9,8 @@ export interface RequestContext {
   readonly viewer: Viewer
   /** Where to send the browser to log out; comes from the auth provider. */
   readonly logoutUrl: string
+  /** This response's CSP nonce; the router puts it on every script. */
+  readonly nonce: string
   readonly env: WebEnv
   readonly waitUntil: (promise: Promise<unknown>) => void
 }

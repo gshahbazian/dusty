@@ -2,7 +2,7 @@ import startHandler from '@tanstack/react-start/server-entry'
 
 import type { WebEnv } from '../../../alchemy.run.ts'
 import { authFromEnv, type AuthProvider } from './server/auth/index.ts'
-import { withSecurityHeaders } from './server/security-headers.ts'
+import { createNonce, withSecurityHeaders } from './server/security-headers.ts'
 
 let auth: AuthProvider | undefined
 
@@ -19,10 +19,15 @@ export default {
   ): Promise<Response> {
     auth ??= authFromEnv(env)
 
+    // A fresh nonce per response: the CSP only lets scripts carrying it run.
+    const csp = { nonce: createNonce(), dev: env.AUTH_MODE === 'dev' }
     const viewer = await auth.identify(request)
 
     if (viewer === null) {
-      return withSecurityHeaders(new Response('Forbidden', { status: 403 }))
+      return withSecurityHeaders(
+        new Response('Forbidden', { status: 403 }),
+        csp
+      )
     }
 
     if (
@@ -31,18 +36,19 @@ export default {
     ) {
       const asset = await env.ASSETS.fetch(request)
 
-      if (asset.status !== 404) return withSecurityHeaders(asset)
+      if (asset.status !== 404) return withSecurityHeaders(asset, csp)
     }
 
     const response = await startHandler.fetch(request, {
       context: {
         viewer,
         logoutUrl: auth.logoutUrl,
+        nonce: csp.nonce,
         env,
         waitUntil: (promise) => ctx.waitUntil(promise),
       },
     })
 
-    return withSecurityHeaders(response)
+    return withSecurityHeaders(response, csp)
   },
 } satisfies ExportedHandler<WebEnv>
