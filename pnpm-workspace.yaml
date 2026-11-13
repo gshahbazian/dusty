@@ -1,0 +1,31 @@
+packages:
+  - apps/*
+  - packages/*
+allowBuilds:
+  esbuild: true
+  workerd: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@alchemy.run/acme@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@alchemy.run/cloudflare-runtime@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@alchemy.run/cloudflare@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@alchemy.run/docker@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@alchemy.run/node-utils@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@alchemy.run/sql@2.0.0-beta.86 || 2.0.0-beta.87'
+  - '@distilled.cloud/acme@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/aws4signer@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/aws@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/cloudflare@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/core@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/iceberg@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@distilled.cloud/s3@1.0.0-rc.19 || 1.0.0-rc.20'
+  - '@oxlint-tsgolint/darwin-arm64@7.0.2007'
+  - '@oxlint-tsgolint/darwin-x64@7.0.2007'
+  - '@oxlint-tsgolint/linux-arm64@7.0.2007'
+  - '@oxlint-tsgolint/linux-x64@7.0.2007'
+  - '@oxlint-tsgolint/win32-arm64@7.0.2007'
+  - '@oxlint-tsgolint/win32-x64@7.0.2007'
+  - alchemy@2.0.0-beta.86 || 2.0.0-beta.87
+  - oxlint-tsgolint@7.0.2007
+  - '@cloudflare/workers-types@5.20261112.1'
+  - '@alchemy.run/sigil@0.1.0-alpha.4'

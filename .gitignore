@@ -1,36 +1,25 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules/
 
-# testing
-/coverage
+# build output
+dist/
+.tanstack/
+.output/
+coverage/
+*.tsbuildinfo
 
-# next.js
-/.next/
-/out/
+# alchemy local state, dev simulators and build cache
+.alchemy/
 
-# production
-/build
+# secrets
+.env
+.env.*
+!.env.example
 
 # misc
 .DS_Store
 *.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# playwright
+test-results/
+playwright-report/
