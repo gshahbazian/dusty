@@ -7,7 +7,12 @@ import {
   renameSubscription,
 } from '../../server/subscriptions.ts'
 import { RelativeTime } from '../RelativeTime.tsx'
-import { failureNote, healthLabel, type HealthLabel } from './health.ts'
+import {
+  failureNote,
+  healthLabel,
+  removeConfirmation,
+  type HealthLabel,
+} from './health.ts'
 
 const BADGE_TONES: Readonly<Record<HealthLabel['tone'], string>> = {
   good: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
@@ -91,7 +96,11 @@ export function SubscriptionRow({
           <dd>
             {subscription.lastPublishedAt === null && 'none yet'}
             {subscription.lastPublishedAt !== null && (
-              <RelativeTime at={subscription.lastPublishedAt} now={now} />
+              <RelativeTime
+                at={subscription.lastPublishedAt}
+                now={now}
+                label="Last article"
+              />
             )}
           </dd>
         </div>
@@ -100,7 +109,11 @@ export function SubscriptionRow({
           <dd>
             {subscription.lastSuccessAt === null && 'never'}
             {subscription.lastSuccessAt !== null && (
-              <RelativeTime at={subscription.lastSuccessAt} now={now} />
+              <RelativeTime
+                at={subscription.lastSuccessAt}
+                now={now}
+                label="Last synced"
+              />
             )}
           </dd>
         </div>
@@ -118,12 +131,13 @@ export function SubscriptionRow({
         </p>
       )}
 
-      <div className="flex gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         {!renaming && (
           <button
             type="button"
             className={actionButton}
             onClick={() => setRenaming(true)}
+            aria-label={`Rename ${subscription.title}`}
           >
             Rename
           </button>
@@ -133,6 +147,7 @@ export function SubscriptionRow({
             type="button"
             className={actionButton}
             onClick={() => setConfirmingRemove(true)}
+            aria-label={`Remove ${subscription.title}`}
           >
             Remove
           </button>
@@ -145,11 +160,11 @@ export function SubscriptionRow({
               onClick={remove}
               className="rounded bg-red-600 px-2 py-1 text-sm font-medium text-white disabled:opacity-50"
             >
-              Remove {subscription.title} and its {subscription.unread} unread
+              {removeConfirmation(subscription)}
             </button>
             <button
               type="button"
-              className={actionButton}
+              className={`${actionButton} shrink-0 whitespace-nowrap`}
               onClick={() => setConfirmingRemove(false)}
             >
               Keep it

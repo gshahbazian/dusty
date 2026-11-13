@@ -31,7 +31,7 @@ app's server functions, using SQL from `packages/db`.
   once, even while a full run is going. It only writes its own new feed,
   which no running run has in its list.
 - A URL that is not a feed, and does not lead to one, is refused with the
-  reason in plain words ("404 not found", "no feed found on this page").
+  reason in plain words ("404 not found", "no feed found at this address").
   Nothing is stored.
 - The caller waits for the result (it is not a background `waitUntil`),
   so the page can show the feed's title and how many articles arrived.
@@ -76,6 +76,10 @@ app's server functions, using SQL from `packages/db`.
 - Default order puts failing feeds first, then stale, then the rest by
   name. A filter shows only feeds that need attention. Sorting by name or
   unread count is also offered.
+- The badge can be more specific than the metrics, which have only three
+  buckets: a feed that has never synced shows "Never synced". The metrics
+  count it as stale (it has no articles) until its 2 days are up, and as
+  failing after that.
 - Times read as relative ("3 days ago"). Hovering shows the exact time;
   tapping toggles it, for phones.
 - Health thresholds (`FEED_FAILING_AFTER_HOURS`, `FEED_STALE_AFTER_DAYS`)

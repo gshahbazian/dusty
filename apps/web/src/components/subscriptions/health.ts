@@ -82,3 +82,17 @@ export function sortSubscriptions(
 /** Feeds that are failing or stale: the ones a cleanup pass looks at. */
 export const needsAttention = (subscription: Subscription): boolean =>
   subscription.health !== 'healthy'
+
+/**
+ * The confirm button for removing a feed. Unread articles go with it, so
+ * they are mentioned, but only when there are any.
+ */
+export function removeConfirmation(subscription: Subscription): string {
+  const count = subscription.unread
+
+  if (count === 0) return `Remove ${subscription.title}?`
+
+  const articles = count === 1 ? 'article' : 'articles'
+
+  return `Remove ${subscription.title} and its ${count} unread ${articles}?`
+}

@@ -196,6 +196,7 @@ function ImportStatus({
   }
 
   const { toImport, skipped } = splitPreview(step.entries)
+  const skippedEntries = step.entries.filter((entry) => entry.skip !== null)
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -212,6 +213,27 @@ function ImportStatus({
           Import {plural(toImport.length, 'feed', 'feeds')}
         </button>
       )}
+      {skippedEntries.length > 0 && (
+        <details className="w-full text-neutral-600 dark:text-neutral-400">
+          <summary className="cursor-pointer">
+            Show the{' '}
+            {plural(skippedEntries.length, 'skipped feed', 'skipped feeds')}
+          </summary>
+          <ul className="mt-1 list-disc pl-5">
+            {skippedEntries.map((entry, index) => (
+              <li key={`${entry.url}-${index}`} className="break-all">
+                {entry.title ?? entry.url}:{' '}
+                {SKIP_REASONS[entry.skip ?? 'duplicate']}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
     </div>
   )
 }
+
+const SKIP_REASONS = {
+  subscribed: 'already subscribed',
+  duplicate: 'listed twice in this file',
+} as const

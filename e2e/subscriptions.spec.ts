@@ -27,7 +27,7 @@ const row = (page: Page, url: string) =>
 const remove = async (page: Page, url: string) => {
   await row(page, url).getByRole('button', { name: 'Remove' }).click()
   await row(page, url)
-    .getByRole('button', { name: /^Remove .* unread$/ })
+    .getByRole('button', { name: /^Remove .*\?$/ })
     .click()
   await expect(row(page, url)).toHaveCount(0)
 }
@@ -133,6 +133,10 @@ test('import from an OPML file', async ({ page }) => {
 
   await expect(
     page.getByText('3 feeds to import, 1 already subscribed or listed twice.')
+  ).toBeVisible()
+  await page.getByText('Show the 1 skipped feed').click()
+  await expect(
+    page.getByText('Atom again: listed twice in this file')
   ).toBeVisible()
   await page.getByRole('button', { name: 'Import 3 feeds' }).click()
 

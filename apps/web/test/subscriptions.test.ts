@@ -6,6 +6,7 @@ import {
   failureNote,
   healthLabel,
   needsAttention,
+  removeConfirmation,
   sortSubscriptions,
 } from '../src/components/subscriptions/health.ts'
 import { duration, relativeTime } from '../src/lib/time.ts'
@@ -129,5 +130,15 @@ describe('times', () => {
     [3 * DAY + HOUR, '3 days'],
   ])('a duration of %i reads %s', (ms, text) => {
     expect(duration(ms)).toBe(text)
+  })
+})
+
+describe('remove confirmation', () => {
+  test.each([
+    [0, 'Remove A?'],
+    [1, 'Remove A and its 1 unread article?'],
+    [12, 'Remove A and its 12 unread articles?'],
+  ])('%i unread reads %j', (unread, text) => {
+    expect(removeConfirmation(subscription({ unread }))).toBe(text)
   })
 })
