@@ -109,7 +109,10 @@ grep -a '"message":"feed fetch failed"' .alchemy/dev.log
 
 Each run logs `sync run finished` (or `skipped`, or `cut short`) with its
 counts, and each feed logs `feed synced` with its outcome, status, duration
-and items found and new. Tests for the sync engine are in
+and items found and new. Alchemy prefixes every line with `INFO:`, even
+warnings; the real level is the JSON `level` field. Lines without JSON
+after `[Sync]` (`create (local)`, `ready at ...`) are Alchemy's own, not
+sync logs. Tests for the sync engine are in
 `apps/sync/test/`; they serve the same fixtures through a fake `HttpFetch`
 (`apps/sync/test/support.ts`), so they never touch the network.
 
@@ -120,8 +123,20 @@ and items found and new. Tests for the sync engine are in
   they do not need `pnpm dev`.
 - `pnpm test:e2e`: Playwright against the running stack. Start
   `pnpm dev` first. It loads the page as the owner and expects the
-  background sync request to return 200; afterwards `db.sh "select * from
-  sync_state"` shows `last_trigger = on_load`.
+  background sync request to return 200. The request returns 200 even
+  when the run is skipped, so check the outcome in the log:
+  `grep -a '"trigger":"on_load"' .alchemy/dev.log`.
+  - If any run finished in the last 5 minutes (a `trigger-cron.sh`, say),
+    the on-load run is skipped (`"reason":"recent"`) and `sync_state` keeps
+    the earlier run's `last_trigger`. Only a run that really starts sets
+    `last_trigger = on_load`. Start the stack with
+    `SYNC_SKIP_WINDOW_MINUTES=0` to see one finish.
+  - In dev each page load sends **two** sync requests: TanStack Start's
+    default client entry wraps the app in React `StrictMode`, which runs
+    the on-load effect twice in development (not in a production build).
+    Expect two `on_load` lines, and with the skip window off, one run
+    finishes and the other is skipped with `"reason":"running"`. That is
+    the run lock working, not a bug.
 
 ## Changing the database schema
 
