@@ -124,7 +124,8 @@ sync logs. Tests for the sync engine are in
 - `pnpm test:e2e`: Playwright against the running stack, including the
   feed server (start both with `dev-start.sh`). `e2e/subscriptions.spec.ts`
   adds, refuses, renames, imports (OPML) and removes feeds through the
-  subscriptions page. Each run subscribes to its own URLs (the
+  subscriptions page, and checks that junk in the URL (`?sort=bogus`)
+  falls back to the default view. Each run subscribes to its own URLs (the
   feed server ignores the query string, so `rss.xml?run=<id>` is a fresh
   feed) and removes them again, so it works on any dev database. The one
   exception is home-page discovery: `site.html` advertises `/rss.xml`

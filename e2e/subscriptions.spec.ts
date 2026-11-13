@@ -157,3 +157,24 @@ test('import from an OPML file', async ({ page }) => {
   await remove(page, json)
   await remove(page, broken)
 })
+
+test('junk in the URL falls back to the default view', async ({ page }) => {
+  // The router spreads the validated search over the raw query, so this
+  // catches a validator that drops a bad key instead of overriding it.
+  await page.goto('/subscriptions?sort=bogus&attention=maybe')
+  await expect(
+    page.getByRole('heading', { name: 'Subscriptions' })
+  ).toBeVisible()
+  await expect(page.getByRole('combobox')).toHaveValue('attention')
+  await expect(
+    page.getByLabel('Only feeds that need attention')
+  ).not.toBeChecked()
+  await expect(page).toHaveURL(/\/subscriptions$/)
+
+  // A good value next to a bad one is kept.
+  await page.goto('/subscriptions?sort=name&attention=maybe')
+  await expect(page.getByRole('combobox')).toHaveValue('name')
+  await expect(
+    page.getByLabel('Only feeds that need attention')
+  ).not.toBeChecked()
+})

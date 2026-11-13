@@ -1,6 +1,4 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
-import * as Option from 'effect/Option'
-import * as Schema from 'effect/Schema'
 import { useEffect, useState } from 'react'
 
 import { AddFeedForm } from '../components/subscriptions/AddFeedForm.tsx'
@@ -9,6 +7,7 @@ import {
   sortSubscriptions,
   type SortOrder,
 } from '../components/subscriptions/health.ts'
+import { parseSubscriptionsSearch } from '../components/subscriptions/search.ts'
 import { OpmlImport } from '../components/subscriptions/OpmlImport.tsx'
 import { SubscriptionRow } from '../components/subscriptions/SubscriptionRow.tsx'
 import { getSubscriptions } from '../server/subscriptions.ts'
@@ -25,22 +24,8 @@ const SORTS: ReadonlyArray<{
 const isSortOrder = (value: string): value is SortOrder =>
   SORTS.some((sort) => sort.value === value)
 
-/** `?sort=name&attention=true`; both optional, so links need neither. */
-const SearchSchema = Schema.Struct({
-  sort: Schema.optionalKey(Schema.Literals(['attention', 'name', 'unread'])),
-  attention: Schema.optionalKey(Schema.Boolean),
-})
-
-type SubscriptionsSearch = typeof SearchSchema.Type
-
-const decodeSearch = Schema.decodeUnknownOption(SearchSchema)
-
-const DEFAULT_SEARCH: SubscriptionsSearch = {}
-
 export const Route = createFileRoute('/subscriptions')({
-  // A link with a bad value falls back to the defaults instead of failing.
-  validateSearch: (search) =>
-    Option.getOrElse(decodeSearch(search), () => DEFAULT_SEARCH),
+  validateSearch: parseSubscriptionsSearch,
   loader: () => getSubscriptions(),
   component: Subscriptions,
 })
