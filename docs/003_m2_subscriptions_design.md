@@ -90,3 +90,25 @@ app's server functions, using SQL from `packages/db`.
 
 - Keyboard shortcuts (`gs` and friends) arrive in M4.
 - Remembering permanent redirects is still open (see M1's notes).
+
+## Follow-ups from the M2 review
+
+Keep these in mind for later changes:
+
+1. **Duplicates match on the exact URL.** `http://` vs `https://`, a
+   trailing slash, `www.`, or a URL that redirects to a feed already
+   subscribed are all treated as new. This matters most for OPML import,
+   where an old reader's URLs may be stale. Fix it together with the open
+   redirect handling: remembering where a feed redirects catches most of
+   these.
+2. **Import runs from the browser tab, 10 feeds at a time.** Closing the
+   tab or losing the connection stops the rest; re-running is safe, since
+   subscribed feeds are skipped. Add a "keep this page open" line to the
+   import screen. A failed batch already reports where it stopped instead
+   of failing silently; keep it that way.
+3. **Adding by hand can take about 30 seconds** (a home page and then its
+   feed, each with a 15 s timeout). The form shows "Adding…" while it
+   waits; check that this reads as progress on a slow site, not as stuck.
+4. **The web app imports URL helpers from the sync package**
+   (`@dusty/sync/urls`). If more code needs sharing between the two apps,
+   move it into `packages/` instead of growing that export.
