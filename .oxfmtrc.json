@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "printWidth": 80,
+  "sortPackageJson": true,
+  "sortTailwindcss": {},
+  "ignorePatterns": [
+    ".agents/",
+    ".claude/",
+    ".alchemy/",
+    "tools/oxlint/anti-slop/",
+    "**/routeTree.gen.ts",
+    "packages/db/migrations/",
+    "pnpm-lock.yaml",
+    "docs/"
+  ]
+}
