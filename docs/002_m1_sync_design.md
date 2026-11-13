@@ -39,8 +39,11 @@ what and why; this says how, where the spec leaves it open.
 
 **Time budget.** On-demand runs are started from the web app's
 `waitUntil`, which Cloudflare stops 30 seconds after the response. So each
-run has a budget it ends within, last feed included: 25 s on demand, 10 min
-scheduled (both configurable).
+run has a budget that every feed fetch finishes within: 25 s on demand,
+10 min scheduled (both configurable). After the last feed, pruning, the
+health count and releasing the lock take a few more database calls (tens
+of milliseconds), well inside the lock's 10 s margin and the 5 s left
+before Cloudflare's limit.
 
 - A feed only starts if a full fetch timeout (15 s) still fits before the
   end of the budget. Feeds are usually far quicker (most answer 304), so an

@@ -14,12 +14,13 @@ export interface SyncSettings {
    * time to prune, count health and release the lock after the last feed.
    */
   readonly leaseMarginMs: number
-  /** A scheduled run, last feed included, ends within this long. */
+  /** Every feed fetch in a scheduled run finishes within this long. */
   readonly scheduledBudgetMs: number
   /**
-   * An on-demand run, last feed included, ends within this long. It runs in
+   * Every feed fetch in an on-demand run finishes within this long. It runs in
    * the web app's `waitUntil`, which Cloudflare stops 30 s after the page's
-   * response, so this must stay under 30 s minus `leaseMarginMs`'s work.
+   * response, so this must leave a few seconds under 30 s for the database
+   * work after the last feed.
    */
   readonly onDemandBudgetMs: number
   /** Feeds fetched at once (Workers allow 6 open connections). */
