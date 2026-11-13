@@ -38,12 +38,22 @@ what and why; this says how, where the spec leaves it open.
 5. Release the lock with the outcome: `completed` or `cut_short`.
 
 **Time budget.** On-demand runs are started from the web app's
-`waitUntil`, which Cloudflare stops 30 seconds after the response. So a run
-has a budget (20 s on demand, 10 min scheduled; both configurable) and stops
-starting new feeds once it is spent. It ends as `cut_short` and says so in
-logs and metrics. Because feeds go least recently fetched first, the next
-run picks up where this one stopped. This needs no queue or workflow, and
-the spec already asks for "a run cut short (time limit)" to be logged.
+`waitUntil`, which Cloudflare stops 30 seconds after the response. So each
+run has a budget it ends within, last feed included: 25 s on demand, 10 min
+scheduled (both configurable).
+
+- A feed only starts if a full fetch timeout (15 s) still fits before the
+  end of the budget. Feeds are usually far quicker (most answer 304), so an
+  on-demand run gets through many feeds in its first 10 seconds.
+- A run that runs out of budget ends as `cut_short` and says so in logs and
+  metrics. Because feeds go least recently fetched first, the next run picks
+  up where this one stopped.
+- The lock lasts the run's budget plus 10 s (35 s on demand), not a fixed
+  15 minutes. If Cloudflare kills an on-demand run anyway, the next sync is
+  blocked for seconds, not for a quarter of an hour.
+
+This needs no queue or workflow, and the spec already asks for "a run cut
+short (time limit)" to be logged.
 
 **Per feed** (span `sync.feed`, children `feed.fetch`, `feed.parse`,
 `feed.store`):

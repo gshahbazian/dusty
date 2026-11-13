@@ -35,10 +35,13 @@ const toStoredItem = async (
   const title = plainTitle(item.title)
   const publishedAt = trustedDate(item.published, now)
 
+  // The fallback leaves out the content, so a publisher's edit to an item
+  // with no id or link does not make it a new article. Content counts only
+  // when there is no title or date to go on.
   const itemKey =
     item.id ??
     item.link ??
-    `hash:${await sha256([title, item.published, contentHtml])}`
+    `hash:${await sha256(fallbackKeyParts(title, item.published, contentHtml))}`
 
   const contentHash = await sha256([item.link, title, item.author, contentHtml])
 
@@ -52,6 +55,16 @@ const toStoredItem = async (
     publishedAt,
     contentHash,
   }
+}
+
+const fallbackKeyParts = (
+  title: string | null,
+  published: string | null,
+  contentHtml: string | null
+): ReadonlyArray<string | null> => {
+  if (title === null && published === null) return [contentHtml]
+
+  return [title, published]
 }
 
 const cleanedContent = (item: ParsedItem): string | null => {

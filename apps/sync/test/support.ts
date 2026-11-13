@@ -15,7 +15,7 @@ export const testSettings = (
   overrides: Partial<SyncSettings> = {}
 ): SyncSettings => ({
   skipWindowMs: 5 * 60_000,
-  leaseMs: 15 * 60_000,
+  leaseMarginMs: 10_000,
   scheduledBudgetMs: 60_000,
   onDemandBudgetMs: 60_000,
   concurrency: 6,

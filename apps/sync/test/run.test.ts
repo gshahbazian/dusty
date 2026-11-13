@@ -344,7 +344,7 @@ describe('a run', () => {
     expect(second.result).toMatchObject({ status: 'ran', outcome: 'completed' })
   })
 
-  test('a run past its time budget stops starting feeds, and the next run picks them up', async () => {
+  test('a feed only starts if its whole timeout fits in the budget, and the next run picks up the rest', async () => {
     const slow = await addFeed('https://slow.example.com/feed')
     const waiting = await addFeed('https://rss.example.com/feed.xml')
 
@@ -357,9 +357,16 @@ describe('a run', () => {
       'https://rss.example.com/feed.xml': serve('rss.xml'),
     } satisfies Readonly<Record<string, Handler>>
 
-    const first = await sync(routes, {
-      settings: { concurrency: 1, scheduledBudgetMs: 30 },
-    })
+    // The first feed starts at 0 (0 + 100 ms timeout fits in 150 ms) and
+    // takes 80 ms. At 80 ms a second fetch could run until 180 ms, past the
+    // budget, so it does not start.
+    const budget = {
+      concurrency: 1,
+      feedTimeoutMs: 100,
+      scheduledBudgetMs: 150,
+    }
+
+    const first = await sync(routes, { settings: budget })
 
     expect(first.result).toMatchObject({
       status: 'ran',
@@ -370,6 +377,7 @@ describe('a run', () => {
     expect(first.metrics.runs).toMatchObject([
       { outcome: 'cut_short', feedsSkipped: 1 },
     ])
+    expect(first.metrics.runs[0]?.durationMs).toBeLessThan(150)
     expect(await articlesOf(waiting)).toHaveLength(0)
 
     const second = await sync(routes, { settings: { concurrency: 1 } })
@@ -382,6 +390,53 @@ describe('a run', () => {
     expect(second.result).toMatchObject({ outcome: 'completed' })
     expect(await articlesOf(waiting)).toHaveLength(3)
     expect((await feedRow(slow)).lastOutcome).toBe('not_modified')
+  })
+
+  test("a run's lock lasts its budget plus a margin, not a fixed 15 minutes", async () => {
+    await addFeed('https://rss.example.com/feed.xml')
+
+    let lease: number | undefined
+
+    await sync(
+      {
+        'https://rss.example.com/feed.xml': async () => {
+          // Look at the lock while the run holds it.
+          const [state] = await db.select().from(schema.syncState)
+
+          lease = (state?.leaseUntil ?? 0) - (state?.lastStartedAt ?? 0)
+
+          return new Response(null, { status: 304 })
+        },
+      },
+      {
+        trigger: 'on_load',
+        settings: { onDemandBudgetMs: 25_000, leaseMarginMs: 10_000 },
+      }
+    )
+
+    // If Cloudflare kills this run at its 30 s limit, the lock frees up by
+    // 35 s, instead of blocking every sync for 15 minutes.
+    expect(lease).toBe(35_000)
+  })
+
+  test('an item with no id or link stays one article when its content is edited', async () => {
+    const feedId = await addFeed('https://bare.example.com/feed')
+
+    const bare = (content: string) => () =>
+      new Response(
+        `<rss version="2.0"><channel><title>B</title><item><title>Same title</title><pubDate>Mon, 02 Nov 2026 09:00:00 GMT</pubDate><description>${content}</description></item></channel></rss>`
+      )
+
+    await sync({ 'https://bare.example.com/feed': bare('first draft') })
+
+    const edited = await sync({
+      'https://bare.example.com/feed': bare('fixed a typo'),
+    })
+
+    expect(edited.result).toMatchObject({ itemsNew: 0 })
+    expect(await articlesOf(feedId)).toMatchObject([
+      { excerpt: 'fixed a typo' },
+    ])
   })
 
   test('the run reports feed health in its metrics', async () => {

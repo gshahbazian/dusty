@@ -9,11 +9,18 @@ const DAY = 24 * HOUR
 export interface SyncSettings {
   /** On-demand runs within this long of the last start are skipped. */
   readonly skipWindowMs: number
-  /** How long a run's claim on the sync lock lasts. */
-  readonly leaseMs: number
-  /** Scheduled runs stop starting new feeds after this long. */
+  /**
+   * How much longer than its budget a run's claim on the sync lock lasts:
+   * time to prune, count health and release the lock after the last feed.
+   */
+  readonly leaseMarginMs: number
+  /** A scheduled run, last feed included, ends within this long. */
   readonly scheduledBudgetMs: number
-  /** On-demand runs stop starting new feeds after this long. */
+  /**
+   * An on-demand run, last feed included, ends within this long. It runs in
+   * the web app's `waitUntil`, which Cloudflare stops 30 s after the page's
+   * response, so this must stay under 30 s minus `leaseMarginMs`'s work.
+   */
   readonly onDemandBudgetMs: number
   /** Feeds fetched at once (Workers allow 6 open connections). */
   readonly concurrency: number
@@ -34,7 +41,7 @@ export interface SyncSettings {
 export const SETTING_DEFAULTS = {
   SYNC_SKIP_WINDOW_MINUTES: 5,
   SYNC_SCHEDULED_BUDGET_SECONDS: 600,
-  SYNC_ON_DEMAND_BUDGET_SECONDS: 20,
+  SYNC_ON_DEMAND_BUDGET_SECONDS: 25,
   SYNC_CONCURRENCY: 6,
   SYNC_FEED_TIMEOUT_SECONDS: 15,
   READ_RETENTION_DAYS: 14,
@@ -102,7 +109,7 @@ interface RawSettings {
 function toSettings(raw: RawSettings): SyncSettings {
   return {
     skipWindowMs: raw.skipWindowMinutes * MINUTE,
-    leaseMs: SYNC_LEASE_MS,
+    leaseMarginMs: LEASE_MARGIN_MS,
     scheduledBudgetMs: raw.scheduledBudgetSeconds * 1000,
     onDemandBudgetMs: raw.onDemandBudgetSeconds * 1000,
     concurrency: raw.concurrency,
@@ -117,10 +124,10 @@ function toSettings(raw: RawSettings): SyncSettings {
 }
 
 /**
- * How long a run's claim on the sync lock lasts. It is longer than the
- * scheduled budget, so it only runs out if a run dies without releasing it.
+ * A run's lock lasts its budget plus this. A run that is killed (on-demand
+ * runs are, at Cloudflare's 30 s limit) blocks the next one only briefly.
  */
-export const SYNC_LEASE_MS = 15 * MINUTE
+export const LEASE_MARGIN_MS = 10_000
 
 /** Feeds bigger than this are refused as too large. */
 export const MAX_FEED_BYTES = 5 * 1024 * 1024

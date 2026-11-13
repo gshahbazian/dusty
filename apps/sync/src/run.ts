@@ -45,11 +45,13 @@ export const runSync = Effect.fn('sync.run')(function* (
     'sync.run_id': runId,
   })
 
+  const budgetMs = runBudgetMs(trigger, settings)
+
   const claim = yield* query('claim_sync_run', () =>
     claimSyncRun(db, trigger, {
       runId,
       now: startedAt,
-      leaseMs: settings.leaseMs,
+      leaseMs: budgetMs + settings.leaseMarginMs,
       skipWindowMs: trigger === 'scheduled' ? 0 : settings.skipWindowMs,
     })
   )
@@ -68,11 +70,6 @@ export const runSync = Effect.fn('sync.run')(function* (
     return skipped
   }
 
-  const budgetMs =
-    trigger === 'scheduled'
-      ? settings.scheduledBudgetMs
-      : settings.onDemandBudgetMs
-
   const deadline = startedAt + budgetMs
   const feeds = yield* query('list_feeds_to_sync', () => listFeedsToSync(db))
 
@@ -82,7 +79,8 @@ export const runSync = Effect.fn('sync.run')(function* (
       Effect.gen(function* () {
         const now = yield* Clock.currentTimeMillis
 
-        if (now >= deadline) return NOT_STARTED
+        // Only start a feed if its fetch can time out before the deadline.
+        if (now + settings.feedTimeoutMs > deadline) return NOT_STARTED
 
         return yield* syncFeed(db, feed, trigger, settings)
       }),
@@ -171,6 +169,16 @@ export const runSync = Effect.fn('sync.run')(function* (
 
   return ran
 })
+
+/** How long a run may take, last feed included. */
+export const runBudgetMs = (
+  trigger: SyncTrigger,
+  settings: SyncSettings
+): number => {
+  if (trigger === 'scheduled') return settings.scheduledBudgetMs
+
+  return settings.onDemandBudgetMs
+}
 
 const isSuccess = (result: FeedResult): boolean =>
   result.outcome === 'ok' || result.outcome === 'not_modified'

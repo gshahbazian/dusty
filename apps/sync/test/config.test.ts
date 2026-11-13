@@ -27,7 +27,7 @@ describe('SyncConfig', () => {
       skipWindowMs: 5 * 60_000,
       readRetentionMs: 14 * 24 * 3_600_000,
       failingAfterMs: 48 * 3_600_000,
-      onDemandBudgetMs: 20_000,
+      onDemandBudgetMs: 25_000,
       concurrency: 6,
     })
   })
@@ -59,7 +59,7 @@ describe('syncSettingsEnv', () => {
       SYNC_CRON: '0 * * * *',
       SYNC_SKIP_WINDOW_MINUTES: '7',
       SYNC_SCHEDULED_BUDGET_SECONDS: '600',
-      SYNC_ON_DEMAND_BUDGET_SECONDS: '20',
+      SYNC_ON_DEMAND_BUDGET_SECONDS: '25',
       SYNC_CONCURRENCY: '6',
       SYNC_FEED_TIMEOUT_SECONDS: '15',
       READ_RETENTION_DAYS: '14',
