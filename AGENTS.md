@@ -15,16 +15,16 @@ made after the spec are recorded below and in `docs/`.
 | `apps/sync`                 | Sync service: an Effect-native Worker. Cron trigger plus a typed RPC method (`syncNow`) reached only via the web app's service binding. |
 | `packages/db`               | Drizzle schema, migrations and the SQL both apps share. Plain async functions over D1.                                                  |
 | `tools/oxlint/anti-slop`    | Vendored lint rules (ours to edit; see `PROVENANCE.md`).                                                                                |
-| `.skills/`                  | Agent skills (also visible as `.claude/skills`).                                                                                        |
+| `.agents/skills/`           | Agent skills (also visible as `.claude/skills`).                                                                                        |
 
 ## Skills
 
 Read the matching `SKILL.md` before doing these:
 
-- `.skills/local-dev/SKILL.md`: run the stack locally, query the local DB,
+- `.agents/skills/local-dev/SKILL.md`: run the stack locally, query the local DB,
   fire the cron, run browser tests.
-- `.skills/checks/SKILL.md`: what must pass before a change is done.
-- `.skills/deploy/SKILL.md`: deploying and first-time Cloudflare setup.
+- `.agents/skills/checks/SKILL.md`: what must pass before a change is done.
+- `.agents/skills/deploy/SKILL.md`: deploying and first-time Cloudflare setup.
 
 ## Rules of the road
 

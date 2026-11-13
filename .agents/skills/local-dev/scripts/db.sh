@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run SQL against the local D1 database used by `pnpm dev`.
-#   .skills/local-dev/scripts/db.sh "select * from sync_state"
-#   .skills/local-dev/scripts/db.sh            # interactive sqlite3 shell
+#   .agents/skills/local-dev/scripts/db.sh "select * from sync_state"
+#   .agents/skills/local-dev/scripts/db.sh            # interactive sqlite3 shell
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 

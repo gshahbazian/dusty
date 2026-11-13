@@ -23,7 +23,7 @@ export default defineConfig({
     '.agent/**',
     '.agents/**',
     '.claude/**',
-    '.skills/**',
+    '.agents/skills/**',
     '.alchemy/**',
     'tools/oxlint/anti-slop/**',
     '**/routeTree.gen.ts',

@@ -13,7 +13,7 @@ the owner (`AUTH_MODE=dev`); requests to any other host are refused.
 ## First time
 
 ```sh
-.skills/local-dev/scripts/setup.sh
+.agents/skills/local-dev/scripts/setup.sh
 ```
 
 Checks Node 24+ and pnpm, installs dependencies, writes a dev `.env` if
@@ -43,9 +43,9 @@ Run it in the background when you need to keep working:
 
 | Script                                                       | Does                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `.skills/local-dev/scripts/db.sh "select * from sync_state"` | Query the local D1 database (no argument: interactive shell) |
-| `.skills/local-dev/scripts/trigger-cron.sh`                  | Fire the scheduled sync now                                  |
-| `.skills/local-dev/scripts/reset.sh`                         | Delete all local state (stop `pnpm dev` first)               |
+| `.agents/skills/local-dev/scripts/db.sh "select * from sync_state"` | Query the local D1 database (no argument: interactive shell) |
+| `.agents/skills/local-dev/scripts/trigger-cron.sh`                  | Fire the scheduled sync now                                  |
+| `.agents/skills/local-dev/scripts/reset.sh`                         | Delete all local state (stop `pnpm dev` first)               |
 
 ## Tests
 

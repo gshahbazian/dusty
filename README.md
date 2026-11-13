@@ -6,13 +6,13 @@ A personal, single-user RSS reader on Cloudflare. See
 ## Quick start (local, no Cloudflare account)
 
 ```sh
-.skills/local-dev/scripts/setup.sh
+.agents/skills/local-dev/scripts/setup.sh
 pnpm dev            # http://localhost:5173
 ```
 
 ## Deploy
 
-See [`.skills/deploy/SKILL.md`](.skills/deploy/SKILL.md).
+See [`.agents/skills/deploy/SKILL.md`](.agents/skills/deploy/SKILL.md).
 
 ## Checks
 
