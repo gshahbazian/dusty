@@ -1,3 +1,9 @@
+CREATE TABLE `article_content` (
+	`article_id` integer PRIMARY KEY,
+	`html` text NOT NULL,
+	CONSTRAINT `fk_article_content_article_id_articles_id_fk` FOREIGN KEY (`article_id`) REFERENCES `articles`(`id`) ON DELETE CASCADE
+);
+--> statement-breakpoint
 CREATE TABLE `articles` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`feed_id` integer NOT NULL,
@@ -5,7 +11,6 @@ CREATE TABLE `articles` (
 	`url` text,
 	`title` text,
 	`author` text,
-	`content_html` text,
 	`excerpt` text,
 	`published_at` integer NOT NULL,
 	`first_seen_at` integer NOT NULL,

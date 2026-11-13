@@ -58,12 +58,49 @@ export interface FeedChanged {
 }
 
 /**
+ * D1 limits a single string (and so a bound parameter) to about 2 MB. Items
+ * go to SQL as JSON through `json_each`, split into chunks well under that.
+ */
+const MAX_CHUNK_BYTES = 1_000_000
+
+const encoder = new TextEncoder()
+
+/**
+ * Split values into JSON arrays that each stay under `MAX_CHUNK_BYTES`.
+ * Always at least one (possibly `[]`), so a batch always has a statement.
+ */
+const jsonChunks = <T>(values: readonly T[]): [string, ...string[]] => {
+  const chunks: string[] = []
+  let current: string[] = []
+  let size = 2
+
+  for (const value of values) {
+    const json = JSON.stringify(value)
+    const bytes = encoder.encode(json).byteLength + 1
+
+    if (current.length > 0 && size + bytes > MAX_CHUNK_BYTES) {
+      chunks.push(`[${current.join(',')}]`)
+      current = []
+      size = 2
+    }
+
+    current.push(json)
+    size += bytes
+  }
+
+  // Chunk order does not matter: each one is written independently.
+  return [`[${current.join(',')}]`, ...chunks]
+}
+
+/**
  * Store a feed that returned new content (a 200), in one atomic batch:
  *
- * - Upsert its items. New ones are inserted unread; existing ones get their
- *   content updated only if it changed. `read_at`, `read_action_id`,
+ * - Upsert its items' metadata. New ones are inserted unread; existing ones
+ *   are updated only if they changed. `read_at`, `read_action_id`,
  *   `first_seen_at` and `published_at` are never touched after insert.
  *   Keys in `pruned_items` are skipped, so pruned articles stay gone.
+ * - Write the HTML of every article inserted or changed now into
+ *   `article_content`, and remove it for changed items that lost theirs.
  * - Mark pruned keys still in the feed as seen now.
  * - Record a successful fetch on the feed.
  *
@@ -75,14 +112,34 @@ export const recordFeedChanged = async (
   change: FeedChanged
 ): Promise<{ readonly newItems: number }> => {
   const { items, now } = change
-  const itemsJson = JSON.stringify(items)
-  const keysJson = JSON.stringify(items.map((item) => item.itemKey))
   const newestDated = newestDate(items)
 
-  const [inserted] = await db.batch([
+  const metadata = items.map((item) => ({
+    itemKey: item.itemKey,
+    url: item.url,
+    title: item.title,
+    author: item.author,
+    excerpt: item.excerpt,
+    publishedAt: item.publishedAt,
+    contentHash: item.contentHash,
+  }))
+
+  const contents = items.flatMap((item) => {
+    if (item.contentHtml === null) return []
+
+    return [{ itemKey: item.itemKey, html: item.contentHtml }]
+  })
+
+  const withoutContent = items.flatMap((item) => {
+    if (item.contentHtml !== null) return []
+
+    return [item.itemKey]
+  })
+
+  const upsert = (chunk: string) =>
     db.all<{ itemKey: string; firstSeenAt: number }>(sql`
       insert into articles (
-        feed_id, item_key, url, title, author, content_html, excerpt,
+        feed_id, item_key, url, title, author, excerpt,
         published_at, first_seen_at, updated_at, content_hash
       )
       select
@@ -91,13 +148,12 @@ export const recordFeedChanged = async (
         json_extract(item.value, '$.url'),
         json_extract(item.value, '$.title'),
         json_extract(item.value, '$.author'),
-        json_extract(item.value, '$.contentHtml'),
         json_extract(item.value, '$.excerpt'),
         coalesce(json_extract(item.value, '$.publishedAt'), ${now}),
         ${now},
         ${now},
         json_extract(item.value, '$.contentHash')
-      from json_each(${itemsJson}) as item
+      from json_each(${chunk}) as item
       where not exists (
         select 1 from pruned_items
         where pruned_items.feed_id = ${feedId}
@@ -107,44 +163,91 @@ export const recordFeedChanged = async (
         url = excluded.url,
         title = excluded.title,
         author = excluded.author,
-        content_html = excluded.content_html,
         excerpt = excluded.excerpt,
         updated_at = excluded.updated_at,
         content_hash = excluded.content_hash
       where articles.content_hash != excluded.content_hash
       returning item_key as itemKey, first_seen_at as firstSeenAt
-    `),
+    `)
+
+  const [firstChunk, ...moreChunks] = jsonChunks(metadata)
+  const upserts = [upsert(firstChunk), ...moreChunks.map(upsert)] as const
+
+  // Only articles inserted or changed by this fetch (`updated_at = now`)
+  // get their HTML written; unchanged ones keep what they have.
+  const contentWrites = jsonChunks(contents).map((chunk) =>
     db.run(sql`
-      update pruned_items set last_seen_at = ${now}
-      where feed_id = ${feedId}
-        and item_key in (select value from json_each(${keysJson}))
-    `),
+      insert into article_content (article_id, html)
+      select articles.id, json_extract(item.value, '$.html')
+      from json_each(${chunk}) as item
+      join articles
+        on articles.feed_id = ${feedId}
+        and articles.item_key = json_extract(item.value, '$.itemKey')
+      where articles.updated_at = ${now}
+      on conflict (article_id) do update set html = excluded.html
+    `)
+  )
+
+  const contentRemovals = jsonChunks(withoutContent).map((chunk) =>
     db.run(sql`
-      update feeds set
-        title = coalesce(${change.title}, title),
-        site_url = coalesce(${change.siteUrl}, site_url),
-        etag = ${change.etag},
-        last_modified = ${change.lastModified},
-        last_fetched_at = ${now},
-        last_outcome = 'ok',
-        last_http_status = ${change.httpStatus},
-        last_success_at = ${now},
-        last_changed_at = ${now},
-        last_published_at = (
-          select max(published) from (
-            select last_published_at as published
-            union all select ${newestDated}
-            union all
-              select max(published_at) from articles
-              where feed_id = ${feedId} and first_seen_at = ${now}
-          )
-        ),
-        first_failure_at = null,
-        consecutive_failures = 0,
-        last_error = null
-      where id = ${feedId}
-    `),
+      delete from article_content
+      where article_id in (
+        select id from articles
+        where feed_id = ${feedId}
+          and updated_at = ${now}
+          and item_key in (select value from json_each(${chunk}))
+      )
+    `)
+  )
+
+  const seenPruned = jsonChunks(items.map((item) => item.itemKey)).map(
+    (chunk) =>
+      db.run(sql`
+        update pruned_items set last_seen_at = ${now}
+        where feed_id = ${feedId}
+          and item_key in (select value from json_each(${chunk}))
+      `)
+  )
+
+  const feedUpdate = db.run(sql`
+    update feeds set
+      title = coalesce(${change.title}, title),
+      site_url = coalesce(${change.siteUrl}, site_url),
+      etag = ${change.etag},
+      last_modified = ${change.lastModified},
+      last_fetched_at = ${now},
+      last_outcome = 'ok',
+      last_http_status = ${change.httpStatus},
+      last_success_at = ${now},
+      last_changed_at = ${now},
+      last_published_at = (
+        select max(published) from (
+          select last_published_at as published
+          union all select ${newestDated}
+          union all
+            select max(published_at) from articles
+            where feed_id = ${feedId} and first_seen_at = ${now}
+        )
+      ),
+      first_failure_at = null,
+      consecutive_failures = 0,
+      last_error = null
+    where id = ${feedId}
+  `)
+
+  // The upserts run first and the feed update last: it counts the articles
+  // this fetch inserted.
+  const results = await db.batch([
+    ...upserts,
+    ...contentWrites,
+    ...contentRemovals,
+    ...seenPruned,
+    feedUpdate,
   ])
+
+  const inserted = results
+    .slice(0, upserts.length)
+    .flatMap((rows) => (Array.isArray(rows) ? rows : []))
 
   const newItems = inserted.filter((row) => row.firstSeenAt === now).length
 

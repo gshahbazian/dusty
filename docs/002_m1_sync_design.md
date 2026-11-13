@@ -13,7 +13,8 @@ what and why; this says how, where the spec leaves it open.
     `last_published_at` (newest article date ever seen),
     `first_failure_at` and `consecutive_failures` (reset on success),
     `last_error` (plain words, e.g. "404 not found").
-- `articles`: one row per feed item.
+- `articles`: one row per feed item, metadata only (title, link, author,
+  dates, excerpt, read state). Lists and counts read only this table.
   - Identity is `(feed_id, item_key)`, unique. `item_key` is the item's
     guid or id, else its link, else a hash of its title and date.
   - `first_seen_at` never changes after insert. M3's snapshot filter
@@ -21,6 +22,13 @@ what and why; this says how, where the spec leaves it open.
   - `read_at` and `read_action_id` are never written by sync, so a
     re-fetch or a source edit cannot mark a read article unread.
   - `content_hash` lets an unchanged item skip its write.
+- `article_content`: the cleaned HTML, one row per article that has
+  content, keyed by `article_id` and deleted with its article. Opening an
+  article is the only read of it.
+  - D1 limits a single value to about 2 MB, so a fetch's items are written
+    as JSON chunks of under 1 MB each, all in the same atomic batch.
+  - HTML over 400 KB after cleaning is not stored; the article keeps its
+    title, excerpt and link to the original.
 - `pruned_items`: keys of read articles that pruning deleted, so a later
   sync never brings them back as unread.
 - `sync_state`: the single-row run lock, now with a `run_id` per claim.

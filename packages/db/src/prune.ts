@@ -41,9 +41,12 @@ export const pruneArticles = async (
       where read_at is not null and read_at <= ${readCutoff}
       on conflict do nothing
     `),
-    db.run(sql`
+    // Counted with `returning`: D1's change count also includes the
+    // article_content rows the delete cascades to.
+    db.all<{ id: number }>(sql`
       delete from articles
       where read_at is not null and read_at <= ${readCutoff}
+      returning id
     `),
     db.run(sql`
       delete from pruned_items
@@ -55,7 +58,7 @@ export const pruneArticles = async (
   ])
 
   return {
-    articlesDeleted: deleted.meta.changes,
+    articlesDeleted: deleted.length,
     prunedKeysDropped: dropped.meta.changes,
   }
 }

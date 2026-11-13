@@ -7,6 +7,15 @@ const DAY = 24 * 60 * 60_000
 const MAX_TITLE_LENGTH = 500
 
 /**
+ * Article HTML bigger than this (UTF-8 bytes, after cleaning) is not stored;
+ * the article keeps its title, excerpt and link to the original. It keeps
+ * every write well under D1's ~2 MB limit on a single value.
+ */
+export const MAX_CONTENT_BYTES = 400_000
+
+const encoder = new TextEncoder()
+
+/**
  * Turn parsed feed items into rows to store: a stable key per item, cleaned
  * HTML, plain-text title and excerpt, a trusted date and a content hash. An
  * item listed twice in one feed is kept once (the first time it appears).
@@ -31,7 +40,8 @@ const toStoredItem = async (
   item: ParsedItem,
   now: number
 ): Promise<StoredItem> => {
-  const contentHtml = cleanedContent(item)
+  const cleaned = cleanedContent(item)
+  const contentHtml = storableContent(cleaned)
   const title = plainTitle(item.title)
   const publishedAt = trustedDate(item.published, now)
 
@@ -41,9 +51,9 @@ const toStoredItem = async (
   const itemKey =
     item.id ??
     item.link ??
-    `hash:${await sha256(fallbackKeyParts(title, item.published, contentHtml))}`
+    `hash:${await sha256(fallbackKeyParts(title, item.published, cleaned))}`
 
-  const contentHash = await sha256([item.link, title, item.author, contentHtml])
+  const contentHash = await sha256([item.link, title, item.author, cleaned])
 
   return {
     itemKey,
@@ -51,7 +61,8 @@ const toStoredItem = async (
     title,
     author: item.author,
     contentHtml,
-    excerpt: contentHtml === null ? null : excerptOf(contentHtml),
+    // From the full content, so an article too big to store still has one.
+    excerpt: cleaned === null ? null : excerptOf(cleaned),
     publishedAt,
     contentHash,
   }
@@ -65,6 +76,15 @@ const fallbackKeyParts = (
   if (title === null && published === null) return [contentHtml]
 
   return [title, published]
+}
+
+/** The cleaned HTML, unless it is too big to store. */
+const storableContent = (html: string | null): string | null => {
+  if (html === null) return null
+
+  if (encoder.encode(html).byteLength > MAX_CONTENT_BYTES) return null
+
+  return html
 }
 
 const cleanedContent = (item: ParsedItem): string | null => {

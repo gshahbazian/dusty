@@ -77,6 +77,26 @@ const articlesOf = (feedId: number) =>
     .where(eq(schema.articles.feedId, feedId))
     .orderBy(schema.articles.itemKey)
 
+/** Each article's stored HTML, by item key (articles without content omitted). */
+const contentOf = async (feedId: number) => {
+  const rows = await db
+    .select({
+      itemKey: schema.articles.itemKey,
+      html: schema.articleContent.html,
+    })
+    .from(schema.articleContent)
+    .innerJoin(
+      schema.articles,
+      eq(schema.articles.id, schema.articleContent.articleId)
+    )
+    .where(eq(schema.articles.feedId, feedId))
+
+  return new Map(rows.map((row) => [row.itemKey, row.html]))
+}
+
+const contentRowCount = async () =>
+  (await db.select().from(schema.articleContent)).length
+
 const feedRow = async (feedId: number) => {
   const [row] = await db
     .select()
@@ -187,6 +207,23 @@ describe('recordFeedChanged', () => {
     expect(await changed(feedId, many, T0)).toEqual({ newItems: 250 })
   })
 
+  test("stores a fetch bigger than D1's limit on one value, split into chunks", async () => {
+    const feedId = await addFeed('https://a.test/feed')
+    // 250 articles of 10 KB: 2.5 MB of HTML, more than one 2 MB value holds.
+    const body = 'x'.repeat(10_000)
+
+    const big = Array.from({ length: 250 }, (_, i) =>
+      item(`big-${i}`, { contentHtml: `<p>${i}${body}</p>` })
+    )
+
+    expect(await changed(feedId, big, T0)).toEqual({ newItems: 250 })
+
+    const content = await contentOf(feedId)
+
+    expect(content.size).toBe(250)
+    expect(content.get('big-249')).toBe(`<p>249${body}</p>`)
+  })
+
   test('records success and resets failures on the feed', async () => {
     const feedId = await addFeed('https://a.test/feed')
 
@@ -219,6 +256,66 @@ describe('recordFeedChanged', () => {
     await changed(feedId, [item('old', { publishedAt: T0 - DAY })], T0 + HOUR)
 
     expect((await feedRow(feedId)).lastPublishedAt).toBe(T0)
+  })
+})
+
+describe('article content', () => {
+  test('lives in article_content, one row per article with content', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(
+      feedId,
+      [item('a'), item('no-content', { contentHtml: null })],
+      T0
+    )
+
+    expect(await contentOf(feedId)).toEqual(new Map([['a', '<p>a</p>']]))
+  })
+
+  test('an edit replaces the content; an unchanged re-fetch keeps it', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(feedId, [item('a')], T0)
+    await changed(
+      feedId,
+      [item('a', { contentHtml: '<p>edited</p>', contentHash: 'h2' })],
+      T0 + HOUR
+    )
+    // Same hash: nothing changed, so nothing is rewritten.
+    await changed(
+      feedId,
+      [item('a', { contentHtml: '<p>ignored</p>', contentHash: 'h2' })],
+      T0 + 2 * HOUR
+    )
+
+    expect(await contentOf(feedId)).toEqual(new Map([['a', '<p>edited</p>']]))
+  })
+
+  test('an edit that drops the content removes it', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(feedId, [item('a')], T0)
+    await changed(
+      feedId,
+      [item('a', { contentHtml: null, contentHash: 'h2' })],
+      T0 + HOUR
+    )
+
+    expect(await contentRowCount()).toBe(0)
+  })
+
+  test('pruning an article removes its content, and it is not stored again', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(feedId, [item('a')], T0)
+    await markRead(feedId, T0)
+    await prune(T0 + 14 * DAY)
+
+    expect(await contentRowCount()).toBe(0)
+
+    await changed(feedId, [item('a', { contentHash: 'h2' })], T0 + 15 * DAY)
+
+    expect(await contentRowCount()).toBe(0)
   })
 })
 

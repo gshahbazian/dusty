@@ -67,8 +67,9 @@ export const feeds = sqliteTable(
 )
 
 /**
- * One row per feed item. Sync inserts and updates content, but never writes
- * `readAt` or `readActionId`, and never changes `firstSeenAt` after insert.
+ * One row per feed item: metadata only (the HTML is in `articleContent`).
+ * Sync inserts and updates these, but never writes `readAt` or
+ * `readActionId`, and never changes `firstSeenAt` after insert.
  */
 export const articles = sqliteTable(
   'articles',
@@ -82,13 +83,12 @@ export const articles = sqliteTable(
     url: text('url'),
     title: text('title'),
     author: text('author'),
-    /** Cleaned with a strict allowlist before it is stored. */
-    contentHtml: text('content_html'),
+    /** Plain text, for list rows. */
     excerpt: text('excerpt'),
     publishedAt: integer('published_at').notNull(),
     /** When sync first stored it. M3's snapshot filter depends on this. */
     firstSeenAt: integer('first_seen_at').notNull(),
-    /** Last time sync changed the stored content. */
+    /** Last time sync changed this article or its content. */
     updatedAt: integer('updated_at').notNull(),
     contentHash: text('content_hash').notNull(),
     readAt: integer('read_at'),
@@ -110,6 +110,18 @@ export const articles = sqliteTable(
     ),
   ]
 )
+
+/**
+ * An article's HTML, kept apart from `articles` so lists and counts never
+ * read it. Cleaned with a strict allowlist before it is stored. Articles
+ * without content have no row. Deleted with its article.
+ */
+export const articleContent = sqliteTable('article_content', {
+  articleId: integer('article_id')
+    .primaryKey()
+    .references(() => articles.id, { onDelete: 'cascade' }),
+  html: text('html').notNull(),
+})
 
 /**
  * Keys of read articles that pruning deleted. Sync skips these keys, so a

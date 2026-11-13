@@ -144,4 +144,7 @@ sync logs. Tests for the sync engine are in
 2. `pnpm --filter @dusty/db generate` writes a new migration folder.
 3. Commit both. `pnpm dev` applies it on the next start.
 
-Never edit a migration that has been deployed; add a new one.
+Never edit a migration that has been deployed; add a new one. If a
+migration that was never deployed is regenerated (as happens on a feature
+branch), local databases that already applied the old one won't match:
+run `reset.sh` and start again.

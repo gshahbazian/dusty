@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm'
+import { asc, eq, getTableColumns } from 'drizzle-orm'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
@@ -58,10 +58,18 @@ const sync = async (
   return { result, requests: web.requests, metrics }
 }
 
+/** A feed's articles, each with its HTML from `article_content` (or null). */
 const articlesOf = (feedId: number) =>
   db
-    .select()
+    .select({
+      ...getTableColumns(schema.articles),
+      contentHtml: schema.articleContent.html,
+    })
     .from(schema.articles)
+    .leftJoin(
+      schema.articleContent,
+      eq(schema.articleContent.articleId, schema.articles.id)
+    )
     .where(eq(schema.articles.feedId, feedId))
     .orderBy(asc(schema.articles.publishedAt), asc(schema.articles.id))
 
@@ -421,6 +429,27 @@ describe('a run', () => {
     // If Cloudflare kills this run at its 30 s limit, the lock frees up by
     // 35 s, instead of blocking every sync for 15 minutes.
     expect(lease).toBe(35_000)
+  })
+
+  test('an article too big to store keeps its title, excerpt and link, without the HTML', async () => {
+    const feedId = await addFeed('https://huge.example.com/feed')
+    const huge = `<p>start ${'word '.repeat(100_000)}</p>`
+
+    await sync({
+      'https://huge.example.com/feed': () =>
+        new Response(
+          `<rss version="2.0"><channel><title>H</title><item><guid>huge</guid><title>Huge post</title><link>https://huge.example.com/1</link><description><![CDATA[${huge}]]></description></item></channel></rss>`
+        ),
+    })
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({
+      title: 'Huge post',
+      url: 'https://huge.example.com/1',
+      contentHtml: null,
+    })
+    expect(row?.excerpt?.startsWith('start word word')).toBe(true)
   })
 
   test('an item with no id or link stays one article when its content is edited', async () => {
