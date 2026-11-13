@@ -15,15 +15,19 @@ is_app_db() {
     grep -q __alchemy_migrations
 }
 
+# Old databases can linger (an earlier stack, a renamed database), so take
+# the app database that was written most recently.
 dir=.alchemy/local/d1/cloudflare-runtime-D1DatabaseObject
 db=""
-for f in "$dir"/*.sqlite; do
-  [ -e "$f" ] || continue
-  [ "$(basename "$f")" = metadata.sqlite ] && continue
-  if is_app_db "$f"; then
-    db="$f"
-  fi
-done
+if [ -d "$dir" ]; then
+  while IFS= read -r f; do
+    [ "$(basename "$f")" = metadata.sqlite ] && continue
+    if is_app_db "$f"; then
+      db="$f"
+      break
+    fi
+  done < <(ls -t "$dir"/*.sqlite 2>/dev/null)
+fi
 
 if [ -z "$db" ]; then
   echo "No local database yet. Start the stack once with: pnpm dev" >&2

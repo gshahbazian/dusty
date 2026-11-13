@@ -48,8 +48,8 @@ in `packages/db/migrations` are applied on every start.
 Run it in the background when you need to keep working:
 
 ```sh
-.agents/skills/local-dev/scripts/dev-start.sh   # returns once :5173 answers 200
-.agents/skills/local-dev/scripts/dev-stop.sh    # stops it and checks the ports are free
+.agents/skills/local-dev/scripts/dev-start.sh   # returns once :5173 answers 200; also starts the feed server
+.agents/skills/local-dev/scripts/dev-stop.sh    # stops both and checks ports 5173-5175 are free
 ```
 
 Logs go to `.alchemy/dev.log`. They contain NUL bytes (Vite's virtual
@@ -69,6 +69,49 @@ control ignores SIGINT, so it is hard to stop cleanly.
 | `.agents/skills/local-dev/scripts/db.sh "select * from sync_state"` | Query the local D1 database with Node's built-in SQLite (no argument: interactive shell, needs the `sqlite3` CLI) |
 | `.agents/skills/local-dev/scripts/trigger-cron.sh`                  | Fire the scheduled sync now                                  |
 | `.agents/skills/local-dev/scripts/reset.sh`                         | Delete all local state (stop `pnpm dev` first)               |
+| `node .agents/skills/local-dev/scripts/feed-server.mjs`             | Serve the fixture feeds on :5175 (`dev-start.sh` runs it for you) |
+| `.agents/skills/local-dev/scripts/seed-feeds.sh`                    | Subscribe the dev database to the fixture feeds              |
+
+## Syncing real feeds locally (no internet needed)
+
+The sync service fetches real HTTP, so give it something to fetch:
+
+```sh
+.agents/skills/local-dev/scripts/dev-start.sh   # also starts the feed server on :5175
+.agents/skills/local-dev/scripts/seed-feeds.sh
+.agents/skills/local-dev/scripts/trigger-cron.sh
+.agents/skills/local-dev/scripts/db.sh "select id, last_outcome, last_http_status, last_error, title from feeds"
+.agents/skills/local-dev/scripts/db.sh "select feed_id, count(*) from articles group by feed_id"
+```
+
+- The feed server serves `apps/sync/test/fixtures/` (the same files the
+  tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) with ETags,
+  so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
+  you an HTTP error, a timeout and a page that is not a feed.
+- `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
+  first sync shows six feeds `ok`, one `http` (404 not found) and one
+  `invalid_feed`.
+- To add a fixture, put the file in `apps/sync/test/fixtures/`; the server
+  picks it up without a restart.
+- Want to sync again right away? The scheduled trigger ignores the 5-minute
+  skip window (`trigger-cron.sh`); on-demand triggers don't. To refetch
+  bodies instead of 304s: `db.sh "update feeds set etag = null, last_modified = null"`.
+- Settings (`SYNC_SKIP_WINDOW_MINUTES`, budgets, retention...) come from
+  `.env` or the shell when `pnpm dev` starts; see `.env.example`. Restart
+  the stack to change them.
+
+Sync logs are one JSON object per line, behind Alchemy's `[Sync]` prefix:
+
+```sh
+grep -a '"message":"sync run finished"' .alchemy/dev.log | tail -1
+grep -a '"message":"feed fetch failed"' .alchemy/dev.log
+```
+
+Each run logs `sync run finished` (or `skipped`, or `cut short`) with its
+counts, and each feed logs `feed synced` with its outcome, status, duration
+and items found and new. Tests for the sync engine are in
+`apps/sync/test/`; they serve the same fixtures through a fake `HttpFetch`
+(`apps/sync/test/support.ts`), so they never touch the network.
 
 ## Tests
 

@@ -16,6 +16,8 @@ export type ClaimResult =
   | { readonly claimed: false; readonly reason: 'running' | 'recent' }
 
 export interface ClaimOptions {
+  /** Identifies this run; only it can release the claim. */
+  readonly runId: string
   readonly now: number
   /** How long the claim holds before another run may take over. */
   readonly leaseMs: number
@@ -36,12 +38,13 @@ export const claimSyncRun = async (
   trigger: SyncTrigger,
   options: ClaimOptions
 ): Promise<ClaimResult> => {
-  const { now, leaseMs, skipWindowMs } = options
+  const { runId, now, leaseMs, skipWindowMs } = options
 
   const claimed = await db
     .insert(syncState)
     .values({
       id: ROW_ID,
+      runId,
       lastStartedAt: now,
       leaseUntil: now + leaseMs,
       lastTrigger: trigger,
@@ -49,6 +52,7 @@ export const claimSyncRun = async (
     .onConflictDoUpdate({
       target: syncState.id,
       set: {
+        runId,
         lastStartedAt: now,
         leaseUntil: now + leaseMs,
         lastTrigger: trigger,
@@ -76,14 +80,25 @@ export const claimSyncRun = async (
   return { claimed: false, reason: running ? 'running' : 'recent' }
 }
 
-/** Release the claim taken by `claimSyncRun` and record how the run ended. */
+export type SyncRunOutcome = 'completed' | 'cut_short' | 'failed'
+
+/**
+ * Release the claim taken by `claimSyncRun` and record how the run ended.
+ * Only the run that holds the claim can release it: if this run's lease ran
+ * out and another run claimed the lock since, nothing changes and
+ * `released` is false.
+ */
 export const finishSyncRun = async (
   db: Db,
-  outcome: 'completed' | 'cut_short' | 'failed',
+  runId: string,
+  outcome: SyncRunOutcome,
   now: number
-): Promise<void> => {
-  await db
+): Promise<{ readonly released: boolean }> => {
+  const released = await db
     .update(syncState)
     .set({ leaseUntil: now, lastFinishedAt: now, lastOutcome: outcome })
-    .where(eq(syncState.id, ROW_ID))
+    .where(and(eq(syncState.id, ROW_ID), eq(syncState.runId, runId)))
+    .returning({ id: syncState.id })
+
+  return { released: released.length > 0 }
 }

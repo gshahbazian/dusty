@@ -5,3 +5,9 @@
  */
 export const DEV_WEB_PORT = 5173
 export const DEV_SYNC_PORT = 5174
+
+/**
+ * The local feed server (`.agents/skills/local-dev/scripts/feed-server.mjs`):
+ * the sync test fixtures over HTTP, so dev syncs need no internet.
+ */
+export const DEV_FEEDS_PORT = 5175

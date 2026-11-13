@@ -40,6 +40,12 @@ Read the matching `SKILL.md` before doing these:
 - Times are integer epoch milliseconds in the database.
 - Sync work must be traced: wrap units of work in `Effect.fn` /
   `Effect.withSpan` and annotate spans with the same details as logs.
+- The sync engine's design (schema, run budget, pruning, health, metrics)
+  is in `docs/002_m1_sync_design.md`. Every sync setting is an env var
+  listed in `SETTING_DEFAULTS` (`apps/sync/src/config.ts`) and
+  `.env.example`; add new ones there so they reach the deployed Worker.
+- Sync talks to the web only through the `HttpFetch` service. Tests serve
+  fixture feeds through it; don't call `fetch` directly.
 - Code style: return early instead of `if`/`else` chains; braces on any
   `if` whose body is on its own line (one-line `if (x) return y` is fine);
   ternaries only when both branches are short and obvious; React props typed
