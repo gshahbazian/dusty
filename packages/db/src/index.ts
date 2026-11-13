@@ -23,6 +23,16 @@ export {
 export { pruneArticles, type PruneOptions, type PruneResult } from './prune.ts'
 
 export {
+  findFeedByUrl,
+  insertFeed,
+  listSubscriptions,
+  removeFeed,
+  renameFeed,
+  type FeedRef,
+  type Subscription,
+} from './subscriptions.ts'
+
+export {
   claimSyncRun,
   finishSyncRun,
   type ClaimOptions,

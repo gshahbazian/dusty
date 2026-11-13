@@ -19,6 +19,7 @@ const types = {
   // No charset: the XML declaration says which (see latin1.xml).
   '.xml': 'application/xml',
   '.json': 'application/feed+json; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
 }
 
 const contentType = (name) => {

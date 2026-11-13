@@ -4,10 +4,18 @@ import type * as Effect from 'effect/Effect'
 
 import type { SyncTrigger } from '@dusty/db'
 
-export type { SyncTrigger }
+import type { AddFeedResult, ImportEntry, ImportResult } from './add-feed.ts'
 
-/** Triggers the web app may start. The scheduled run only comes from cron. */
-export type OnDemandTrigger = Exclude<SyncTrigger, 'scheduled'>
+export type { AddFeedResult, ImportEntry, ImportResult, SyncTrigger }
+
+/**
+ * Full runs the web app may start. The scheduled run only comes from cron,
+ * and a new subscription syncs on its own through `addFeed`.
+ */
+export type OnDemandTrigger = Exclude<
+  SyncTrigger,
+  'scheduled' | 'new_subscription'
+>
 
 export type SyncRunResult =
   | {
@@ -31,5 +39,13 @@ export class Sync extends Cloudflare.Worker<
     readonly syncNow: (
       trigger: OnDemandTrigger
     ) => Effect.Effect<SyncRunResult, never, RuntimeContext>
+    /** Subscribe to a feed (or a page that advertises one) and sync it now. */
+    readonly addFeed: (
+      url: string
+    ) => Effect.Effect<AddFeedResult, never, RuntimeContext>
+    /** Add OPML entries, their current articles stored as read. */
+    readonly importFeeds: (
+      entries: readonly ImportEntry[]
+    ) => Effect.Effect<readonly ImportResult[], never, RuntimeContext>
   }
 >()('Sync') {}

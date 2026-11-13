@@ -121,8 +121,18 @@ sync logs. Tests for the sync engine are in
 - `pnpm test`: unit and integration tests (Vitest). DB tests use a real
   local D1 through Miniflare (`createTestD1` in `@dusty/db/testing`), so
   they do not need `pnpm dev`.
-- `pnpm test:e2e`: Playwright against the running stack. Start
-  `pnpm dev` first. It loads the page as the owner and expects the
+- `pnpm test:e2e`: Playwright against the running stack, including the
+  feed server (start both with `dev-start.sh`). `e2e/subscriptions.spec.ts`
+  adds, refuses, renames, imports (OPML) and removes feeds through the
+  subscriptions page, and checks that junk in the URL (`?sort=bogus`)
+  falls back to the default view. Each run subscribes to its own URLs (the
+  feed server ignores the query string, so `rss.xml?run=<id>` is a fresh
+  feed) and removes them again, so it works on any dev database. The one
+  exception is home-page discovery: `site.html` advertises `/rss.xml`
+  itself, so that test uses the plain `/rss.xml`, and removes it only if it
+  added it (a seeded database keeps its own). A run that fails midway can
+  leave a few feeds behind; `reset.sh` clears them.
+- The smoke test (`e2e/smoke.spec.ts`) loads the page as the owner and expects the
   background sync request to return 200. The request returns 200 even
   when the run is skipped, so check the outcome in the log:
   `grep -a '"trigger":"on_load"' .alchemy/dev.log`.

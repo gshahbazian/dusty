@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./contract": "./src/contract.ts"
+    "./contract": "./src/contract.ts",
+    "./urls": "./src/urls.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

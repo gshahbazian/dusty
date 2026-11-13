@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Exported from another reader</title></head>
+  <body>
+    <outline text="Tech" title="Tech">
+      <outline type="rss" text="My RSS name" title="My RSS name" xmlUrl="http://localhost:5175/rss.xml" htmlUrl="https://rss.example.com/"/>
+      <outline type="rss" text="Example Atom" xmlUrl="http://localhost:5175/atom.xml"/>
+    </outline>
+    <outline type="rss" text="JSON" xmlUrl="http://localhost:5175/feed.json"/>
+    <outline type="rss" text="Gone" xmlUrl="http://localhost:5175/status/404"/>
+    <outline type="rss" text="RSS again" xmlUrl="http://localhost:5175/rss.xml"/>
+  </body>
+</opml>

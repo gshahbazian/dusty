@@ -7,7 +7,6 @@ import { ownerOnly } from './middleware.ts'
 const ON_DEMAND_TRIGGERS: ReadonlySet<string> = new Set<OnDemandTrigger>([
   'on_load',
   'refresh',
-  'new_subscription',
 ])
 
 const isOnDemandTrigger = (value: string): value is OnDemandTrigger =>

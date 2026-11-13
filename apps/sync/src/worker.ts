@@ -2,13 +2,14 @@ import * as Cloudflare from '@alchemy.run/cloudflare'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 
-import { createDb, type SyncTrigger } from '@dusty/db'
+import { createDb, type Db, type SyncTrigger } from '@dusty/db'
 
 import { Database } from '../../../infra/database.ts'
 import { DEV_SYNC_PORT } from '../../../infra/dev.ts'
+import { addFeed, importFeeds, type ImportEntry } from './add-feed.ts'
 import { SyncConfig, syncSettingsEnv } from './config.ts'
 import { Sync, type OnDemandTrigger } from './contract.ts'
-import { HttpFetchLive } from './http.ts'
+import { HttpFetch, HttpFetchLive } from './http.ts'
 import { JsonLoggerLive } from './logger.ts'
 import { Metrics, analyticsEngineMetrics } from './metrics.ts'
 import { runSync } from './run.ts'
@@ -47,17 +48,31 @@ export default Sync.make(
       })
     )
 
-    const run = (trigger: SyncTrigger) =>
+    /**
+     * Give a handler what every handler needs: the database, metrics and the
+     * web. Handlers run in their own fibers, so the JSON logger is provided
+     * to each one; providing it to the Worker setup is not enough.
+     */
+    const handle = <A, E>(
+      work: (db: Db) => Effect.Effect<A, E, Metrics | HttpFetch>
+    ) =>
       Effect.gen(function* () {
         const db = createDb(yield* d1.raw)
         const metrics = analyticsEngineMetrics(yield* metricsDataset.raw)
 
-        return yield* runSync(db, trigger, settings).pipe(
+        return yield* work(db).pipe(
           Effect.provide(
-            Layer.mergeAll(Layer.succeed(Metrics, metrics), HttpFetchLive)
+            Layer.mergeAll(
+              Layer.succeed(Metrics, metrics),
+              HttpFetchLive,
+              JsonLoggerLive
+            )
           )
         )
       })
+
+    const run = (trigger: SyncTrigger) =>
+      handle((db) => runSync(db, trigger, settings))
 
     yield* Cloudflare.Workers.cron(cron, () =>
       run('scheduled').pipe(
@@ -69,15 +84,23 @@ export default Sync.make(
             })
           )
         ),
-        // Handlers run in their own fibers, so the JSON logger is provided to
-        // each one; providing it to the Worker setup is not enough.
         Effect.provide(JsonLoggerLive)
       )
     )
 
     return {
-      syncNow: (trigger: OnDemandTrigger) =>
-        run(trigger).pipe(Effect.orDie, Effect.provide(JsonLoggerLive)),
+      syncNow: (trigger: OnDemandTrigger) => run(trigger).pipe(Effect.orDie),
+      addFeed: (url: string) =>
+        handle((db) =>
+          addFeed(db, url, settings, {
+            discover: true,
+            title: null,
+            articlesRead: false,
+            keepOnFailure: false,
+          })
+        ),
+      importFeeds: (entries: readonly ImportEntry[]) =>
+        handle((db) => importFeeds(db, entries, settings)),
     }
   }).pipe(
     Effect.provide(
