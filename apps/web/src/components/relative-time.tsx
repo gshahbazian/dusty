@@ -1,4 +1,4 @@
-import { exactTime, relativeTime } from '../lib/time.ts'
+import { exactTime, relativeTime } from '#/lib/time'
 
 /** A time as "3 days ago"; hovering shows the exact time. */
 export function RelativeTime({

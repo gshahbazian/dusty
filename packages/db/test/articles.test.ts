@@ -15,8 +15,8 @@ import {
   unreadCounts,
   type Db,
   type StoredItem,
-} from '../src/index.ts'
-import { createTestD1 } from '../src/testing.ts'
+} from '#/index'
+import { createTestD1 } from '#/testing'
 
 const MINUTE = 60_000
 const HOUR = 60 * MINUTE

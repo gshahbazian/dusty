@@ -5,14 +5,14 @@ import {
   createKeyParser,
   keyToken,
   SEQUENCE_TIMEOUT_MS,
-} from '../src/components/keyboard/key-parser.ts'
-import { BINDINGS, sequenceLabel } from '../src/components/keyboard/keymap.ts'
+} from '#/components/keyboard/key-parser'
+import { BINDINGS, sequenceLabel } from '#/components/keyboard/keymap'
 import {
   cursorIndex,
   feedFromPath,
   moveCursor,
   neighborFeed,
-} from '../src/components/unread/cursor.ts'
+} from '#/components/unread/cursor'
 
 /** Feed keys one per millisecond; returns the last result. */
 const type = (keys: readonly string[], start = 0) => {

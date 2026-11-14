@@ -1,8 +1,8 @@
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
 
-import { UnreadPage } from '../components/unread/unread-page.tsx'
-import { parseFeedSearch } from '../lib/article-search.ts'
-import { getArticleList } from '../server/articles.ts'
+import { UnreadPage } from '#/components/unread/unread-page'
+import { parseFeedSearch } from '#/lib/article-search'
+import { getArticleList } from '#/server/articles'
 
 const parseFeedId = (raw: string): number => {
   const id = Number(raw)

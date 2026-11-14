@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
+import type { Db } from '#/client'
 
 export interface PruneOptions {
   readonly now: number

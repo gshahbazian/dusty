@@ -11,7 +11,7 @@ import {
   authFromEnv,
   createAccessAuth,
   createDevAuth,
-} from '../src/server/auth/index.ts'
+} from '#/server/auth/index'
 
 const TEAM = 'https://dusty-test.cloudflareaccess.com'
 const AUD = 'aud-of-the-dusty-app'

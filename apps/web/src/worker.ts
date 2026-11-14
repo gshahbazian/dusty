@@ -1,8 +1,8 @@
 import startHandler from '@tanstack/react-start/server-entry'
 
-import type { WebEnv } from '../../../alchemy.run.ts'
-import { authFromEnv, type AuthProvider } from './server/auth/index.ts'
-import { createNonce, withSecurityHeaders } from './server/security-headers.ts'
+import type { WebEnv } from '~/alchemy.run'
+import { authFromEnv, type AuthProvider } from '#/server/auth/index'
+import { createNonce, withSecurityHeaders } from '#/server/security-headers'
 
 let auth: AuthProvider | undefined
 

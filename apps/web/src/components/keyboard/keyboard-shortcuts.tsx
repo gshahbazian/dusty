@@ -13,15 +13,19 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog.tsx'
+} from '#/components/ui/dialog'
 
 import {
   belongsToTarget,
   createKeyParser,
   keyToken,
   SEQUENCE_TIMEOUT_MS,
-} from './key-parser.ts'
-import { BINDINGS, sequenceLabel, type Command } from './keymap.ts'
+} from '#/components/keyboard/key-parser'
+import {
+  BINDINGS,
+  sequenceLabel,
+  type Command,
+} from '#/components/keyboard/keymap'
 
 /** A page's commands. Returns whether it did something with the key. */
 export type CommandHandler = (command: Command, count: number) => boolean

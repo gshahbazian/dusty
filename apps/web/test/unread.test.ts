@@ -9,15 +9,9 @@ import {
   isRead,
   readWhenLoaded,
   withRead,
-} from '../src/components/unread/list-state.ts'
-import {
-  parseArticleSearch,
-  parseFeedSearch,
-} from '../src/lib/article-search.ts'
-import {
-  contentSecurityPolicy,
-  createNonce,
-} from '../src/server/security-headers.ts'
+} from '#/components/unread/list-state'
+import { parseArticleSearch, parseFeedSearch } from '#/lib/article-search'
+import { contentSecurityPolicy, createNonce } from '#/server/security-headers'
 
 const row = (id: number, feedId: number): ArticleRow => ({
   id,

@@ -2,7 +2,7 @@ import type { Sync, OnDemandTrigger } from '@dusty/sync/contract'
 import { toRpcAsync } from '@alchemy.run/cloudflare/Bridge'
 import { createServerFn } from '@tanstack/react-start'
 
-import { ownerOnly } from './middleware.ts'
+import { ownerOnly } from '#/server/middleware'
 
 const ON_DEMAND_TRIGGERS: ReadonlySet<string> = new Set<OnDemandTrigger>([
   'on_load',

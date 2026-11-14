@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
-import { Button } from '@/components/ui/button.tsx'
+import { Button } from '#/components/ui/button'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -18,10 +18,10 @@ import {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
-} from '@/components/ui/context-menu.tsx'
+} from '#/components/ui/context-menu'
 
-import { RelativeTime } from '../relative-time.tsx'
-import { articles } from './list-state.ts'
+import { RelativeTime } from '#/components/relative-time'
+import { articles } from '#/components/unread/list-state'
 
 /** How long "Mark N above?" waits for its second tap. */
 const CONFIRM_MS = 4000

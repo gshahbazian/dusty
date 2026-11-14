@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
 import { getGlobalStartContext } from '@tanstack/react-start'
 
-import { routeTree } from './routeTree.gen'
+import { routeTree } from '#/routeTree.gen'
 
 export function getRouter() {
   // Fetches and writes made from components (the lists come from route

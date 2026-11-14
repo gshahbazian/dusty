@@ -9,7 +9,7 @@ import {
   landNewArticle,
   subscribe,
   unsubscribe,
-} from './helpers.ts'
+} from '~/e2e/helpers'
 
 /** The keyboard: a full triage pass with no mouse, and long lists. */
 

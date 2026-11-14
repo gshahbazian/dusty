@@ -8,7 +8,7 @@ import {
   heading,
   subscribe,
   unsubscribe,
-} from './helpers.ts'
+} from '~/e2e/helpers'
 
 /** The app on a phone: touch, one-handed. */
 test.use({

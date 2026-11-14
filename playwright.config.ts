@@ -1,6 +1,6 @@
 import { defineConfig, type PlaywrightTestConfig } from '@playwright/test'
 
-import { DEV_WEB_PORT } from './infra/dev.ts'
+import { DEV_WEB_PORT } from '~/infra/dev'
 
 /**
  * End-to-end tests run against a running local stack (`pnpm dev`). They use

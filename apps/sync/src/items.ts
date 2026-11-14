@@ -1,7 +1,7 @@
 import type { StoredItem } from '@dusty/db'
 
-import { cleanHtml, excerptOf, toPlainText } from './clean.ts'
-import type { ParsedItem } from './parse.ts'
+import { cleanHtml, excerptOf, toPlainText } from '#/clean'
+import type { ParsedItem } from '#/parse'
 
 const DAY = 24 * 60 * 60_000
 const MAX_TITLE_LENGTH = 500

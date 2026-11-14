@@ -1,6 +1,6 @@
 import { createDb, type Db } from '@dusty/db'
 
-import type { WebEnv } from '../../../../alchemy.run.ts'
+import type { WebEnv } from '~/alchemy.run'
 
 /**
  * The database for a request. The retry for local D1's lock is on only

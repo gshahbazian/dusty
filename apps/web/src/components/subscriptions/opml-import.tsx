@@ -4,14 +4,14 @@ import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
 
-import { Button, buttonVariants } from '@/components/ui/button.tsx'
+import { Button, buttonVariants } from '#/components/ui/button'
 
 import {
   IMPORT_BATCH_SIZE,
   importSubscriptions,
   previewOpml,
   type OpmlEntry,
-} from '../../server/subscriptions.ts'
+} from '#/server/subscriptions'
 
 type Step =
   | { readonly kind: 'idle' }

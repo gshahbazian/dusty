@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 
 import type { Article } from '@dusty/db'
 
-import { exactTime } from '../../lib/time.ts'
-import { articleQuery } from '../../lib/queries.ts'
-import { prepareArticleHtml } from './article-html.ts'
+import { exactTime } from '#/lib/time'
+import { articleQuery } from '#/lib/queries'
+import { prepareArticleHtml } from '#/components/unread/article-html'
 
 /**
  * One article, for reading. Its HTML was cleaned with a strict allowlist

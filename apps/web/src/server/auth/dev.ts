@@ -1,4 +1,4 @@
-import type { AuthProvider, Viewer } from './types.ts'
+import type { AuthProvider, Viewer } from '#/server/auth/types'
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]'])
 

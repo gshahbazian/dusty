@@ -7,7 +7,7 @@ import {
   type JWTVerifyGetKey,
 } from 'jose'
 
-import type { AuthProvider, Viewer } from './types.ts'
+import type { AuthProvider, Viewer } from '#/server/auth/types'
 
 export interface AccessAuthOptions {
   /** e.g. `https://myteam.cloudflareaccess.com` */

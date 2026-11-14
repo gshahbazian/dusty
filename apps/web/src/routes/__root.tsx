@@ -8,11 +8,11 @@ import {
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
-import { buttonVariants } from '@/components/ui/button.tsx'
+import { buttonVariants } from '#/components/ui/button'
 
-import { KeyboardShortcuts } from '../components/keyboard/keyboard-shortcuts.tsx'
-import { requestSync } from '../server/functions.ts'
-import appCss from '../styles.css?url'
+import { KeyboardShortcuts } from '#/components/keyboard/keyboard-shortcuts'
+import { requestSync } from '#/server/functions'
+import appCss from '#/styles.css?url'
 
 export const Route = createRootRoute({
   head: () => ({

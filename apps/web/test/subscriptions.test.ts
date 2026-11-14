@@ -8,8 +8,8 @@ import {
   needsAttention,
   removeConfirmation,
   sortSubscriptions,
-} from '../src/components/subscriptions/health.ts'
-import { duration, relativeTime } from '../src/lib/time.ts'
+} from '#/components/subscriptions/health'
+import { duration, relativeTime } from '#/lib/time'
 
 const MINUTE = 60_000
 const HOUR = 60 * MINUTE

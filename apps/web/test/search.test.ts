@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { parseSubscriptionsSearch } from '../src/components/subscriptions/search.ts'
+import { parseSubscriptionsSearch } from '#/components/subscriptions/search'
 
 describe('parseSubscriptionsSearch', () => {
   test('keeps good values', () => {

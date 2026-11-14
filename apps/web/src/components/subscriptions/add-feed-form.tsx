@@ -4,11 +4,11 @@ import type { FormEvent } from 'react'
 
 import type { AddFeedResult } from '@dusty/sync/contract'
 
-import { Button } from '@/components/ui/button.tsx'
-import { Input } from '@/components/ui/input.tsx'
-import { Label } from '@/components/ui/label.tsx'
+import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
 
-import { addSubscription } from '../../server/subscriptions.ts'
+import { addSubscription } from '#/server/subscriptions'
 
 /** What to say after an add, in plain words. */
 function resultMessage(result: AddFeedResult): string {

@@ -14,8 +14,8 @@ import {
   schema,
   type Db,
   type StoredItem,
-} from '../src/index.ts'
-import { createTestD1 } from '../src/testing.ts'
+} from '#/index'
+import { createTestD1 } from '#/testing'
 
 const HOUR = 3_600_000
 const DAY = 24 * HOUR

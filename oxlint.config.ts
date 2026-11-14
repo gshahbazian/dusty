@@ -1,5 +1,33 @@
 import { defineConfig } from 'oxlint'
 
+/**
+ * How imports are written: `#/…` within a package (its package.json
+ * `imports`), another package by its name (`@dusty/db`), `~/…` from the
+ * repo root only for what isn't a package (`~/infra/dev`). Never relative,
+ * never with a `.ts` / `.tsx` extension (every tool resolves without one).
+ */
+const IMPORT_PATTERNS = [
+  {
+    regex: '^\\.{1,2}/',
+    message:
+      'Use `#/…` (this package), a package name (`@dusty/db`), or `~/…` (repo root), not a relative path.',
+  },
+  {
+    regex: '\\.tsx?$',
+    message: 'Leave off the .ts / .tsx extension.',
+  },
+]
+
+/** Inside a package, another package is imported by name, not by path. */
+const PACKAGE_PATTERNS = [
+  ...IMPORT_PATTERNS,
+  {
+    regex: '^~/(apps|packages)/',
+    message:
+      'Import another package by its name (`@dusty/db`, `@dusty/sync/contract`), not its files.',
+  },
+]
+
 export default defineConfig({
   plugins: ['typescript', 'unicorn', 'oxc', 'react', 'jsx-a11y', 'import'],
   jsPlugins: [
@@ -37,6 +65,8 @@ export default defineConfig({
     'eslint/no-else-return': ['error', { allowElseIf: false }],
     'eslint/no-nested-ternary': 'error',
 
+    'eslint/no-restricted-imports': ['error', { patterns: IMPORT_PATTERNS }],
+
     // Every file name is kebab-case (`article-list-item.tsx`).
     'unicorn/filename-case': ['error', { case: 'kebabCase' }],
 
@@ -70,6 +100,15 @@ export default defineConfig({
     'anti-slop-effect/prefer-effect-match': 'error',
   },
   overrides: [
+    {
+      files: ['apps/**', 'packages/**'],
+      rules: {
+        'eslint/no-restricted-imports': [
+          'error',
+          { patterns: PACKAGE_PATTERNS },
+        ],
+      },
+    },
     {
       // shadcn's generated components (added with `shadcn add`), kept as
       // shadcn writes them: a generic <Label> is tied to its control where

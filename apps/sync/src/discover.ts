@@ -1,8 +1,8 @@
 import { DomUtils, parseDocument } from 'htmlparser2'
 
-import { webUrl } from './urls.ts'
+import { webUrl } from '#/urls'
 
-export { normalizeFeedUrl, webUrl } from './urls.ts'
+export { normalizeFeedUrl, webUrl } from '#/urls'
 
 const FEED_TYPES = new Set([
   'application/rss+xml',

@@ -1,6 +1,6 @@
 import { cn } from 'cn'
 
-import { buttonVariants } from '@/components/ui/button.tsx'
+import { buttonVariants } from '#/components/ui/button'
 
 /** The bottom of Settings: who is signed in, and logging out. */
 export function AccountSection({

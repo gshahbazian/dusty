@@ -1,6 +1,6 @@
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
 
-import { DEV_FEEDS_PORT, DEV_SYNC_PORT } from '../infra/dev.ts'
+import { DEV_FEEDS_PORT, DEV_SYNC_PORT } from '~/infra/dev'
 
 /**
  * Helpers for tests against the running dev stack and its fixture feed

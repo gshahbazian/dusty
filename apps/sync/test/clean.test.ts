@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { cleanHtml, excerptOf, toPlainText } from '../src/clean.ts'
+import { cleanHtml, excerptOf, toPlainText } from '#/clean'
 
 const BASE = 'https://blog.example.com/posts/1'
 

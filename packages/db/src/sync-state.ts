@@ -1,7 +1,7 @@
 import { and, eq, lte, or, sql } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
-import { syncState } from './schema.ts'
+import type { Db } from '#/client'
+import { syncState } from '#/schema'
 
 const ROW_ID = 1
 

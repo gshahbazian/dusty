@@ -2,16 +2,13 @@ import { cn } from 'cn'
 
 import type { FeedCount } from '@dusty/db'
 
-import { Button } from '@/components/ui/button.tsx'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx'
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from '@/components/ui/native-select.tsx'
+import { Button } from '#/components/ui/button'
+import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
+import { NativeSelect, NativeSelectOption } from '#/components/ui/native-select'
 
-import { RelativeTime } from '../relative-time.tsx'
-import type { Counts } from './list-state.ts'
-import type { ListShowControl } from './unread-page.tsx'
+import { RelativeTime } from '#/components/relative-time'
+import type { Counts } from '#/components/unread/list-state'
+import type { ListShowControl } from '#/components/unread/unread-page'
 
 /**
  * The top of the sidebar: the feed picker (which names the list and its

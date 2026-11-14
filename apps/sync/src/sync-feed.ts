@@ -11,12 +11,12 @@ import {
   type SyncTrigger,
 } from '@dusty/db'
 
-import type { SyncSettings } from './config.ts'
-import { query } from './database.ts'
-import { FeedFetchError, fetchFeed } from './http.ts'
-import { plainTitle, toStoredItems } from './items.ts'
-import { Metrics, type FeedOutcome } from './metrics.ts'
-import { InvalidFeed, parseFeed } from './parse.ts'
+import type { SyncSettings } from '#/config'
+import { query } from '#/database'
+import { FeedFetchError, fetchFeed } from '#/http'
+import { plainTitle, toStoredItems } from '#/items'
+import { Metrics, type FeedOutcome } from '#/metrics'
+import { InvalidFeed, parseFeed } from '#/parse'
 
 export interface FeedResult {
   readonly feedId: number

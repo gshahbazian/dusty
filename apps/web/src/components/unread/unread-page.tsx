@@ -5,24 +5,27 @@ import { useEffect, useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount, ListShow } from '@dusty/db'
 
-import { articleQuery } from '../../lib/queries.ts'
-import { syncForRefresh } from '../../server/functions.ts'
-import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
-import type { Command } from '../keyboard/keymap.ts'
-import { ArticleList, type ArticleListHandle } from './article-list.tsx'
-import { ArticleView } from './article-view.tsx'
+import { articleQuery } from '#/lib/queries'
+import { syncForRefresh } from '#/server/functions'
+import { useCommands } from '#/components/keyboard/keyboard-shortcuts'
+import type { Command } from '#/components/keyboard/keymap'
+import {
+  ArticleList,
+  type ArticleListHandle,
+} from '#/components/unread/article-list'
+import { ArticleView } from '#/components/unread/article-view'
 import {
   cursorIndex,
   feedFromPath,
   moveCursor,
   neighborFeed,
-} from './cursor.ts'
-import { ListHeader } from './list-header.tsx'
-import { adjustedCounts } from './list-state.ts'
-import { EmptyPane } from './empty-pane.tsx'
-import { MobileArticleBar } from './mobile-article-bar.tsx'
-import { NoticeBar } from './notice-bar.tsx'
-import { useUnreadList } from './use-unread-list.ts'
+} from '#/components/unread/cursor'
+import { ListHeader } from '#/components/unread/list-header'
+import { adjustedCounts } from '#/components/unread/list-state'
+import { EmptyPane } from '#/components/unread/empty-pane'
+import { MobileArticleBar } from '#/components/unread/mobile-article-bar'
+import { NoticeBar } from '#/components/unread/notice-bar'
+import { useUnreadList } from '#/components/unread/use-unread-list'
 
 /** Whether a feed's page lists its unread or all articles, and switching. */
 export interface ListShowControl {

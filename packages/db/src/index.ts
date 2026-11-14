@@ -1,4 +1,4 @@
-export { createDb, schema, type Db } from './client.ts'
+export { createDb, schema, type Db } from '#/client'
 
 export {
   getArticle,
@@ -13,7 +13,7 @@ export {
   type ListShow,
   type FeedCount,
   type MarkRead,
-} from './articles.ts'
+} from '#/articles'
 
 export {
   listFeedsToSync,
@@ -25,7 +25,7 @@ export {
   type FeedToSync,
   type FetchErrorType,
   type StoredItem,
-} from './feeds.ts'
+} from '#/feeds'
 
 export {
   countFeedHealth,
@@ -33,9 +33,9 @@ export {
   type FeedHealth,
   type HealthCounts,
   type HealthOptions,
-} from './health.ts'
+} from '#/health'
 
-export { pruneArticles, type PruneOptions, type PruneResult } from './prune.ts'
+export { pruneArticles, type PruneOptions, type PruneResult } from '#/prune'
 
 export {
   findFeedByUrl,
@@ -45,7 +45,7 @@ export {
   renameFeed,
   type FeedRef,
   type Subscription,
-} from './subscriptions.ts'
+} from '#/subscriptions'
 
 export {
   claimSyncRun,
@@ -54,4 +54,4 @@ export {
   type ClaimResult,
   type SyncRunOutcome,
   type SyncTrigger,
-} from './sync-state.ts'
+} from '#/sync-state'

@@ -13,13 +13,13 @@ import {
   type FeedRef,
 } from '@dusty/db'
 
-import type { SyncSettings } from './config.ts'
-import { query } from './database.ts'
-import { findAdvertisedFeed, normalizeFeedUrl } from './discover.ts'
-import { FeedFetchError, fetchFeed } from './http.ts'
-import { plainTitle } from './items.ts'
-import { Metrics } from './metrics.ts'
-import { parse } from './sync-feed.ts'
+import type { SyncSettings } from '#/config'
+import { query } from '#/database'
+import { findAdvertisedFeed, normalizeFeedUrl } from '#/discover'
+import { FeedFetchError, fetchFeed } from '#/http'
+import { plainTitle } from '#/items'
+import { Metrics } from '#/metrics'
+import { parse } from '#/sync-feed'
 
 export type AddFeedResult =
   | {

@@ -1,5 +1,5 @@
-import type { WebEnv } from '../../../../alchemy.run.ts'
-import type { Viewer } from './auth/index.ts'
+import type { WebEnv } from '~/alchemy.run'
+import type { Viewer } from '#/server/auth/index'
 
 /**
  * Passed from the Worker entry into every server function. A request only

@@ -1,7 +1,7 @@
 import { asc, sql } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
-import { feeds } from './schema.ts'
+import type { Db } from '#/client'
+import { feeds } from '#/schema'
 
 /** How a fetch went wrong, for health, logs and metrics. */
 export type FetchErrorType =

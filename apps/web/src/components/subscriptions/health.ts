@@ -1,6 +1,6 @@
 import type { Subscription } from '@dusty/db'
 
-import { duration } from '../../lib/time.ts'
+import { duration } from '#/lib/time'
 
 export type SortOrder = 'attention' | 'name' | 'unread'
 

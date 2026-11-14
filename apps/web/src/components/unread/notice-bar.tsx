@@ -1,9 +1,9 @@
 import { cn } from 'cn'
 import { XIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button.tsx'
+import { Button } from '#/components/ui/button'
 
-import type { Notice } from './use-unread-list.ts'
+import type { Notice } from '#/components/unread/use-unread-list'
 
 /** Marked, undone or failed: a toast, so it never moves the list. */
 export function NoticeBar({

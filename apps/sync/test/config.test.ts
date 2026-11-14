@@ -2,7 +2,7 @@ import * as ConfigProvider from 'effect/ConfigProvider'
 import * as Effect from 'effect/Effect'
 import { describe, expect, test } from 'vitest'
 
-import { SyncConfig, syncSettingsEnv } from '../src/config.ts'
+import { SyncConfig, syncSettingsEnv } from '#/config'
 
 const withEnv = <A, E>(
   effect: Effect.Effect<A, E>,

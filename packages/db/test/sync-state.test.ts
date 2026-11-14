@@ -6,8 +6,8 @@ import {
   finishSyncRun,
   type Db,
   type SyncTrigger,
-} from '../src/index.ts'
-import { createTestD1 } from '../src/testing.ts'
+} from '#/index'
+import { createTestD1 } from '#/testing'
 
 const LEASE = 60_000
 const WINDOW = 5 * 60_000

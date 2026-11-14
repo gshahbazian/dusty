@@ -7,15 +7,15 @@ import * as Option from 'effect/Option'
 
 import { createDb, type Db, type SyncTrigger } from '@dusty/db'
 
-import { Database } from '../../../infra/database.ts'
-import { DEV_SYNC_PORT } from '../../../infra/dev.ts'
-import { addFeed, importFeeds, type ImportEntry } from './add-feed.ts'
-import { SyncConfig, syncSettingsEnv } from './config.ts'
-import { Sync, type OnDemandTrigger } from './contract.ts'
-import { HttpFetch, HttpFetchLive } from './http.ts'
-import { JsonLoggerLive } from './logger.ts'
-import { Metrics, analyticsEngineMetrics } from './metrics.ts'
-import { runSync } from './run.ts'
+import { Database } from '~/infra/database'
+import { DEV_SYNC_PORT } from '~/infra/dev'
+import { addFeed, importFeeds, type ImportEntry } from '#/add-feed'
+import { SyncConfig, syncSettingsEnv } from '#/config'
+import { Sync, type OnDemandTrigger } from '#/contract'
+import { HttpFetch, HttpFetchLive } from '#/http'
+import { JsonLoggerLive } from '#/logger'
+import { Metrics, analyticsEngineMetrics } from '#/metrics'
+import { runSync } from '#/run'
 
 /**
  * Cloudflare's `tracing.startActiveSpan` is GA from this date; earlier dates

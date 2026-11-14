@@ -4,17 +4,18 @@ import { useState, type FormEvent } from 'react'
 
 import type { Subscription } from '@dusty/db'
 
-import {
-  removeSubscription,
-  renameSubscription,
-} from '../../server/subscriptions.ts'
-import { Badge } from '@/components/ui/badge.tsx'
-import { Button } from '@/components/ui/button.tsx'
-import { Input } from '@/components/ui/input.tsx'
-import { Label } from '@/components/ui/label.tsx'
+import { removeSubscription, renameSubscription } from '#/server/subscriptions'
+import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
 
-import { RelativeTime } from '../relative-time.tsx'
-import { failureNote, healthLabel, removeConfirmation } from './health.ts'
+import { RelativeTime } from '#/components/relative-time'
+import {
+  failureNote,
+  healthLabel,
+  removeConfirmation,
+} from '#/components/subscriptions/health'
 
 /** One subscription: its name, unread count, health and actions. */
 export function SubscriptionRow({

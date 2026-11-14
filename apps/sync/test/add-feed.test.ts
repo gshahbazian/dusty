@@ -11,16 +11,16 @@ import {
   importFeeds,
   type AddFeedOptions,
   type ImportEntry,
-} from '../src/add-feed.ts'
-import { findAdvertisedFeed, normalizeFeedUrl } from '../src/discover.ts'
-import { recordingMetrics } from '../src/metrics.ts'
+} from '#/add-feed'
+import { findAdvertisedFeed, normalizeFeedUrl } from '#/discover'
+import { recordingMetrics } from '#/metrics'
 import {
   fakeWeb,
   fixture,
   serve,
   testSettings,
   type Handler,
-} from './support.ts'
+} from '#test/support'
 
 let db: Db
 let dispose: () => Promise<void>

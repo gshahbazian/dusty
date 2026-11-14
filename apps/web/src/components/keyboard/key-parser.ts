@@ -1,4 +1,4 @@
-import { BINDINGS, type Command } from './keymap.ts'
+import { BINDINGS, type Command } from '#/components/keyboard/keymap'
 
 /** How long a count or a `g` waits for the next key. */
 export const SEQUENCE_TIMEOUT_MS = 1000

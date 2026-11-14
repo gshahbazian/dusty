@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button.tsx'
+import { Button } from '#/components/ui/button'
 
 /**
  * Phones only: the open article's actions in a bar at the bottom of the

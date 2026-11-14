@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { DEV_FEEDS_PORT } from '../infra/dev.ts'
+import { DEV_FEEDS_PORT } from '~/infra/dev'
 
 /**
  * The subscriptions page against the running dev stack and its fixture feed

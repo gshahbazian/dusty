@@ -1,6 +1,6 @@
 import { sql, type SQL } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
+import type { Db } from '#/client'
 
 export interface HealthOptions {
   readonly now: number

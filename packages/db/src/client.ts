@@ -1,7 +1,7 @@
 import { drizzle, type DrizzleD1Database } from 'drizzle-orm/d1'
 
-import { withBusyRetry } from './busy-retry.ts'
-import * as schema from './schema.ts'
+import { withBusyRetry } from '#/busy-retry'
+import * as schema from '#/schema'
 
 export type Db = DrizzleD1Database
 

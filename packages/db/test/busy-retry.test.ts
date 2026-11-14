@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
 
-import { retryBusy, withBusyRetry } from '../src/busy-retry.ts'
-import { createDb, insertFeed, listSubscriptions } from '../src/index.ts'
-import { createTestD1 } from '../src/testing.ts'
+import { retryBusy, withBusyRetry } from '#/busy-retry'
+import { createDb, insertFeed, listSubscriptions } from '#/index'
+import { createTestD1 } from '#/testing'
 
 const busy = () =>
   new Error(

@@ -8,11 +8,11 @@ import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 import * as Redacted from 'effect/Redacted'
 
-import { SETTING_DEFAULTS } from './apps/sync/src/config.ts'
-import { Sync } from './apps/sync/src/contract.ts'
-import SyncLive, { COMPATIBILITY_DATE } from './apps/sync/src/worker.ts'
-import { Database } from './infra/database.ts'
-import { DEV_WEB_PORT } from './infra/dev.ts'
+import { SETTING_DEFAULTS } from '~/apps/sync/src/config'
+import { Sync } from '~/apps/sync/src/contract'
+import SyncLive, { COMPATIBILITY_DATE } from '~/apps/sync/src/worker'
+import { Database } from '~/infra/database'
+import { DEV_WEB_PORT } from '~/infra/dev'
 
 /**
  * Deployed stages get one Access application allowing only the owner. Workers

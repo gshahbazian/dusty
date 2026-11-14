@@ -10,7 +10,7 @@ import {
   openArticle,
   subscribe,
   unsubscribe,
-} from './helpers.ts'
+} from '~/e2e/helpers'
 
 /** Unread lists, by mouse, against the running dev stack. */
 test('mark all above: a sync landing between load and action is never touched', async ({

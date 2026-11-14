@@ -11,8 +11,8 @@ import {
   unreadCounts,
 } from '@dusty/db'
 
-import { dbFor } from './db.ts'
-import { ownerOnly } from './middleware.ts'
+import { dbFor } from '#/server/db'
+import { ownerOnly } from '#/server/middleware'
 
 /** Most articles one mark-read action may name. */
 const MAX_IDS = 20_000

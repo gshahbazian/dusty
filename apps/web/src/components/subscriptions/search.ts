@@ -1,7 +1,7 @@
 import * as Option from 'effect/Option'
 import * as Schema from 'effect/Schema'
 
-import type { SortOrder } from './health.ts'
+import type { SortOrder } from '#/components/subscriptions/health'
 
 /** `?sort=name&attention=true`; both optional, so links need neither. */
 export type SubscriptionsSearch = {

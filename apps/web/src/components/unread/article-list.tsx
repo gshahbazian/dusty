@@ -3,7 +3,7 @@ import { useEffect, useImperativeHandle, useRef, type Ref } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
-import { ArticleListItem } from './article-list-item.tsx'
+import { ArticleListItem } from '#/components/unread/article-list-item'
 
 /** A row's height before it is measured. */
 const ESTIMATED_ROW_PX = 120

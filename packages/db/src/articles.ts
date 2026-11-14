@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
+import type { Db } from '#/client'
 
 /** One row of an article list: metadata only, never the article's HTML. */
 export interface ArticleRow {

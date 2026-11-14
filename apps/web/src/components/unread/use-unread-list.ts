@@ -7,7 +7,7 @@ import {
   markArticleUnread,
   markArticlesRead,
   undoMarkArticlesRead,
-} from '../../server/articles.ts'
+} from '#/server/articles'
 import {
   articles,
   idsAbove,
@@ -15,7 +15,7 @@ import {
   readWhenLoaded,
   withRead,
   type ReadOverrides,
-} from './list-state.ts'
+} from '#/components/unread/list-state'
 
 export type Notice =
   | {

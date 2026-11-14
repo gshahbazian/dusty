@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import * as Schema from 'effect/Schema'
 
-import { ownerOnly } from './middleware.ts'
+import { ownerOnly } from '#/server/middleware'
 
 /** A photo for the empty article pane (shown without a credit line). */
 export interface Backdrop {

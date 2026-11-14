@@ -11,11 +11,11 @@ import {
   type SyncTrigger,
 } from '@dusty/db'
 
-import type { SyncSettings } from './config.ts'
-import type { SyncRunResult } from './contract.ts'
-import { query } from './database.ts'
-import { Metrics } from './metrics.ts'
-import { syncFeed, type FeedResult } from './sync-feed.ts'
+import type { SyncSettings } from '#/config'
+import type { SyncRunResult } from '#/contract'
+import { query } from '#/database'
+import { Metrics } from '#/metrics'
+import { syncFeed, type FeedResult } from '#/sync-feed'
 
 /** A feed the run did not start because its time budget ran out. */
 const NOT_STARTED = 'not_started'

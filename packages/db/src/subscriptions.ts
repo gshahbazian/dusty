@@ -1,8 +1,8 @@
 import { eq, sql } from 'drizzle-orm'
 
-import type { Db } from './client.ts'
-import { feedHealthSql, type FeedHealth, type HealthOptions } from './health.ts'
-import { feeds } from './schema.ts'
+import type { Db } from '#/client'
+import { feedHealthSql, type FeedHealth, type HealthOptions } from '#/health'
+import { feeds } from '#/schema'
 
 export interface FeedRef {
   readonly id: number

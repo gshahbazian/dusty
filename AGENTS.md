@@ -57,7 +57,7 @@ Read the matching `SKILL.md` before doing these:
 - UI controls are shadcn components on Base UI (`components.json`, style
   `base-lyra`), in `apps/web/src/components/ui/`; add more with
   `pnpm dlx shadcn@latest add <name>` from `apps/web`, and import them as
-  `@/components/ui/<name>.tsx`. Those files are shadcn's generated code,
+  `#/components/ui/<name>`. Those files are shadcn's generated code,
   so their `cva` class maps are fine (the inline-classes rule is for our
   own components). A link styled as a button stays a link: use
   `buttonVariants` on `<Link>` / `<a>`, not `<Button render>`, which
@@ -65,6 +65,14 @@ Read the matching `SKILL.md` before doing these:
   `<select>`, so phones get their own picker). Colours come from the
   theme in `styles.css` (`text-muted-foreground`, `bg-primary`…), and dark
   mode follows the system setting through `prefers-color-scheme`.
+- Imports are never relative and never end in `.ts` / `.tsx`; lint
+  enforces both. Within a package, `#/…` (its `src/`, from the package's
+  `package.json` `imports`; the sync tests also have `#test/…`). Another
+  package by its name: `@dusty/db`, `@dusty/sync/contract`,
+  `@dusty/sync/urls` (its `exports`), never `~/packages/…` / `~/apps/…`.
+  `~/…` (the repo root, tsconfig `paths`) only for what isn't a package:
+  `~/infra/dev`, `~/alchemy.run`, `~/e2e/helpers`; `alchemy.run.ts` also
+  reaches the sync Worker's source with it.
 - File names are kebab-case: `article-list-item.tsx`, `use-unread-list.ts`,
   `001-project-spec.md`. Lint enforces it for code (`unicorn/filename-case`).
   The exceptions are names that tools look for (`README.md`, `AGENTS.md`,

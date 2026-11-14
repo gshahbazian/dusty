@@ -4,7 +4,7 @@ import type * as Effect from 'effect/Effect'
 
 import type { SyncTrigger } from '@dusty/db'
 
-import type { AddFeedResult, ImportEntry, ImportResult } from './add-feed.ts'
+import type { AddFeedResult, ImportEntry, ImportResult } from '#/add-feed'
 
 export type { AddFeedResult, ImportEntry, ImportResult, SyncTrigger }
 

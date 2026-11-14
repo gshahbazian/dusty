@@ -1,25 +1,22 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
-import { Checkbox } from '@/components/ui/checkbox.tsx'
-import { Label } from '@/components/ui/label.tsx'
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from '@/components/ui/native-select.tsx'
+import { Checkbox } from '#/components/ui/checkbox'
+import { Label } from '#/components/ui/label'
+import { NativeSelect, NativeSelectOption } from '#/components/ui/native-select'
 
-import { AccountSection } from '../components/settings/account-section.tsx'
-import { AddFeedForm } from '../components/subscriptions/add-feed-form.tsx'
+import { AccountSection } from '#/components/settings/account-section'
+import { AddFeedForm } from '#/components/subscriptions/add-feed-form'
 import {
   needsAttention,
   sortSubscriptions,
   type SortOrder,
-} from '../components/subscriptions/health.ts'
-import { parseSubscriptionsSearch } from '../components/subscriptions/search.ts'
-import { OpmlImport } from '../components/subscriptions/opml-import.tsx'
-import { SubscriptionRow } from '../components/subscriptions/subscription-row.tsx'
-import { getSession } from '../server/functions.ts'
-import { getSubscriptions } from '../server/subscriptions.ts'
+} from '#/components/subscriptions/health'
+import { parseSubscriptionsSearch } from '#/components/subscriptions/search'
+import { OpmlImport } from '#/components/subscriptions/opml-import'
+import { SubscriptionRow } from '#/components/subscriptions/subscription-row'
+import { getSession } from '#/server/functions'
+import { getSubscriptions } from '#/server/subscriptions'
 
 const SORTS: ReadonlyArray<{
   readonly value: SortOrder

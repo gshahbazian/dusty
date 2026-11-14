@@ -3,6 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": {
+      "types": [
+        "./src/*.ts",
+        "./src/*.tsx",
+        "./src/*/index.ts"
+      ],
+      "default": "./src/*"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit"

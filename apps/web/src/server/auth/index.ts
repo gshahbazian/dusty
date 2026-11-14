@@ -1,6 +1,6 @@
-import { createAccessAuth } from './access.ts'
-import { createDevAuth } from './dev.ts'
-import type { AuthProvider, Viewer } from './types.ts'
+import { createAccessAuth } from '#/server/auth/access'
+import { createDevAuth } from '#/server/auth/dev'
+import type { AuthProvider, Viewer } from '#/server/auth/types'
 
 export type { AuthProvider, Viewer }
 

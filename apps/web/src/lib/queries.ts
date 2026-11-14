@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import { getArticleToRead } from '../server/articles.ts'
-import { getBackdrop } from '../server/backdrop.ts'
+import { getArticleToRead } from '#/server/articles'
+import { getBackdrop } from '#/server/backdrop'
 
 /**
  * One article with its HTML, for reading (null if it no longer exists).

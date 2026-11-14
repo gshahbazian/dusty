@@ -6,10 +6,10 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { createDb, schema, type Db, type SyncTrigger } from '@dusty/db'
 import { createTestD1 } from '@dusty/db/testing'
 
-import type { SyncSettings } from '../src/config.ts'
-import { recordingMetrics } from '../src/metrics.ts'
-import { runSync } from '../src/run.ts'
-import { fakeWeb, hang, serve, testSettings, type Handler } from './support.ts'
+import type { SyncSettings } from '#/config'
+import { recordingMetrics } from '#/metrics'
+import { runSync } from '#/run'
+import { fakeWeb, hang, serve, testSettings, type Handler } from '#test/support'
 
 let db: Db
 let dispose: () => Promise<void>

@@ -3,6 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": {
+      "types": [
+        "./src/*.ts",
+        "./src/*.tsx",
+        "./src/*/index.ts"
+      ],
+      "default": "./src/*"
+    },
+    "#test/*": {
+      "types": [
+        "./test/*.ts"
+      ],
+      "default": "./test/*"
+    }
+  },
   "exports": {
     "./contract": "./src/contract.ts",
     "./urls": "./src/urls.ts"

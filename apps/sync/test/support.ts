@@ -3,8 +3,8 @@ import { join } from 'node:path'
 
 import * as Layer from 'effect/Layer'
 
-import type { SyncSettings } from '../src/config.ts'
-import { HttpFetch } from '../src/http.ts'
+import type { SyncSettings } from '#/config'
+import { HttpFetch } from '#/http'
 
 const FIXTURES = join(import.meta.dirname, 'fixtures')
 
