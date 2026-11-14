@@ -65,11 +65,13 @@ JavaScript only sees `D1_ERROR: Failed to get session commit token:
 internal error; reference = ...` (reads hit this too, not just writes).
 `packages/db/src/busy-retry.ts` retries both forms for up to 10 seconds,
 so a few BUSY lines in the log are normal; only a request that still fails
-afterwards is a bug. The lock can be held for seconds: adding a feed
-stores all its articles in one batch, and a 3,000-article feed (the
-keyboard spec's long list, which runs in parallel with the other specs)
-takes about 4 s on a slow machine. Many BUSY lines in a row during such
-an add are expected.
+afterwards is a bug. Adding a feed stores all its articles in one batch,
+so a long run of BUSY lines while a big feed is added (the keyboard spec's
+3,000-article list runs in parallel with the other specs) is expected. If
+adding a big feed takes seconds (`duration_ms` in its `feed add finished`
+line; 6,000 articles take well under a second), suspect a query plan:
+`db.sh "explain query plan ..."` shows whether a statement scans a table
+once per row of another.
 
 If an edit under `packages/` shows `[Sync] Updated` in the log but no
 `[Web] hmr update`, the web Worker is still running the old code; restart

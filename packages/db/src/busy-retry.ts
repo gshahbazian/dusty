@@ -19,11 +19,11 @@
  * never triggers.
  *
  * Retries run for a time budget, not a fixed number of attempts: the other
- * Worker can hold the lock for seconds. Adding a feed stores all its articles
- * in one atomic batch, and locally a 3,000-article feed took 3.5 to 4 s, so
- * half a second of retries made pages that loaded meanwhile fail with
- * "Failed query". The budget outlasts the largest feed a test or a person is
- * likely to add locally; past it, the error is real and is thrown.
+ * Worker can hold the lock for longer than a few quick retries cover.
+ * Adding a feed stores all its articles in one atomic batch (10,000 take
+ * about half a second, longer on a slow machine), and five attempts (about
+ * half a second in all) made pages that loaded meanwhile fail with "Failed
+ * query". Past the budget, the error is real and is thrown.
  */
 const BUDGET_MS = 10_000
 const BASE_DELAY_MS = 15
