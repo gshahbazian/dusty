@@ -245,7 +245,7 @@ On a phone the app is a first-class reader, not a shrunken desktop page: every f
 - Layout adapts from phone to wide desktop; on a phone, list and article are separate screens with a clear way back.
 - Tap targets are large enough to hit with a thumb, and primary actions sit within thumb reach.
 - Mark all above as read is a deliberate touch action (for example, from a row's menu or a long press), hard to trigger by accident, with the same undo.
-- Refresh is one tap and also available as pull to refresh.
+- Refresh is one tap on the Refresh button. No pull to refresh.
 - Articles read well: comfortable type size, images fit the screen, no sideways scrolling.
 - Fast on a phone network: the list appears quickly from stored data, not after a sync.
 - Can be added to the home screen and opens full screen like an app.
