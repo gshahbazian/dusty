@@ -165,7 +165,7 @@ test('junk in the URL falls back to the default view', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
   await expect(page.getByRole('combobox')).toHaveValue('attention')
   await expect(
-    page.getByLabel('Only feeds that need attention')
+    page.getByRole('checkbox', { name: 'Only feeds that need attention' })
   ).not.toBeChecked()
   await expect(page).toHaveURL(/\/settings$/)
 
@@ -173,6 +173,6 @@ test('junk in the URL falls back to the default view', async ({ page }) => {
   await page.goto('/settings?sort=name&attention=maybe')
   await expect(page.getByRole('combobox')).toHaveValue('name')
   await expect(
-    page.getByLabel('Only feeds that need attention')
+    page.getByRole('checkbox', { name: 'Only feeds that need attention' })
   ).not.toBeChecked()
 })

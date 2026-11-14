@@ -1,6 +1,9 @@
+import { cn } from 'cn'
 import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
+
+import { Button, buttonVariants } from '@/components/ui/button.tsx'
 
 import {
   IMPORT_BATCH_SIZE,
@@ -121,10 +124,16 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
 
   return (
     <section className="flex flex-col gap-2" aria-labelledby="import-heading">
-      <h2 id="import-heading" className="text-sm font-medium">
+      <h2 id="import-heading" className="text-xs font-medium">
         Import from another reader
       </h2>
-      <label className="w-fit cursor-pointer rounded-md border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900">
+      {/* A label styled as a button, so the hidden file input opens on click. */}
+      <label
+        className={cn(
+          buttonVariants({ variant: 'outline' }),
+          'w-fit cursor-pointer has-[:focus-visible]:border-ring has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-ring/50'
+        )}
+      >
         Choose an OPML file
         <input
           type="file"
@@ -134,7 +143,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
           disabled={step.kind === 'reading' || step.kind === 'importing'}
         />
       </label>
-      <output className="block text-sm" aria-live="polite">
+      <output className="block text-xs" aria-live="polite">
         <ImportStatus step={step} onImport={runImport} />
       </output>
     </section>
@@ -153,11 +162,7 @@ function ImportStatus({
   if (step.kind === 'reading') return <p>Reading the file…</p>
 
   if (step.kind === 'invalid') {
-    return (
-      <p className="text-red-600 dark:text-red-400">
-        Couldn't import: {step.reason}.
-      </p>
-    )
+    return <p className="text-destructive">Couldn't import: {step.reason}.</p>
   }
 
   if (step.kind === 'importing') {
@@ -176,13 +181,13 @@ function ImportStatus({
           {step.failed.length} failed.
         </p>
         {step.failed.length > 0 && (
-          <p className="mt-1 text-neutral-600 dark:text-neutral-400">
+          <p className="text-muted-foreground mt-1">
             Feeds that failed were added anyway; they show their error below
             until a sync gets through.
           </p>
         )}
         {step.failed.length > 0 && (
-          <ul className="mt-1 list-disc pl-5 text-neutral-600 dark:text-neutral-400">
+          <ul className="text-muted-foreground mt-1 list-disc pl-5">
             {step.failed.map((result) => (
               <li key={result.url}>
                 {result.title ?? result.url}:{' '}
@@ -205,16 +210,12 @@ function ImportStatus({
         {skipped > 0 && `, ${skipped} already subscribed or listed twice`}.
       </p>
       {toImport.length > 0 && (
-        <button
-          type="button"
-          onClick={() => onImport(step.entries)}
-          className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
-        >
+        <Button onClick={() => onImport(step.entries)}>
           Import {plural(toImport.length, 'feed', 'feeds')}
-        </button>
+        </Button>
       )}
       {skippedEntries.length > 0 && (
-        <details className="w-full text-neutral-600 dark:text-neutral-400">
+        <details className="text-muted-foreground w-full">
           <summary className="cursor-pointer">
             Show the{' '}
             {plural(skippedEntries.length, 'skipped feed', 'skipped feeds')}

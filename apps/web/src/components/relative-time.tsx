@@ -24,7 +24,7 @@ export function RelativeTime({
     <button
       type="button"
       onClick={() => setShowExact((shown) => !shown)}
-      className="cursor-pointer underline decoration-neutral-300 decoration-dotted underline-offset-2 dark:decoration-neutral-600"
+      className="decoration-muted-foreground/50 cursor-pointer underline decoration-dotted underline-offset-2"
       title={exact}
       aria-label={`${label}: ${shown}. Show ${showExact ? 'relative' : 'exact'} time`}
     >

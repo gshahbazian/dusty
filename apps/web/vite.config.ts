@@ -5,4 +5,6 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [tailwindcss(), tanstackStart(), viteReact()],
+  // `@/…` imports (shadcn's components) resolve through tsconfig `paths`.
+  resolve: { tsconfigPaths: true },
 })

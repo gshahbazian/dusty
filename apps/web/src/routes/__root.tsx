@@ -9,6 +9,8 @@ import {
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
+import { buttonVariants } from '@/components/ui/button.tsx'
+
 import { KeyboardShortcuts } from '../components/keyboard/keyboard-shortcuts.tsx'
 import { getSession, requestSync } from '../server/functions.ts'
 import appCss from '../styles.css?url'
@@ -63,7 +65,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
+      <body className="antialiased">
         {children}
         <Scripts />
       </body>
@@ -83,6 +85,7 @@ function AppLayout() {
   })
 
   const unreadActive = isUnreadPath(pathname)
+  const settingsActive = pathname.startsWith('/settings')
 
   // Loading the app starts a background sync; pages never wait for it.
   useEffect(() => {
@@ -91,7 +94,7 @@ function AppLayout() {
 
   return (
     <div className="flex h-dvh flex-col">
-      <header className="flex items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
+      <header className="flex items-center gap-2 border-b px-4 py-2">
         <img
           src="/logo.svg"
           alt="Dusty"
@@ -102,33 +105,33 @@ function AppLayout() {
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
-            className={cn(
-              'inline-flex items-center rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11',
-              unreadActive &&
-                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
-            )}
+            className={buttonVariants({
+              variant: unreadActive ? 'secondary' : 'ghost',
+            })}
             aria-current={unreadActive ? 'page' : undefined}
           >
             Unread
           </Link>
           <Link
             to="/settings"
-            className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
-            activeProps={{
-              className:
-                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
-            }}
+            className={buttonVariants({
+              variant: settingsActive ? 'secondary' : 'ghost',
+            })}
+            aria-current={settingsActive ? 'page' : undefined}
           >
             Settings
           </Link>
         </nav>
-        <span className="hidden text-sm text-neutral-500 lg:inline">
+        <span className="text-muted-foreground hidden text-xs lg:inline">
           <kbd className="font-mono">?</kbd> for shortcuts
         </span>
         <a
           href={session.logoutUrl}
-          className="inline-flex items-center text-sm text-neutral-500 hover:underline pointer-coarse:min-h-11"
           title={`Signed in as ${session.email}`}
+          className={cn(
+            buttonVariants({ variant: 'link' }),
+            'text-muted-foreground'
+          )}
         >
           Log out
         </a>

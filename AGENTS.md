@@ -54,6 +54,17 @@ Read the matching `SKILL.md` before doing these:
   element, never kept in variables, constants or maps, and conditional
   classes joined with `cn` (`import { cn } from 'cn'`), never template
   strings or ternaries. Lint enforces the first two.
+- UI controls are shadcn components on Base UI (`components.json`, style
+  `base-lyra`), in `apps/web/src/components/ui/`; add more with
+  `pnpm dlx shadcn@latest add <name>` from `apps/web`, and import them as
+  `@/components/ui/<name>.tsx`. Those files are shadcn's generated code,
+  so their `cva` class maps are fine (the inline-classes rule is for our
+  own components). A link styled as a button stays a link: use
+  `buttonVariants` on `<Link>` / `<a>`, not `<Button render>`, which
+  would give it `role="button"`. Dropdowns are `NativeSelect` (a real
+  `<select>`, so phones get their own picker). Colours come from the
+  theme in `styles.css` (`text-muted-foreground`, `bg-primary`…), and dark
+  mode follows the system setting through `prefers-color-scheme`.
 - File names are kebab-case: `article-list-item.tsx`, `use-unread-list.ts`,
   `001-project-spec.md`. Lint enforces it for code (`unicorn/filename-case`).
   The exceptions are names that tools look for (`README.md`, `AGENTS.md`,

@@ -1,6 +1,13 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox.tsx'
+import { Label } from '@/components/ui/label.tsx'
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from '@/components/ui/native-select.tsx'
+
 import { AddFeedForm } from '../components/subscriptions/add-feed-form.tsx'
 import {
   needsAttention,
@@ -95,31 +102,27 @@ function Settings() {
                 ? '1 feed'
                 : `${subscriptions.length} feeds`}
               {attentionCount > 0 && (
-                <span className="text-neutral-500">
+                <span className="text-muted-foreground">
                   {' '}
                   · {attentionCount} need attention
                 </span>
               )}
             </h2>
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <label className="flex items-center gap-1.5">
-                <input
-                  type="checkbox"
+            <div className="flex flex-wrap items-center gap-4">
+              <Label>
+                <Checkbox
                   checked={attention}
-                  onChange={(event) =>
+                  onCheckedChange={(checked) =>
                     void navigate({
-                      search: {
-                        sort: sort,
-                        attention: event.target.checked,
-                      },
+                      search: { sort: sort, attention: checked },
                     })
                   }
                 />
                 Only feeds that need attention
-              </label>
-              <label className="flex items-center gap-1.5">
+              </Label>
+              <Label>
                 Sort
-                <select
+                <NativeSelect
                   value={sort}
                   onChange={(event) => {
                     const sort = event.target.value
@@ -130,26 +133,25 @@ function Settings() {
                       search: { sort, attention },
                     })
                   }}
-                  className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 pointer-coarse:min-h-11"
                 >
                   {SORTS.map((sort) => (
-                    <option key={sort.value} value={sort.value}>
+                    <NativeSelectOption key={sort.value} value={sort.value}>
                       {sort.label}
-                    </option>
+                    </NativeSelectOption>
                   ))}
-                </select>
-              </label>
+                </NativeSelect>
+              </Label>
             </div>
           </div>
 
           {subscriptions.length === 0 && (
-            <p className="text-neutral-500">
+            <p className="text-muted-foreground">
               No feeds yet. Add one above, or import your subscriptions from
               another reader.
             </p>
           )}
           {subscriptions.length > 0 && shown.length === 0 && (
-            <p className="text-neutral-500">Every feed is healthy.</p>
+            <p className="text-muted-foreground">Every feed is healthy.</p>
           )}
 
           <ul aria-label="Subscriptions">

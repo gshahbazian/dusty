@@ -1,9 +1,16 @@
 import { cn } from 'cn'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useVirtualizer } from '@tanstack/react-virtual'
+import { XIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount } from '@dusty/db'
+
+import { Button } from '@/components/ui/button.tsx'
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from '@/components/ui/native-select.tsx'
 
 import { syncForRefresh } from '../../server/functions.ts'
 import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
@@ -218,12 +225,12 @@ function UnreadSnapshot({
       <aside
         aria-label="Articles"
         className={cn(
-          'flex w-full flex-col border-r border-neutral-200 lg:w-96 lg:shrink-0 dark:border-neutral-800',
+          'flex w-full flex-col border-r lg:w-96 lg:shrink-0',
           articleOpen && 'hidden lg:flex'
         )}
       >
-        <div className="flex flex-col gap-2 border-b border-neutral-200 p-3 dark:border-neutral-800">
-          <select
+        <div className="flex flex-col gap-2 border-b p-3">
+          <NativeSelect
             aria-label="Feed"
             value={feedId ?? ''}
             onChange={(event) => {
@@ -233,22 +240,23 @@ function UnreadSnapshot({
                 event.target.value === '' ? null : Number(event.target.value)
               )
             }}
-            className="rounded border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 pointer-coarse:min-h-11"
+            className="w-full"
           >
-            <option value="">All unread ({counts.total})</option>
+            <NativeSelectOption value="">
+              All unread ({counts.total})
+            </NativeSelectOption>
             {feeds.map((feed) => (
-              <option key={feed.feedId} value={feed.feedId}>
+              <NativeSelectOption key={feed.feedId} value={feed.feedId}>
                 {feed.title} ({feed.unread})
-              </option>
+              </NativeSelectOption>
             ))}
-          </select>
-          <div className="flex items-center justify-between gap-2">
-            <h1 className="font-semibold">
-              {listTitle(feedId, counts)}{' '}
-              <span className="font-normal text-neutral-500">
-                {countFor(feedId, counts)} unread
-              </span>
-            </h1>
+          </NativeSelect>
+          {/* The feed picker shows the list and its count; the heading is
+              for screen readers. */}
+          <h1 className="sr-only">
+            {listTitle(feedId, counts)} {countFor(feedId, counts)} unread
+          </h1>
+          <div className="flex items-center gap-2">
             <RefreshButton
               snapshotAt={data.snapshotAt}
               now={now}
@@ -257,7 +265,7 @@ function UnreadSnapshot({
             />
           </div>
           {data.truncated && (
-            <p className="text-sm text-neutral-500">
+            <p className="text-muted-foreground text-sm">
               Showing the first {rows.length.toLocaleString('en-US')}. Refresh
               after clearing these to load more.
             </p>
@@ -265,7 +273,7 @@ function UnreadSnapshot({
         </div>
 
         {rows.length === 0 && (
-          <p className="p-3 text-neutral-500">
+          <p className="text-muted-foreground p-3">
             Nothing unread. Refresh to check for new articles.
           </p>
         )}
@@ -337,7 +345,7 @@ function UnreadSnapshot({
           />
         )}
         {articleId === null && rows.length > 0 && (
-          <p className="p-8 text-center text-neutral-500">
+          <p className="text-muted-foreground p-8 text-center">
             Choose an article to read it here.
           </p>
         )}
@@ -644,20 +652,20 @@ function RefreshButton({
   onRefresh: () => void
 }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-neutral-500">
+    <div className="text-muted-foreground flex flex-1 items-center justify-between gap-2 text-xs">
       {!refreshing && (
         <span>
           Updated <RelativeTime at={snapshotAt} now={now} label="Updated" />
         </span>
       )}
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        size="sm"
         onClick={onRefresh}
         disabled={refreshing}
-        className="rounded border border-neutral-300 px-2 py-0.5 disabled:opacity-50 dark:border-neutral-700 pointer-coarse:min-h-11"
       >
         {refreshing ? 'Refreshing…' : 'Refresh'}
-      </button>
+      </Button>
     </div>
   )
 }
@@ -683,33 +691,32 @@ function NoticeBar({
     <output
       aria-live="polite"
       className={cn(
-        'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-3 rounded border px-3 py-2 text-sm shadow',
+        'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-2 border py-1 pr-1 pl-3 text-xs shadow-md',
         aboveBar && 'max-lg:bottom-24',
-        notice.kind === 'error' &&
-          'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200',
-        notice.kind !== 'error' &&
-          'border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900'
+        'bg-popover text-popover-foreground',
+        notice.kind === 'error' && 'border-destructive/50 text-destructive'
       )}
     >
       <span className="flex-1">{notice.text}</span>
       {notice.kind === 'marked' && (
-        <button
-          type="button"
+        <Button
+          variant="link"
+          size="sm"
           onClick={() => onUndo(notice.actionId)}
           disabled={busy}
-          className="font-medium underline disabled:opacity-50 pointer-coarse:min-h-11"
         >
           Undo
-        </button>
+        </Button>
       )}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="icon-sm"
         onClick={onDismiss}
         aria-label="Dismiss"
-        className="text-neutral-500 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+        className="text-muted-foreground pointer-coarse:min-w-11"
       >
-        ×
-      </button>
+        <XIcon />
+      </Button>
     </output>
   )
 }

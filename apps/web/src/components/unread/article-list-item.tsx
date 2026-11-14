@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
+import { Button } from '@/components/ui/button.tsx'
+
 import { RelativeTime } from '../relative-time.tsx'
 import { articles } from './list-state.ts'
 
@@ -77,11 +79,11 @@ export function ArticleListItem({
       aria-setsize={setSize}
       style={{ transform: `translateY(${offset}px)` }}
       className={cn(
-        'absolute top-0 left-0 w-full border-b border-neutral-200 px-3 py-3 dark:border-neutral-800',
+        'absolute top-0 left-0 w-full border-b px-3 py-3',
         read && 'opacity-50',
-        open && 'bg-neutral-50 dark:bg-neutral-900',
+        open && 'bg-muted',
         cursor &&
-          'before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-blue-600 dark:before:bg-blue-400'
+          'before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-primary'
       )}
     >
       <button
@@ -98,12 +100,12 @@ export function ArticleListItem({
           {read && <span className="sr-only"> (read)</span>}
         </span>
         {row.excerpt !== null && (
-          <span className="mt-0.5 line-clamp-2 block text-sm text-neutral-600 dark:text-neutral-400">
+          <span className="text-muted-foreground mt-0.5 line-clamp-2 block text-xs">
             {row.excerpt}
           </span>
         )}
       </button>
-      <div className="mt-1 flex flex-wrap gap-x-3 text-sm text-neutral-500">
+      <div className="text-muted-foreground mt-1 flex flex-wrap gap-x-3 text-xs">
         {showFeed && <span>{row.feedTitle}</span>}
         <RelativeTime at={row.publishedAt} now={now} label="Published" />
       </div>
@@ -111,11 +113,12 @@ export function ArticleListItem({
         Actions get their own line, and the read toggle a fixed width, so
         marking a row never changes its height and moves the rows below.
       */}
-      <div className="mt-1 flex gap-1 text-sm">
+      <div className="mt-1 -ml-2 flex gap-1">
         {!read && (
-          <button
-            type="button"
-            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground w-24 justify-start"
             onClick={(event) => {
               event.currentTarget.blur()
               onMarkRead()
@@ -124,12 +127,13 @@ export function ArticleListItem({
             aria-label={`Mark ${title} read`}
           >
             Mark read
-          </button>
+          </Button>
         )}
         {read && (
-          <button
-            type="button"
-            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground w-24 justify-start"
             onClick={(event) => {
               event.currentTarget.blur()
               onMarkUnread()
@@ -138,23 +142,23 @@ export function ArticleListItem({
             aria-label={`Mark ${title} unread`}
           >
             Mark unread
-          </button>
+          </Button>
         )}
         {!first && !confirming && (
-          <button
-            type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
             onClick={() => setConfirming(true)}
             disabled={busy}
             aria-label={`Mark all above ${title} as read`}
           >
             Mark all above as read
-          </button>
+          </Button>
         )}
         {!first && confirming && (
-          <button
-            type="button"
-            className="rounded bg-neutral-900 px-2 py-1 text-sm text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
+          <Button
+            size="sm"
             onClick={(event) => {
               event.currentTarget.blur()
               setConfirming(false)
@@ -164,7 +168,7 @@ export function ArticleListItem({
             aria-label={`Confirm: mark ${articles(above)} above ${title} as read`}
           >
             Mark {above} above?
-          </button>
+          </Button>
         )}
       </div>
     </li>

@@ -95,7 +95,7 @@ export const landNewArticle = async (
 
   await expect(async () => {
     await request.get(
-      `http://localhost:${DEV_SYNC_PORT}/cdn-cgi/handler/scheduled?cron=0+*+*+*+*`
+      `http://localhost:${DEV_SYNC_PORT}/cdn-cgi/handler/scheduled?cron=17+*+*+*+*`
     )
     await other.goto(`/feeds/${feedId}`)
     await expect(articleRow(other, title)).toHaveCount(1, { timeout: 1000 })

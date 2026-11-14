@@ -1,6 +1,9 @@
+import { cn } from 'cn'
 import { useEffect, useState } from 'react'
 
 import type { Article } from '@dusty/db'
+
+import { Button, buttonVariants } from '@/components/ui/button.tsx'
 
 import { exactTime } from '../../lib/time.ts'
 import { getArticleToRead } from '../../server/articles.ts'
@@ -104,40 +107,30 @@ function ArticleActions({
   onNext: (() => void) | null
 }) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 flex items-center gap-1 border-t border-neutral-200 bg-white px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:static lg:mb-4 lg:border-0 lg:bg-transparent lg:p-0 dark:border-neutral-800 dark:bg-neutral-950 lg:dark:bg-transparent">
-      <button
-        type="button"
-        onClick={onClose}
-        className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
-      >
+    <div className="bg-background fixed inset-x-0 bottom-0 z-20 flex items-center gap-1 border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:static lg:mb-4 lg:border-0 lg:bg-transparent lg:p-0">
+      <Button variant="ghost" onClick={onClose}>
         ← Back to the list
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
+        variant="ghost"
         onClick={onPrevious ?? undefined}
         disabled={onPrevious === null}
         aria-label="Previous article"
-        className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 disabled:opacity-40 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
       >
         Previous
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
+        variant="ghost"
         onClick={onNext ?? undefined}
         disabled={onNext === null}
         aria-label="Next article"
-        className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 disabled:opacity-40 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
       >
         Next
-      </button>
+      </Button>
       {read && (
-        <button
-          type="button"
-          onClick={onMarkUnread}
-          className="ml-auto rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
-        >
+        <Button variant="outline" onClick={onMarkUnread} className="ml-auto">
           Mark unread
-        </button>
+        </Button>
       )}
     </div>
   )
@@ -145,16 +138,18 @@ function ArticleActions({
 
 function ArticleBody({ loaded }: { loaded: Loaded }) {
   if (loaded.kind === 'loading') {
-    return <p className="text-neutral-500">Loading…</p>
+    return <p className="text-muted-foreground">Loading…</p>
   }
 
   if (loaded.kind === 'missing') {
-    return <p className="text-neutral-500">This article is no longer here.</p>
+    return (
+      <p className="text-muted-foreground">This article is no longer here.</p>
+    )
   }
 
   if (loaded.kind === 'error') {
     return (
-      <p className="text-red-600 dark:text-red-400">
+      <p className="text-destructive">
         Couldn't load the article. Please try again.
       </p>
     )
@@ -165,11 +160,11 @@ function ArticleBody({ loaded }: { loaded: Loaded }) {
   return (
     <>
       <header className="mb-4">
-        <p className="text-sm text-neutral-500">{article.feedTitle}</p>
+        <p className="text-muted-foreground text-sm">{article.feedTitle}</p>
         <h2 className="text-2xl leading-tight font-semibold break-words">
           {article.title ?? 'Untitled'}
         </h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="text-muted-foreground mt-1 text-sm">
           {article.author !== null && `${article.author} · `}
           <time dateTime={new Date(article.publishedAt).toISOString()}>
             {exactTime(article.publishedAt)}
@@ -180,7 +175,7 @@ function ArticleBody({ loaded }: { loaded: Loaded }) {
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center text-sm underline pointer-coarse:min-h-11"
+            className={cn(buttonVariants({ variant: 'link' }), 'mt-1 px-0')}
           >
             Open the original
           </a>
@@ -196,7 +191,7 @@ function ArticleBody({ loaded }: { loaded: Loaded }) {
         />
       )}
       {article.html === null && (
-        <p className="text-neutral-600 dark:text-neutral-400">
+        <p className="text-muted-foreground">
           {article.excerpt ?? 'This article has no content in its feed.'}{' '}
           {article.url !== null && 'Open the original to read it.'}
         </p>

@@ -7,6 +7,11 @@ import {
   removeSubscription,
   renameSubscription,
 } from '../../server/subscriptions.ts'
+import { Badge } from '@/components/ui/badge.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Label } from '@/components/ui/label.tsx'
+
 import { RelativeTime } from '../relative-time.tsx'
 import { failureNote, healthLabel, removeConfirmation } from './health.ts'
 
@@ -40,7 +45,7 @@ export function SubscriptionRow({
     <li
       id={`feed-${subscription.id}`}
       className={cn(
-        'flex flex-col gap-1 border-b border-neutral-200 py-3 transition-colors dark:border-neutral-800',
+        'flex flex-col gap-1 border-b py-3 transition-colors',
         highlighted && 'bg-yellow-50 dark:bg-yellow-950/40'
       )}
     >
@@ -58,35 +63,34 @@ export function SubscriptionRow({
         {!renaming && (
           <h3 className="font-medium break-words">{subscription.title}</h3>
         )}
-        <span
+        <Badge
+          variant="outline"
           className={cn(
-            'rounded-full px-2 py-0.5 text-xs font-medium',
-            label.tone === 'good' &&
-              'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
-            label.tone === 'warn' &&
-              'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-            label.tone === 'bad' &&
-              'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+            label.tone === 'good' && 'text-green-700 dark:text-green-400',
+            label.tone === 'warn' && 'text-amber-700 dark:text-amber-400',
+            label.tone === 'bad' && 'border-destructive/40 text-destructive'
           )}
         >
           {label.text}
-        </span>
-        <span className="text-sm text-neutral-500">
+        </Badge>
+        <span className="text-muted-foreground text-xs">
           {subscription.unread} unread
         </span>
       </div>
 
       {!untitled && (
-        <p className="text-xs break-all text-neutral-500">{subscription.url}</p>
+        <p className="text-muted-foreground text-xs break-all">
+          {subscription.url}
+        </p>
       )}
 
       {subscription.customTitle !== null && subscription.feedTitle !== null && (
-        <p className="text-xs text-neutral-500">
+        <p className="text-muted-foreground text-xs">
           The feed calls itself {subscription.feedTitle}
         </p>
       )}
 
-      <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+      <dl className="text-muted-foreground flex flex-wrap gap-x-6 gap-y-1 text-xs">
         <div className="flex gap-1">
           <dt>Last article:</dt>
           <dd>
@@ -118,53 +122,56 @@ export function SubscriptionRow({
       {failure !== null && (
         <p
           className={cn(
-            'text-sm',
-            failure.flagged && 'text-red-700 dark:text-red-400',
-            !failure.flagged && 'text-neutral-600 dark:text-neutral-400'
+            'text-xs',
+            failure.flagged && 'text-destructive',
+            !failure.flagged && 'text-muted-foreground'
           )}
         >
           {failure.text}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="-ml-2 flex flex-wrap items-center gap-1">
         {!renaming && (
-          <button
-            type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
             onClick={() => setRenaming(true)}
             aria-label={`Rename ${subscription.title}`}
           >
             Rename
-          </button>
+          </Button>
         )}
         {!confirmingRemove && (
-          <button
-            type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
             onClick={() => setConfirmingRemove(true)}
             aria-label={`Remove ${subscription.title}`}
           >
             Remove
-          </button>
+          </Button>
         )}
         {confirmingRemove && (
           <>
-            <button
-              type="button"
+            <Button
+              variant="destructive"
+              size="sm"
               disabled={busy}
               onClick={remove}
-              className="rounded bg-red-600 px-2 py-1 text-sm font-medium text-white disabled:opacity-50 pointer-coarse:min-h-11"
             >
               {removeConfirmation(subscription)}
-            </button>
-            <button
-              type="button"
-              className="shrink-0 rounded px-2 py-1 text-sm whitespace-nowrap text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
               onClick={() => setConfirmingRemove(false)}
             >
               Keep it
-            </button>
+            </Button>
           </>
         )}
       </div>
@@ -196,30 +203,28 @@ function RenameForm({
 
   return (
     <form onSubmit={save} className="flex flex-wrap items-center gap-2">
-      <label className="sr-only" htmlFor={`rename-${subscription.id}`}>
+      <Label className="sr-only" htmlFor={`rename-${subscription.id}`}>
         New name for {subscription.title}
-      </label>
-      <input
+      </Label>
+      <Input
         ref={input}
         id={`rename-${subscription.id}`}
         value={title}
         onChange={(event) => setTitle(event.target.value)}
         placeholder={subscription.feedTitle ?? subscription.url}
-        className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700"
+        className="w-64"
       />
-      <button
-        type="submit"
-        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
-      >
+      <Button type="submit" variant="outline" size="sm">
         Save
-      </button>
-      <button
-        type="button"
-        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-muted-foreground"
         onClick={() => onDone(false)}
       >
         Cancel
-      </button>
+      </Button>
     </form>
   )
 }

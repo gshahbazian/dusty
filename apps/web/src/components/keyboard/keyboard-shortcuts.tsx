@@ -9,6 +9,13 @@ import {
 } from 'react'
 
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog.tsx'
+
+import {
   belongsToTarget,
   createKeyParser,
   keyToken,
@@ -101,9 +108,9 @@ export function KeyboardShortcuts({ children }: { children: ReactNode }) {
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      // While the `?` overlay is open, only closing it does anything (Esc
-      // closes a dialog by itself).
-      if (document.querySelector('dialog[open]') !== null) {
+      // While a dialog (the `?` overlay) is open, only closing it does
+      // anything (Esc closes a dialog by itself).
+      if (document.querySelector('[role="dialog"]') !== null) {
         if (event.key === 'q' || event.key === '?') setHelpOpen(false)
 
         return
@@ -147,44 +154,32 @@ export function KeyboardShortcuts({ children }: { children: ReactNode }) {
       {typed !== '' && (
         <p
           aria-hidden="true"
-          className="fixed right-4 bottom-4 z-40 rounded-md bg-neutral-900 px-2 py-1 font-mono text-sm text-white dark:bg-neutral-100 dark:text-neutral-900"
+          className="bg-primary text-primary-foreground fixed right-4 bottom-4 z-40 px-2 py-1 font-mono text-sm"
         >
           {typed}
         </p>
       )}
-      {helpOpen && <ShortcutsHelp onClose={() => setHelpOpen(false)} />}
+      <ShortcutsHelp open={helpOpen} onOpenChange={setHelpOpen} />
     </PageCommands.Provider>
   )
 }
 
 /** The `?` overlay: every binding, straight from the table. */
-function ShortcutsHelp({ onClose }: { onClose: () => void }) {
-  const dialog = useRef<HTMLDialogElement>(null)
-
-  useEffect(() => {
-    dialog.current?.showModal()
-  }, [])
-
+function ShortcutsHelp({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
   return (
-    <dialog
-      ref={dialog}
-      aria-label="Keyboard shortcuts"
-      onClose={onClose}
-      className="m-auto max-h-[85vh] w-[min(40rem,calc(100%-2rem))] overflow-y-auto rounded-lg border border-neutral-200 bg-white p-0 text-neutral-900 backdrop:bg-black/40 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100"
-    >
-      <div className="p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Keyboard shortcuts</h2>
-          <button
-            type="button"
-            onClick={() => dialog.current?.close()}
-            className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
-          >
-            Close
-          </button>
-        </div>
-        <table className="w-full text-sm">
-          <thead className="text-left text-neutral-500">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Keyboard shortcuts</DialogTitle>
+        </DialogHeader>
+        <table className="w-full text-xs">
+          <thead className="text-muted-foreground text-left">
             <tr>
               <th className="py-1 pr-3 font-normal">Keys</th>
               <th className="py-1 pr-3 font-normal">On a list</th>
@@ -193,32 +188,29 @@ function ShortcutsHelp({ onClose }: { onClose: () => void }) {
           </thead>
           <tbody>
             {BINDINGS.map((binding) => (
-              <tr
-                key={binding.command}
-                className="border-t border-neutral-100 dark:border-neutral-900"
-              >
+              <tr key={binding.command} className="border-t">
                 <td className="py-1.5 pr-3 whitespace-nowrap">
                   {binding.sequences.map((sequence) => (
                     <kbd
                       key={sequenceLabel(sequence)}
-                      className="mr-1 rounded border border-neutral-300 px-1.5 font-mono text-xs dark:border-neutral-700"
+                      className="mr-1 border px-1.5 font-mono"
                     >
                       {sequenceLabel(sequence)}
                     </kbd>
                   ))}
                   {binding.counted === true && (
-                    <span className="text-xs text-neutral-500">(count)</span>
+                    <span className="text-muted-foreground">(count)</span>
                   )}
                 </td>
                 <td className="py-1.5 pr-3">{binding.list}</td>
-                <td className="py-1.5 text-neutral-600 dark:text-neutral-400">
+                <td className="text-muted-foreground py-1.5">
                   {binding.article ?? 'Same'}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-    </dialog>
+      </DialogContent>
+    </Dialog>
   )
 }

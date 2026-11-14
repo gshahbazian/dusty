@@ -3,6 +3,10 @@ import { useState, type FormEvent } from 'react'
 
 import type { AddFeedResult } from '@dusty/sync/contract'
 
+import { Button } from '@/components/ui/button.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Label } from '@/components/ui/label.tsx'
+
 import { addSubscription } from '../../server/subscriptions.ts'
 
 type Status =
@@ -81,11 +85,9 @@ export function AddFeedForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
-      <label htmlFor="add-feed-url" className="text-sm font-medium">
-        Add a feed
-      </label>
+      <Label htmlFor="add-feed-url">Add a feed</Label>
       <div className="flex gap-2">
-        <input
+        <Input
           id="add-feed-url"
           type="text"
           inputMode="url"
@@ -95,40 +97,37 @@ export function AddFeedForm({
           value={url}
           onChange={(event) => setUrl(event.target.value)}
           disabled={adding}
-          className="flex-1 rounded-md border border-neutral-300 bg-transparent px-3 py-2 text-sm dark:border-neutral-700"
+          className="flex-1"
         />
-        <button
-          type="submit"
-          disabled={adding || url.trim() === ''}
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
-        >
+        <Button type="submit" disabled={adding || url.trim() === ''}>
           {adding ? 'Adding…' : 'Add'}
-        </button>
+        </Button>
       </div>
-      <output className="block min-h-5 text-sm" aria-live="polite">
+      <output className="block min-h-5 text-xs" aria-live="polite">
         {status.kind === 'done' && (
           <>
             <span
               className={cn(
-                isRefusal(status) && 'text-red-600 dark:text-red-400',
-                !isRefusal(status) && 'text-neutral-600 dark:text-neutral-400'
+                isRefusal(status) && 'text-destructive',
+                !isRefusal(status) && 'text-muted-foreground'
               )}
             >
               {resultMessage(status.result)}
             </span>{' '}
             {existingId !== null && (
-              <button
-                type="button"
-                className="underline"
+              <Button
+                variant="link"
+                size="xs"
+                className="px-0"
                 onClick={() => onShowExisting(existingId)}
               >
                 Show it
-              </button>
+              </Button>
             )}
           </>
         )}
         {status.kind === 'error' && (
-          <span className="text-red-600 dark:text-red-400">
+          <span className="text-destructive">
             Something went wrong. Please try again.
           </span>
         )}

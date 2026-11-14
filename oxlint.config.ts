@@ -69,4 +69,12 @@ export default defineConfig({
     'anti-slop-effect/no-service-constructor-imports': 'error',
     'anti-slop-effect/prefer-effect-match': 'error',
   },
+  overrides: [
+    {
+      // shadcn's generated components (added with `shadcn add`): a generic
+      // <Label> is tied to its control where it is used, not here.
+      files: ['apps/web/src/components/ui/**'],
+      rules: { 'jsx-a11y/label-has-associated-control': 'off' },
+    },
+  ],
 })
