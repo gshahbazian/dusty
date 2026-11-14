@@ -91,3 +91,16 @@ Every HTML response gets a strict policy with a fresh nonce:
   router's `ssr.nonce` puts it on every script it renders.
 - `alchemy dev` adds only what Vite's dev server needs (its HMR socket and
   inline preamble), so the policy is exercised locally too.
+
+## Follow-ups for M4
+
+- **Long lists.** `listUnread` has no limit; the whole list is one query
+  and one response (about 400–500 bytes of JSON a row). In M4, together
+  with virtualization:
+  - virtualize the rows, so thousands of them don't slow scrolling or keys;
+  - guard very large lists. A first load with tens of thousands of unread
+    articles is heavy, and `markArticlesRead` takes at most 20,000 IDs;
+  - if a list needs real paging, page by list position (published time
+    plus id), not page number, with every later page limited to
+    `first_seen_at <= snapshotAt`. The loaded pages then stay one snapshot,
+    so mark all above, undo and the counts work unchanged.
