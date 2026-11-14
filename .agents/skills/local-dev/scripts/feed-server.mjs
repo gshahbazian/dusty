@@ -7,6 +7,9 @@
 //   /status/<code>    answers with that HTTP status
 //   /slow             never answers (exercises the fetch timeout)
 //   /html             an HTML page, not a feed
+//   /generated.xml?run=<id>   an RSS feed of N items (3 to start)
+//   /generated/add?run=<id>   adds one item to that feed, newer than the rest
+//                             (lets a test land new articles mid-test)
 import { createHash } from 'node:crypto'
 import { readFile, readdir } from 'node:fs/promises'
 import { createServer } from 'node:http'
@@ -49,8 +52,41 @@ const serveFixture = async (name, request, response) => {
   response.writeHead(200, { 'content-type': contentType(name), etag }).end(body)
 }
 
+/** Item counts for /generated.xml, by `run`. */
+const generated = new Map()
+const GENERATED_START = Date.UTC(2026, 0, 1)
+
+const generatedFeed = (run) => {
+  const count = generated.get(run) ?? 3
+  const items = Array.from({ length: count }, (_, i) => {
+    const n = i + 1
+    const date = new Date(GENERATED_START + n * 3_600_000).toUTCString()
+
+    return `<item><title>Generated ${n}</title><guid>generated-${run}-${n}</guid><link>https://generated.example.com/${run}/${n}</link><pubDate>${date}</pubDate><description>Item ${n} of ${run}</description></item>`
+  })
+
+  return `<?xml version="1.0"?><rss version="2.0"><channel><title>Generated ${run}</title><link>https://generated.example.com/</link>${items.join('')}</channel></rss>`
+}
+
 const server = createServer(async (request, response) => {
-  const path = new URL(request.url ?? '/', 'http://localhost').pathname
+  const requestUrl = new URL(request.url ?? '/', 'http://localhost')
+  const path = requestUrl.pathname
+  const run = requestUrl.searchParams.get('run') ?? 'default'
+
+  if (path === '/generated.xml') {
+    response
+      .writeHead(200, { 'content-type': 'application/rss+xml' })
+      .end(generatedFeed(run))
+
+    return
+  }
+
+  if (path === '/generated/add') {
+    generated.set(run, (generated.get(run) ?? 3) + 1)
+    response.writeHead(200).end(String(generated.get(run)))
+
+    return
+  }
 
   console.log(`${request.method} ${path}`)
 

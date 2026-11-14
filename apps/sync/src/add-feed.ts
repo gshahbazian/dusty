@@ -95,7 +95,7 @@ export const addFeed = Effect.fn('sync.add_feed')(function* (
         Effect.annotateLogs({
           input,
           operation: error.operation,
-          error: error.cause.message,
+          error: error.detail,
         }),
         Effect.as(invalid('sync error, please try again'))
       )

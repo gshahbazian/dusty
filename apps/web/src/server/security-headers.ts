@@ -1,22 +1,59 @@
 /**
- * Headers on every response. The full Content Security Policy for article
- * pages (with nonces) arrives with article rendering in M3; this baseline
- * already blocks framing, plugins and foreign form posts.
+ * The Content Security Policy for every response. Article HTML comes from
+ * strangers: it is cleaned when stored, and this is the second layer.
+ *
+ * - Scripts: only those the app rendered with this request's nonce, and the
+ *   app chunks they load (`'strict-dynamic'`). Nothing else runs.
+ * - Everything else is off unless the app needs it: its own styles, fonts
+ *   and API calls, and images over https (article images).
+ * - No frames, plugins, or form posts elsewhere; no `<base>` tricks.
+ *
+ * `alchemy dev` needs a little more: Vite injects styles from scripts and
+ * talks to its dev server over a websocket.
  */
-const HEADERS: ReadonlyArray<readonly [string, string]> = [
-  ['X-Content-Type-Options', 'nosniff'],
-  ['Referrer-Policy', 'no-referrer'],
-  ['X-Frame-Options', 'DENY'],
-  [
-    'Content-Security-Policy',
-    "frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'self'",
-  ],
-]
+export const contentSecurityPolicy = (options: {
+  readonly nonce: string
+  readonly dev: boolean
+}): string => {
+  const { nonce, dev } = options
 
-export const withSecurityHeaders = (response: Response): Response => {
+  const directives: ReadonlyArray<readonly [string, ...string[]]> = [
+    ['default-src', "'none'"],
+    ['script-src', `'nonce-${nonce}'`, "'strict-dynamic'"],
+    ['style-src', "'self'", dev ? "'unsafe-inline'" : `'nonce-${nonce}'`],
+    ['img-src', "'self'", 'https:', ...(dev ? ['http:'] : [])],
+    ['media-src', 'https:'],
+    ['font-src', "'self'"],
+    ['connect-src', "'self'", ...(dev ? ['ws:'] : [])],
+    ['manifest-src', "'self'"],
+    ['worker-src', "'self'"],
+    ['frame-src', "'none'"],
+    ['object-src', "'none'"],
+    ['base-uri', "'none'"],
+    ['form-action', "'self'"],
+    ['frame-ancestors', "'none'"],
+  ]
+
+  return directives.map((directive) => directive.join(' ')).join('; ')
+}
+
+/** A fresh, unguessable nonce for one response. */
+export const createNonce = (): string => {
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+
+  return btoa(String.fromCharCode(...bytes))
+}
+
+export const withSecurityHeaders = (
+  response: Response,
+  csp: { readonly nonce: string; readonly dev: boolean }
+): Response => {
   const secured = new Response(response.body, response)
 
-  for (const [name, value] of HEADERS) secured.headers.set(name, value)
+  secured.headers.set('X-Content-Type-Options', 'nosniff')
+  secured.headers.set('Referrer-Policy', 'no-referrer')
+  secured.headers.set('X-Frame-Options', 'DENY')
+  secured.headers.set('Content-Security-Policy', contentSecurityPolicy(csp))
 
   return secured
 }

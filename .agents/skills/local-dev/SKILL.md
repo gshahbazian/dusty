@@ -58,6 +58,19 @@ Hot reloads show up there as `[Web] hmr update ...` and
 `[Sync] Updated in ...ms`. Migrations are applied silently; check them with
 `db.sh "select * from __alchemy_migrations"`.
 
+Both Workers open the same local D1 SQLite file from separate processes,
+so one can find it locked by the other. The log then shows
+`database is locked: SQLITE_BUSY` from `workerd/util/sqlite.c++`, while
+JavaScript only sees `D1_ERROR: Failed to get session commit token:
+internal error; reference = ...` (reads hit this too, not just writes).
+`packages/db/src/busy-retry.ts` retries both forms for about half a second,
+so a few BUSY lines in the log are normal; only a request that still fails
+afterwards is a bug.
+
+If an edit under `packages/` shows `[Sync] Updated` in the log but no
+`[Web] hmr update`, the web Worker is still running the old code; restart
+the stack (`dev-stop.sh`, `dev-start.sh`) before trusting what you see.
+
 Don't start it with a bare `pnpm dev > log &` from a script: `.alchemy/`
 does not exist on a fresh checkout, and a background job without job
 control ignores SIGINT, so it is hard to stop cleanly.
@@ -88,6 +101,10 @@ The sync service fetches real HTTP, so give it something to fetch:
   tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) with ETags,
   so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
   you an HTTP error, a timeout and a page that is not a feed.
+- `/generated.xml?run=<id>` is a feed that changes on demand: it starts
+  with three items, and each `curl localhost:5175/generated/add?run=<id>`
+  adds one newer than the rest. Use it to land new articles mid-test (the
+  unread browser tests do), then `trigger-cron.sh` to sync them in.
 - `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
   first sync shows six feeds `ok`, one `http` (404 not found) and one
   `invalid_feed`.
@@ -132,6 +149,11 @@ sync logs. Tests for the sync engine are in
   itself, so that test uses the plain `/rss.xml`, and removes it only if it
   added it (a seeded database keeps its own). A run that fails midway can
   leave a few feeds behind; `reset.sh` clears them.
+- `e2e/unread.spec.ts` covers the unread lists: opening an article marks
+  it read, marking it unread again, and "mark all above as read" with
+  undo, including a sync landing between loading the list and the action
+  (the spec's must-have). Each test subscribes to its own generated feed,
+  since tests run in parallel.
 - The smoke test (`e2e/smoke.spec.ts`) loads the page as the owner and expects the
   background sync request to return 200. The request returns 200 even
   when the run is skipped, so check the outcome in the log:

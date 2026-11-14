@@ -1,6 +1,19 @@
 export { createDb, schema, type Db } from './client.ts'
 
 export {
+  getArticle,
+  listUnread,
+  markRead,
+  markUnread,
+  undoMarkRead,
+  unreadCounts,
+  type Article,
+  type ArticleRow,
+  type FeedCount,
+  type MarkRead,
+} from './articles.ts'
+
+export {
   listFeedsToSync,
   recordFeedChanged,
   recordFeedFailure,

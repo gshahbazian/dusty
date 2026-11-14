@@ -54,7 +54,7 @@ export const syncFeed = Effect.fn('sync.feed')(function* (
       recordFailure(db, feed, error)
     ),
     Effect.catchTag('DatabaseError', (error) =>
-      reportInternal(db, feed, `${error.operation}: ${error.cause.message}`)
+      reportInternal(db, feed, `${error.operation}: ${error.detail}`)
     ),
     Effect.catchCause((cause) => reportInternal(db, feed, Cause.pretty(cause)))
   )

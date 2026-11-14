@@ -80,7 +80,7 @@ export default Sync.make(
           Effect.logError('scheduled sync failed').pipe(
             Effect.annotateLogs({
               operation: error.operation,
-              error: error.cause.message,
+              error: error.detail,
             })
           )
         ),

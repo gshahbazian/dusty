@@ -1,9 +1,11 @@
+import { cn } from 'cn'
 import {
   HeadContent,
   Link,
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
@@ -42,16 +44,18 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   )
 }
 
-const navLink =
-  'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
-
-const activeNavLink = {
-  className:
-    'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
-}
+/** "Unread" covers the global list and every feed's list. */
+const isUnreadPath = (pathname: string): boolean =>
+  pathname === '/' || pathname.startsWith('/feeds/')
 
 function AppLayout() {
   const session = Route.useLoaderData()
+
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+
+  const unreadActive = isUnreadPath(pathname)
 
   // Loading the app starts a background sync; pages never wait for it.
   useEffect(() => {
@@ -59,22 +63,34 @@ function AppLayout() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-4xl px-4 pb-16">
+    <div
+      className={cn(
+        'mx-auto px-4 pb-16',
+        unreadActive && 'max-w-[96rem]',
+        !unreadActive && 'max-w-4xl'
+      )}
+    >
       <header className="flex items-center gap-2 border-b border-neutral-200 py-3 dark:border-neutral-800">
         <span className="mr-2 font-semibold">Dusty</span>
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
-            className={navLink}
-            activeProps={activeNavLink}
-            activeOptions={{ exact: true }}
+            className={cn(
+              'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+              unreadActive &&
+                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
+            )}
+            aria-current={unreadActive ? 'page' : undefined}
           >
             Unread
           </Link>
           <Link
             to="/subscriptions"
-            className={navLink}
-            activeProps={activeNavLink}
+            className="rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            activeProps={{
+              className:
+                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
+            }}
           >
             Subscriptions
           </Link>
