@@ -78,10 +78,6 @@ export function AddFeedForm({
   const adding = status.kind === 'adding'
   const existingId = existingFeedId(status)
 
-  const messageTone = isRefusal(status)
-    ? 'text-red-600 dark:text-red-400'
-    : 'text-neutral-600 dark:text-neutral-400'
-
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
       <label htmlFor="add-feed-url" className="text-sm font-medium">
@@ -111,7 +107,15 @@ export function AddFeedForm({
       <output className="block min-h-5 text-sm" aria-live="polite">
         {status.kind === 'done' && (
           <>
-            <span className={messageTone}>{resultMessage(status.result)}</span>{' '}
+            <span
+              className={
+                isRefusal(status)
+                  ? 'text-red-600 dark:text-red-400'
+                  : 'text-neutral-600 dark:text-neutral-400'
+              }
+            >
+              {resultMessage(status.result)}
+            </span>{' '}
             {existingId !== null && (
               <button
                 type="button"

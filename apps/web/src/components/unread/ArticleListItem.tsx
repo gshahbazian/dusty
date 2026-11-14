@@ -2,9 +2,6 @@ import type { ArticleRow } from '@dusty/db'
 
 import { RelativeTime } from '../RelativeTime.tsx'
 
-const action =
-  'rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800'
-
 /**
  * One row of an unread list. A read row stays where it is (dimmed) until
  * the list is refreshed, so nothing moves under the cursor.
@@ -66,7 +63,7 @@ export function ArticleListItem({
           {!read && (
             <button
               type="button"
-              className={action}
+              className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
               onClick={onMarkRead}
               disabled={busy}
               aria-label={`Mark ${title} read`}
@@ -77,7 +74,7 @@ export function ArticleListItem({
           {read && (
             <button
               type="button"
-              className={action}
+              className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
               onClick={onMarkUnread}
               disabled={busy}
               aria-label={`Mark ${title} unread`}
@@ -88,7 +85,7 @@ export function ArticleListItem({
           {!first && (
             <button
               type="button"
-              className={action}
+              className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
               onClick={onMarkAllAbove}
               disabled={busy}
               aria-label={`Mark all above ${title} as read`}

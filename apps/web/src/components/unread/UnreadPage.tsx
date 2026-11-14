@@ -149,13 +149,6 @@ const countFor = (feedId: number | null, counts: Counts): number => {
   return counts.byFeed.find((count) => count.feedId === feedId)?.unread ?? 0
 }
 
-const feedLink =
-  'flex justify-between gap-3 rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800'
-
-const activeFeedLink = {
-  className: 'bg-neutral-100 font-medium dark:bg-neutral-800',
-}
-
 /** All unread, then each feed with unread articles, with counts. */
 function FeedNav({
   counts,
@@ -195,8 +188,10 @@ function FeedLinks({
       <li>
         <Link
           to="/"
-          className={feedLink}
-          activeProps={activeFeedLink}
+          className="flex justify-between gap-3 rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          activeProps={{
+            className: 'bg-neutral-100 font-medium dark:bg-neutral-800',
+          }}
           activeOptions={{ exact: true, includeSearch: false }}
         >
           <span>All unread</span>
@@ -208,8 +203,10 @@ function FeedLinks({
           <Link
             to="/feeds/$feedId"
             params={{ feedId: String(feed.feedId) }}
-            className={feedLink}
-            activeProps={activeFeedLink}
+            className="flex justify-between gap-3 rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            activeProps={{
+              className: 'bg-neutral-100 font-medium dark:bg-neutral-800',
+            }}
             activeOptions={{ includeSearch: false }}
           >
             <span className="break-words">{feed.title}</span>
@@ -278,15 +275,10 @@ function NoticeBar({
 }) {
   if (notice === null) return <output aria-live="polite" className="sr-only" />
 
-  const tone =
-    notice.kind === 'error'
-      ? 'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200'
-      : 'border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900'
-
   return (
     <output
       aria-live="polite"
-      className={`flex flex-wrap items-center gap-3 rounded-md border px-3 py-2 text-sm ${tone}`}
+      className={`flex flex-wrap items-center gap-3 rounded-md border px-3 py-2 text-sm ${notice.kind === 'error' ? 'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200' : 'border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900'}`}
     >
       <span className="flex-1">{notice.text}</span>
       {notice.kind === 'marked' && (

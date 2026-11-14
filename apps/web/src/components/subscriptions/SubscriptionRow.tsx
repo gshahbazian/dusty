@@ -7,21 +7,7 @@ import {
   renameSubscription,
 } from '../../server/subscriptions.ts'
 import { RelativeTime } from '../RelativeTime.tsx'
-import {
-  failureNote,
-  healthLabel,
-  removeConfirmation,
-  type HealthLabel,
-} from './health.ts'
-
-const BADGE_TONES: Readonly<Record<HealthLabel['tone'], string>> = {
-  good: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
-  warn: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-  bad: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
-}
-
-const actionButton =
-  'rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800'
+import { failureNote, healthLabel, removeConfirmation } from './health.ts'
 
 /** One subscription: its name, unread count, health and actions. */
 export function SubscriptionRow({
@@ -71,7 +57,7 @@ export function SubscriptionRow({
           <h3 className="font-medium break-words">{subscription.title}</h3>
         )}
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${BADGE_TONES[label.tone]}`}
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${label.tone === 'good' ? 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300' : ''} ${label.tone === 'warn' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : ''} ${label.tone === 'bad' ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300' : ''}`}
         >
           {label.text}
         </span>
@@ -135,7 +121,7 @@ export function SubscriptionRow({
         {!renaming && (
           <button
             type="button"
-            className={actionButton}
+            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
             onClick={() => setRenaming(true)}
             aria-label={`Rename ${subscription.title}`}
           >
@@ -145,7 +131,7 @@ export function SubscriptionRow({
         {!confirmingRemove && (
           <button
             type="button"
-            className={actionButton}
+            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
             onClick={() => setConfirmingRemove(true)}
             aria-label={`Remove ${subscription.title}`}
           >
@@ -164,7 +150,7 @@ export function SubscriptionRow({
             </button>
             <button
               type="button"
-              className={`${actionButton} shrink-0 whitespace-nowrap`}
+              className="shrink-0 rounded px-2 py-1 text-sm whitespace-nowrap text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
               onClick={() => setConfirmingRemove(false)}
             >
               Keep it
@@ -211,12 +197,15 @@ function RenameForm({
         placeholder={subscription.feedTitle ?? subscription.url}
         className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 text-sm dark:border-neutral-700"
       />
-      <button type="submit" className={actionButton}>
+      <button
+        type="submit"
+        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+      >
         Save
       </button>
       <button
         type="button"
-        className={actionButton}
+        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
         onClick={() => onDone(false)}
       >
         Cancel

@@ -43,14 +43,6 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   )
 }
 
-const navLink =
-  'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
-
-const activeNavLink = {
-  className:
-    'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
-}
-
 /** "Unread" covers the global list and every feed's list. */
 const isUnreadPath = (pathname: string): boolean =>
   pathname === '/' || pathname.startsWith('/feeds/')
@@ -78,15 +70,18 @@ function AppLayout() {
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
-            className={`${navLink} ${unreadActive ? activeNavLink.className : ''}`}
+            className={`rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 ${unreadActive ? 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''}`}
             aria-current={unreadActive ? 'page' : undefined}
           >
             Unread
           </Link>
           <Link
             to="/subscriptions"
-            className={navLink}
-            activeProps={activeNavLink}
+            className="rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            activeProps={{
+              className:
+                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
+            }}
           >
             Subscriptions
           </Link>
