@@ -272,3 +272,79 @@ test('the feed picker lists every feed, caught up or not', async ({ page }) => {
 
   await unsubscribe(page, feed)
 })
+
+test('a new list starts at its top; opening an article keeps the list where it is', async ({
+  page,
+}) => {
+  const feed = feedFor('list-top', 30)
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 700 })
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('30 unread')
+
+  const scroller =
+    'document.querySelector(\'[aria-label="Unread articles"]\').parentElement'
+
+  const listTop = () => page.evaluate(`${scroller}.scrollTop`)
+
+  const scrollDown = async () => {
+    await page.evaluate(`${scroller}.scrollTo({ top: 1500 })`)
+    await expect.poll(listTop).toBeGreaterThan(1000)
+  }
+
+  // Unread → All: the new list starts at its top.
+  await scrollDown()
+  await page
+    .getByRole('group', { name: 'Show' })
+    .getByRole('button', { name: 'All' })
+    .click()
+  await expect(page).toHaveURL(/\?show=all$/)
+  await expect.poll(listTop).toBe(0)
+
+  // Opening an article doesn't move the list.
+  await scrollDown()
+
+  const before = await listTop()
+
+  // A row in the middle of the visible list (clicking one off screen would
+  // make Playwright scroll it into view first).
+  const middleRow = `(() => {
+    const list = ${scroller}
+    const y = list.getBoundingClientRect().top + list.clientHeight / 2
+    const row = [...list.querySelectorAll('li')].find((li) => {
+      const box = li.getBoundingClientRect()
+
+      return box.top <= y && box.bottom >= y
+    })
+
+    return row ? row.dataset.index : 'none'
+  })()`
+
+  // The list draws rows a frame after it scrolls: wait for one.
+  let middle = 'none'
+
+  await expect
+    .poll(async () => {
+      middle = String(await page.evaluate(middleRow))
+
+      return middle
+    })
+    .not.toBe('none')
+
+  await articleList(page)
+    .locator(`li[data-index="${middle}"]`)
+    .getByRole('button')
+    .first()
+    .click()
+  await expect(page).toHaveURL(/article=\d+/)
+  await expect.poll(listTop).toBe(before)
+
+  // Another feed (All unread) starts at its top too.
+  await scrollDown()
+  await page.getByRole('combobox', { name: 'Feed' }).selectOption('')
+  await expect(page).toHaveURL(/\/$/)
+  await expect.poll(listTop).toBe(0)
+
+  await unsubscribe(page, feed)
+})

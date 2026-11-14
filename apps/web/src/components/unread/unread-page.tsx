@@ -72,12 +72,23 @@ export function UnreadPage({
     if (articleId === null) setReadOnOpen(null)
   }
 
+  // Which list this is: another feed, or unread / all, is a new list. It
+  // starts at its top, with the cursor on its first row.
+  const listKey = `${feedId ?? 'all'}-${listShow?.show ?? 'unread'}`
+  const [shownList, setShownList] = useState(listKey)
+
+  if (listKey !== shownList) {
+    setShownList(listKey)
+    setCursorId(articleId)
+  }
+
   return (
     <UnreadSnapshot
       key={data.snapshotAt}
       data={data}
       feedId={feedId}
       listShow={listShow}
+      listKey={listKey}
       articleId={articleId}
       cursorId={cursorId}
       onCursor={setCursorId}
@@ -95,6 +106,7 @@ function UnreadSnapshot({
   data,
   feedId,
   listShow,
+  listKey,
   articleId,
   cursorId,
   onCursor,
@@ -105,6 +117,7 @@ function UnreadSnapshot({
   data: UnreadListData
   feedId: number | null
   listShow: ListShowControl | undefined
+  listKey: string
   articleId: number | null
   cursorId: number | null
   onCursor: (id: number) => void
@@ -249,6 +262,7 @@ function UnreadSnapshot({
 
         <ArticleList
           ref={listRef}
+          listKey={listKey}
           rows={rows}
           cursor={cursor}
           openId={articleId}

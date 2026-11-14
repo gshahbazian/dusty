@@ -35,6 +35,7 @@ export interface ArticleListHandle {
  */
 export function ArticleList({
   ref,
+  listKey,
   rows,
   cursor,
   openId,
@@ -48,6 +49,8 @@ export function ArticleList({
   onMarkAllAbove,
 }: {
   ref: Ref<ArticleListHandle>
+  /** Which list (feed, unread or all): another one starts at its top. */
+  listKey: string
   rows: readonly ArticleRow[]
   cursor: number
   openId: number | null
@@ -164,7 +167,14 @@ export function ArticleList({
   }))
 
   return (
-    <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
+    // The router remembers scroll positions per element across navigations.
+    // Named per list, opening an article keeps this list where it is, and
+    // another feed (or unread / all) never inherits its position.
+    <div
+      ref={scroller}
+      data-scroll-restoration-id={`list-${listKey}`}
+      className="min-h-0 flex-1 overflow-y-auto"
+    >
       <ul
         aria-label="Unread articles"
         className="relative"

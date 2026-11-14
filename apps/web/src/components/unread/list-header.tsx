@@ -89,8 +89,13 @@ export function ListHeader({
               if (next === 'unread' || next === 'all') listShow.onChange(next)
             }}
           >
-            <ToggleGroupItem value="unread">Unread</ToggleGroupItem>
-            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            {/* At least the same width each, so the two halves look even. */}
+            <ToggleGroupItem value="unread" className="min-w-16">
+              Unread
+            </ToggleGroupItem>
+            <ToggleGroupItem value="all" className="min-w-16">
+              All
+            </ToggleGroupItem>
           </ToggleGroup>
         )}
         {!refreshing && (
