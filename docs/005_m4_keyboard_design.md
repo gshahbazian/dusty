@@ -135,6 +135,26 @@ bound.
   changes what is in the DOM, never what is "on the owner's screen" in the
   spec's sense: the loaded, ordered list.
 
+## From the review
+
+- `A` acts on the cursor row wherever it is, even if mouse scrolling has
+  taken it off screen. Decided: leave it so; Undo covers a mistake. (The
+  options were refusing until the row is shown, or moving the cursor
+  with mouse scrolling.)
+- Row buttons let go of focus once used. A clicked title kept it, so a
+  later Enter opened that row again instead of the cursor's.
+- The feed picker lets go of focus after a choice. (Choosing a feed loads
+  a new list, which drops focus anyway; this covers anything that
+  doesn't.)
+- `m`, `A` and `u` wait for the write in flight, as the row buttons do,
+  so `u` can't undo an earlier action while a later one is saving.
+- However an article closes (its button, `q`, the browser's Back),
+  opening it again marks it read again.
+- With an article open that isn't in the list, `J` opens the top row and
+  `K` does nothing, rather than stepping from a row the owner never
+  chose.
+- Caps Lock makes `j` act as `J`, as in vim. Left as is.
+
 ## Found by the cloud check
 
 - Adding a feed stored its articles' HTML with a join SQLite ran the

@@ -173,3 +173,28 @@ test('a 3,000-article list stays small in the page', async ({ page }) => {
 
   await unsubscribe(page, feed)
 })
+
+test('a clicked row button lets go of the keyboard', async ({ page }) => {
+  const feed = feedFor('focus', 4)
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`/feeds/${feedId}`)
+  await expectCursorOn(page, 'Generated 4')
+  await keys(page, 'j')
+  await expectCursorOn(page, 'Generated 3')
+
+  // Clicking a row's title opens it; its button stays on screen. After
+  // closing, moving the cursor and pressing Enter opens the cursor's row,
+  // not the clicked one again.
+  await articleRow(page, 'Generated 4').getByRole('button').first().click()
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 4')
+  await keys(page, 'q')
+  await expect(article(page)).toHaveCount(0)
+  await keys(page, 'j')
+  await expectCursorOn(page, 'Generated 3')
+  await keys(page, 'Enter')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 3')
+
+  await unsubscribe(page, feed)
+})

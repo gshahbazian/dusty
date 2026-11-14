@@ -51,6 +51,15 @@ export function UnreadPage({
   // again without opening it again, so a "mark unread" made while reading
   // it stays unread. Closing it clears this: opening it again reads it.
   const [readOnOpen, setReadOnOpen] = useState<number | null>(null)
+  const [shownArticle, setShownArticle] = useState(articleId)
+
+  // However the article closes (its button, `q`, the browser's Back), the
+  // next open reads it again.
+  if (articleId !== shownArticle) {
+    setShownArticle(articleId)
+
+    if (articleId === null) setReadOnOpen(null)
+  }
 
   return (
     <UnreadSnapshot
@@ -62,10 +71,7 @@ export function UnreadPage({
       onCursor={setCursorId}
       readOnOpen={readOnOpen}
       onReadOnOpen={setReadOnOpen}
-      onOpenArticle={(id) => {
-        if (id === null) setReadOnOpen(null)
-        onOpenArticle(id)
-      }}
+      onOpenArticle={onOpenArticle}
     />
   )
 }
@@ -210,11 +216,13 @@ function UnreadSnapshot({
           <select
             aria-label="Feed"
             value={feedId ?? ''}
-            onChange={(event) =>
+            onChange={(event) => {
+              // Let go of the keyboard, or the next `j` would pick a feed.
+              event.currentTarget.blur()
               goToFeed(
                 event.target.value === '' ? null : Number(event.target.value)
               )
-            }
+            }}
             className="rounded border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700"
           >
             <option value="">All unread ({counts.total})</option>
@@ -374,8 +382,18 @@ function commandsFor(page: {
     page.moveTo(moveCursor(cursor, delta, rows.length))
   }
 
-  /** `J` / `K`: with an article open, open the next one in its place. */
+  /**
+   * `J` / `K`: with an article open, open the next one in its place. If the
+   * open article isn't in the list (opened from a link), `J` starts at the
+   * top and `K` has nowhere to go.
+   */
   const stepArticle = (delta: number) => {
+    if (articleOpen && row.id !== page.openId) {
+      if (delta > 0) page.open(0)
+
+      return
+    }
+
     const index = moveCursor(cursor, delta, rows.length)
 
     if (articleOpen) {
@@ -385,6 +403,14 @@ function commandsFor(page: {
     }
 
     page.moveTo(index)
+  }
+
+  /**
+   * Marking waits for the last write to finish, as the row buttons do, so
+   * `u` can't undo an earlier action while a later one is still saving.
+   */
+  const whenIdle = (write: () => void) => () => {
+    if (!list.busy) write()
   }
 
   /** `Ctrl-d` / `Ctrl-u`: half a page of the article, or of the list. */
@@ -418,7 +444,8 @@ function commandsFor(page: {
 
       window.open(row.url, '_blank', 'noopener,noreferrer')
     },
-    toggleRead: () => {
+    undo: whenIdle(list.undoLast),
+    toggleRead: whenIdle(() => {
       const id = page.openId ?? row.id
 
       if (list.isRead(id)) {
@@ -428,8 +455,8 @@ function commandsFor(page: {
       }
 
       void list.markOneRead(id)
-    },
-    markAllAbove: () => {
+    }),
+    markAllAbove: whenIdle(() => {
       if (cursor === 0) {
         list.say('Nothing above this row.')
 
@@ -437,7 +464,7 @@ function commandsFor(page: {
       }
 
       void list.markAllAbove(row.id)
-    },
+    }),
   }
 }
 

@@ -4,7 +4,9 @@ import type { ArticleRow } from '@dusty/db'
 import { RelativeTime } from '../RelativeTime.tsx'
 
 /**
- * One row of an unread list. A read row stays where it is (dimmed) until
+ * One row of an unread list. Its buttons let go of focus once used, so a
+ * later Enter opens the cursor's row rather than pressing one of them
+ * again. A read row stays where it is (dimmed) until
  * the list is refreshed, so nothing moves under the cursor. The list is
  * virtualized: the row is placed at `offset` and measured once drawn.
  */
@@ -64,7 +66,10 @@ export function ArticleListItem({
     >
       <button
         type="button"
-        onClick={onOpen}
+        onClick={(event) => {
+          event.currentTarget.blur()
+          onOpen()
+        }}
         className="block w-full text-left"
         aria-current={open ? 'true' : undefined}
       >
@@ -91,7 +96,10 @@ export function ArticleListItem({
           <button
             type="button"
             className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
-            onClick={onMarkRead}
+            onClick={(event) => {
+              event.currentTarget.blur()
+              onMarkRead()
+            }}
             disabled={busy}
             aria-label={`Mark ${title} read`}
           >
@@ -102,7 +110,10 @@ export function ArticleListItem({
           <button
             type="button"
             className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
-            onClick={onMarkUnread}
+            onClick={(event) => {
+              event.currentTarget.blur()
+              onMarkUnread()
+            }}
             disabled={busy}
             aria-label={`Mark ${title} unread`}
           >
@@ -113,7 +124,10 @@ export function ArticleListItem({
           <button
             type="button"
             className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
-            onClick={onMarkAllAbove}
+            onClick={(event) => {
+              event.currentTarget.blur()
+              onMarkAllAbove()
+            }}
             disabled={busy}
             aria-label={`Mark all above ${title} as read`}
           >
