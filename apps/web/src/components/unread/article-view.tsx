@@ -69,7 +69,7 @@ export function ArticleView({
 
 function ArticleBody({ loaded }: { loaded: Loaded }) {
   if (loaded.kind === 'loading') {
-    return <p className="text-muted-foreground">Loading…</p>
+    return null
   }
 
   if (loaded.kind === 'missing') {
