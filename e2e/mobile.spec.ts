@@ -206,8 +206,9 @@ test('it can be added to the home screen', async ({ page, request }) => {
   for (const icon of [
     '/icon-192.png',
     '/icon-512.png',
+    '/icon-maskable-512.png',
     '/apple-touch-icon.png',
-    '/icon.svg',
+    '/logo.svg',
   ]) {
     const response = await request.get(icon)
 

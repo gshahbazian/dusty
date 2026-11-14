@@ -49,7 +49,7 @@ export const Route = createRootRoute({
         href: '/manifest.webmanifest',
         crossOrigin: 'use-credentials',
       },
-      { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' },
+      { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
     ],
   }),
@@ -92,7 +92,13 @@ function AppLayout() {
   return (
     <div className="flex h-dvh flex-col">
       <header className="flex items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
-        <span className="mr-2 font-semibold">Dusty</span>
+        <img
+          src="/logo.svg"
+          alt="Dusty"
+          width={32}
+          height={32}
+          className="mr-2 size-8"
+        />
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"

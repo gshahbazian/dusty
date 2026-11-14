@@ -66,8 +66,11 @@ point is that every feature works by touch, one-handed.
 - The relative times in a row ("2 hours ago", which swap in the exact
   time) stay small: 44 px each would make every row much taller, and a
   larger invisible tap area would overlap the row's buttons below.
-- The PNG icons are made from `apps/web/public/icon.svg` with `sharp`; the
-  icon is a placeholder until the owner designs one.
+- The icon is the logo, a pixel-art dustpan (`apps/web/public/logo.svg`,
+  also the favicon). The PNGs are drawn from its 16×16 grid at whole
+  pixels per grid cell (12 px for 192, 32 px for 512, 11 px centred on the
+  180 px Apple icon), so they stay sharp. The maskable icon has a white
+  margin so the dustpan sits inside the safe circle.
 
 ## Tests
 
