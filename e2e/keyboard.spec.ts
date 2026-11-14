@@ -238,3 +238,42 @@ test('after clicking a row, j and k go to the next and previous article', async 
 
   await unsubscribe(page, feed)
 })
+
+test('j and k open the next article at its top, wherever the last one was scrolled', async ({
+  page,
+}) => {
+  const feed = feedFor('scroll-top', 3)
+  const feedId = await subscribe(page, feed)
+
+  // A short window, so even a short article scrolls.
+  await page.setViewportSize({ width: 1280, height: 260 })
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('3 unread')
+
+  // The article pane's scroll offset, and scrolling it to the bottom.
+  const scrollTop = () =>
+    page.evaluate("document.getElementById('article-pane').scrollTop")
+
+  const scrollToBottom = () =>
+    page.evaluate(
+      "document.getElementById('article-pane').scrollTo({ top: 10000 })"
+    )
+
+  await keys(page, 'Enter')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 3')
+
+  // Read down the first one, then move on.
+  await scrollToBottom()
+  expect(await scrollTop()).toBeGreaterThan(0)
+
+  await keys(page, 'j')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 2')
+  expect(await scrollTop()).toBe(0)
+
+  await scrollToBottom()
+  await keys(page, 'k')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 3')
+  expect(await scrollTop()).toBe(0)
+
+  await unsubscribe(page, feed)
+})

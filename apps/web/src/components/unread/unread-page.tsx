@@ -119,6 +119,7 @@ function UnreadSnapshot({
   const navigate = useNavigate()
   const router = useRouter()
   const articleScroll = useRef<HTMLElement>(null)
+
   const listRef = useRef<ArticleListHandle>(null)
   const reveal = (index: number) => listRef.current?.reveal(index)
 
@@ -267,8 +268,11 @@ function UnreadSnapshot({
         />
       </aside>
 
+      {/* The router scrolls this to the top on every navigation (router.tsx),
+          so each article opens at its top. */}
       <section
         ref={articleScroll}
+        id="article-pane"
         aria-label="Article content"
         className={cn(
           'min-w-0 flex-1 overflow-y-auto',
