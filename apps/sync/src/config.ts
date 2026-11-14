@@ -60,8 +60,12 @@ const SETTING_NAMES = Object.keys(SETTING_DEFAULTS).filter(
 const int = (name: SettingName) =>
   Config.Int(name).pipe(Config.withDefault(SETTING_DEFAULTS[name]))
 
+/**
+ * Hourly, at 17 past. Feed hosts are busiest on the hour, when every
+ * scheduled reader polls them: hnrss.org timed out at :00 in 7 of 8 runs.
+ */
 const cronConfig = Config.String('SYNC_CRON').pipe(
-  Config.withDefault('0 * * * *')
+  Config.withDefault('17 * * * *')
 )
 
 /**

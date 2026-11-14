@@ -22,7 +22,7 @@ describe('SyncConfig', () => {
   test("defaults are the spec's", async () => {
     const { cron, settings } = await withEnv(readSyncConfig, {})
 
-    expect(cron).toBe('0 * * * *')
+    expect(cron).toBe('17 * * * *')
     expect(settings).toMatchObject({
       skipWindowMs: 5 * 60_000,
       readRetentionMs: 14 * 24 * 3_600_000,
@@ -56,7 +56,7 @@ describe('syncSettingsEnv', () => {
     })
 
     expect(env).toEqual({
-      SYNC_CRON: '0 * * * *',
+      SYNC_CRON: '17 * * * *',
       SYNC_SKIP_WINDOW_MINUTES: '7',
       SYNC_SCHEDULED_BUDGET_SECONDS: '600',
       SYNC_ON_DEMAND_BUDGET_SECONDS: '25',
