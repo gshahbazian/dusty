@@ -151,6 +151,30 @@ describe('lists', () => {
     })
   })
 
+  test('a list stops at its limit, in order; counts still count everything', async () => {
+    const a = await addFeed('https://a.test/feed')
+
+    await sync(
+      a,
+      [
+        ['1', T0],
+        ['2', T0 + 1],
+        ['3', T0 + 2],
+      ],
+      T0
+    )
+
+    expect(
+      keysOf(await listUnread(db, { feedId: null, seenBy: ALL, limit: 2 }))
+    ).toEqual(['1', '2'])
+    expect(
+      keysOf(await listUnread(db, { feedId: a, seenBy: ALL, limit: 2 }))
+    ).toEqual(['3', '2'])
+    expect(await unreadCounts(db, { seenBy: ALL })).toEqual([
+      { feedId: a, title: 'Feed 1', unread: 3 },
+    ])
+  })
+
   test('a list and its counts leave out what a sync stored after the snapshot', async () => {
     const a = await addFeed('https://a.test/feed')
 

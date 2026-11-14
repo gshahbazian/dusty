@@ -7,7 +7,8 @@
 //   /status/<code>    answers with that HTTP status
 //   /slow             never answers (exercises the fetch timeout)
 //   /html             an HTML page, not a feed
-//   /generated.xml?run=<id>   an RSS feed of N items (3 to start)
+//   /generated.xml?run=<id>   an RSS feed of N items (3 to start, or
+//                             &count=<n> on the first request)
 //   /generated/add?run=<id>   adds one item to that feed, newer than the rest
 //                             (lets a test land new articles mid-test)
 import { createHash } from 'node:crypto'
@@ -74,6 +75,12 @@ const server = createServer(async (request, response) => {
   const run = requestUrl.searchParams.get('run') ?? 'default'
 
   if (path === '/generated.xml') {
+    const count = Number(requestUrl.searchParams.get('count'))
+
+    if (!generated.has(run) && Number.isInteger(count) && count > 0) {
+      generated.set(run, Math.min(count, 10_000))
+    }
+
     response
       .writeHead(200, { 'content-type': 'application/rss+xml' })
       .end(generatedFeed(run))

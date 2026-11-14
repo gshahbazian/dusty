@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
+import { KeyboardShortcuts } from '../components/keyboard/KeyboardShortcuts.tsx'
 import { getSession, requestSync } from '../server/functions.ts'
 import appCss from '../styles.css?url'
 
@@ -63,20 +64,14 @@ function AppLayout() {
   }, [])
 
   return (
-    <div
-      className={cn(
-        'mx-auto px-4 pb-16',
-        unreadActive && 'max-w-[96rem]',
-        !unreadActive && 'max-w-4xl'
-      )}
-    >
-      <header className="flex items-center gap-2 border-b border-neutral-200 py-3 dark:border-neutral-800">
+    <div className="flex h-dvh flex-col">
+      <header className="flex items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
         <span className="mr-2 font-semibold">Dusty</span>
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
             className={cn(
-              'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+              'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800',
               unreadActive &&
                 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
             )}
@@ -85,16 +80,19 @@ function AppLayout() {
             Unread
           </Link>
           <Link
-            to="/subscriptions"
-            className="rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            to="/settings"
+            className="rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
             activeProps={{
               className:
                 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
             }}
           >
-            Subscriptions
+            Settings
           </Link>
         </nav>
+        <span className="hidden text-sm text-neutral-500 lg:inline">
+          <kbd className="font-mono">?</kbd> for shortcuts
+        </span>
         <a
           href={session.logoutUrl}
           className="text-sm text-neutral-500 hover:underline"
@@ -103,8 +101,10 @@ function AppLayout() {
           Log out
         </a>
       </header>
-      <main className="pt-6">
-        <Outlet />
+      <main className="min-h-0 flex-1">
+        <KeyboardShortcuts>
+          <Outlet />
+        </KeyboardShortcuts>
       </main>
     </div>
   )

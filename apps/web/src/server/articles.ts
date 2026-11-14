@@ -3,6 +3,7 @@ import * as Schema from 'effect/Schema'
 
 import {
   getArticle,
+  LIST_LIMIT,
   listUnread,
   markRead,
   markUnread,
@@ -39,7 +40,8 @@ export const getUnreadList = createServerFn({ method: 'GET' })
       unreadCounts(db, { seenBy: snapshotAt }),
     ])
 
-    return { rows, counts, snapshotAt }
+    // Whether the list stopped at the limit: the page says so.
+    return { rows, counts, snapshotAt, truncated: rows.length >= LIST_LIMIT }
   })
 
 /** One article with its HTML, for reading. */

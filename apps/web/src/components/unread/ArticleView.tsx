@@ -26,7 +26,8 @@ export function ArticleView({
 }: {
   articleId: number
   read: boolean
-  onOpened: (id: number) => void
+  /** Loaded: the page marks it read, or notes that it already was. */
+  onOpened: (id: number, alreadyRead: boolean) => void
   onMarkUnread: (id: number) => void
   onClose: () => void
 }) {
@@ -48,7 +49,7 @@ export function ArticleView({
 
         setLoaded({ kind: 'ready', article })
 
-        if (article.readAt === null) onOpened(article.id)
+        onOpened(article.id, article.readAt !== null)
       },
       () => {
         if (current) setLoaded({ kind: 'error' })
@@ -63,11 +64,8 @@ export function ArticleView({
   }, [articleId])
 
   return (
-    <article
-      aria-label="Article"
-      className="fixed inset-0 z-20 overflow-y-auto bg-white p-4 xl:sticky xl:top-4 xl:z-auto xl:max-h-[calc(100vh-2rem)] xl:rounded-lg xl:border xl:border-neutral-200 dark:bg-neutral-950 xl:dark:border-neutral-800"
-    >
-      <div className="mx-auto max-w-2xl xl:max-w-none">
+    <article aria-label="Article" className="p-4">
+      <div className="mx-auto max-w-2xl">
         <ArticleActions
           read={read}
           onClose={onClose}

@@ -33,6 +33,9 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
   const [overrides, setOverrides] = useState<ReadOverrides>(new Map())
   const [notice, setNotice] = useState<Notice | null>(null)
   const [busy, setBusy] = useState(false)
+  // The latest mark action not yet undone, for `u` (even once its notice
+  // is dismissed).
+  const [lastActionId, setLastActionId] = useState<string | null>(null)
 
   const apply = (ids: readonly number[], read: boolean) =>
     setOverrides((current) => withRead(current, ids, read))
@@ -77,7 +80,20 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
       }
 
       setNotice({ kind: 'marked', text: describe(changed.length), actionId })
+      setLastActionId(actionId)
     }, "Couldn't mark that read.")
+
+  const undo = (actionId: string) =>
+    attempt(async () => {
+      const { restored } = await undoMarkArticlesRead({ data: { actionId } })
+
+      apply(restored, false)
+      setLastActionId((last) => (last === actionId ? null : last))
+      setNotice({
+        kind: 'info',
+        text: `Undone: ${articles(restored.length)} unread again.`,
+      })
+    }, "Couldn't undo.")
 
   return {
     overrides,
@@ -85,15 +101,25 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     busy,
     isRead: (id: number) => isRead(overrides, id),
     dismissNotice: () => setNotice(null),
+    say: (text: string) => setNotice({ kind: 'info', text }),
     fail: (text: string) => setNotice({ kind: 'error', text }),
 
     markOneRead: (id: number) => markRead([id], null, () => 'Marked read.'),
 
     /** Opening an article reads it; quietly, unless it fails. */
-    markOpenedRead: (id: number) =>
+    markOpenedRead: (id: number, alreadyRead: boolean) =>
       attempt(
         async () => {
           if (isRead(overrides, id)) return
+
+          // Read before it was opened (say, from a link to an article not
+          // in this list): the server said so; note it, so Mark unread and
+          // `m` work on it.
+          if (alreadyRead) {
+            apply([id], true)
+
+            return
+          }
 
           const { changed } = await markArticlesRead({
             data: { ids: [id], snapshotAt: null },
@@ -120,15 +146,17 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
         setNotice(null)
       }, "Couldn't mark that unread."),
 
-    undo: (actionId: string) =>
-      attempt(async () => {
-        const { restored } = await undoMarkArticlesRead({ data: { actionId } })
+    undo,
 
-        apply(restored, false)
-        setNotice({
-          kind: 'info',
-          text: `Undone: ${articles(restored.length)} unread again.`,
-        })
-      }, "Couldn't undo."),
+    /** Undo the latest mark action, if there is one left to undo. */
+    undoLast: () => {
+      if (lastActionId === null) {
+        setNotice({ kind: 'info', text: 'Nothing to undo.' })
+
+        return
+      }
+
+      void undo(lastActionId)
+    },
   }
 }

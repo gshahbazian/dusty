@@ -35,10 +35,8 @@ const remove = async (page: Page, url: string) => {
 test('add, refuse, rename and remove feeds', async ({ page }) => {
   const rss = feedUrl('rss.xml')
 
-  await page.goto('/subscriptions')
-  await expect(
-    page.getByRole('heading', { name: 'Subscriptions' })
-  ).toBeVisible()
+  await page.goto('/settings')
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
 
   // A feed URL: checked, titled, and its articles pulled straight away.
   await addFeed(page, rss)
@@ -86,10 +84,8 @@ test("a site's home page leads to its feed", async ({ page }) => {
   // already have that feed; only remove it again if this run added it.
   const advertised = `${FEEDS}/rss.xml`
 
-  await page.goto('/subscriptions')
-  await expect(
-    page.getByRole('heading', { name: 'Subscriptions' })
-  ).toBeVisible()
+  await page.goto('/settings')
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
   const alreadyThere = (await row(page, advertised).count()) > 0
 
   await addFeed(page, `${FEEDS}/site.html?run=${run}`)
@@ -124,7 +120,7 @@ test('import from an OPML file', async ({ page }) => {
   <outline type="rss" text="Atom again" xmlUrl="${atom}"/>
 </body></opml>`
 
-  await page.goto('/subscriptions')
+  await page.goto('/settings')
   await page.getByLabel('Choose an OPML file').setInputFiles({
     name: 'subscriptions.opml',
     mimeType: 'text/xml',
@@ -165,18 +161,16 @@ test('import from an OPML file', async ({ page }) => {
 test('junk in the URL falls back to the default view', async ({ page }) => {
   // The router spreads the validated search over the raw query, so this
   // catches a validator that drops a bad key instead of overriding it.
-  await page.goto('/subscriptions?sort=bogus&attention=maybe')
-  await expect(
-    page.getByRole('heading', { name: 'Subscriptions' })
-  ).toBeVisible()
+  await page.goto('/settings?sort=bogus&attention=maybe')
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
   await expect(page.getByRole('combobox')).toHaveValue('attention')
   await expect(
     page.getByLabel('Only feeds that need attention')
   ).not.toBeChecked()
-  await expect(page).toHaveURL(/\/subscriptions$/)
+  await expect(page).toHaveURL(/\/settings$/)
 
   // A good value next to a bad one is kept.
-  await page.goto('/subscriptions?sort=name&attention=maybe')
+  await page.goto('/settings?sort=name&attention=maybe')
   await expect(page.getByRole('combobox')).toHaveValue('name')
   await expect(
     page.getByLabel('Only feeds that need attention')

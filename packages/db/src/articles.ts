@@ -16,6 +16,14 @@ export interface ArticleRow {
 const FEED_TITLE = sql`coalesce(feeds.custom_title, feeds.title, feeds.url)`
 
 /**
+ * Most rows one list loads (about 2.5 MB of JSON). Counts still count
+ * everything; a longer list shows its first rows, and refreshing after
+ * triaging them loads the next. "Mark all above" then sends at most this
+ * many ids, well inside what the server accepts.
+ */
+export const LIST_LIMIT = 5000
+
+/**
  * Unread articles, in list order. The global list (no `feedId`) is oldest
  * first; a feed's list is newest first. `id` breaks ties in the same
  * direction, so the order never shuffles between loads.
@@ -26,8 +34,14 @@ const FEED_TITLE = sql`coalesce(feeds.custom_title, feeds.title, feeds.url)`
  */
 export const listUnread = (
   db: Db,
-  options: { readonly feedId: number | null; readonly seenBy: number }
+  options: {
+    readonly feedId: number | null
+    readonly seenBy: number
+    readonly limit?: number
+  }
 ): Promise<ArticleRow[]> => {
+  const limit = options.limit ?? LIST_LIMIT
+
   if (options.feedId === null) {
     return db.all<ArticleRow>(sql`
       select articles.id as id, articles.feed_id as feedId,
@@ -38,6 +52,7 @@ export const listUnread = (
       where articles.read_at is null
         and articles.first_seen_at <= ${options.seenBy}
       order by articles.published_at asc, articles.id asc
+      limit ${limit}
     `)
   }
 
@@ -50,6 +65,7 @@ export const listUnread = (
     where articles.read_at is null and articles.feed_id = ${options.feedId}
       and articles.first_seen_at <= ${options.seenBy}
     order by articles.published_at desc, articles.id desc
+    limit ${limit}
   `)
 }
 

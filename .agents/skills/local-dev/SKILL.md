@@ -63,11 +63,17 @@ so one can find it locked by the other. The log then shows
 `database is locked: SQLITE_BUSY` from `workerd/util/sqlite.c++`, while
 JavaScript only sees `D1_ERROR: Failed to get session commit token:
 internal error; reference = ...` (reads hit this too, not just writes).
-`packages/db/src/busy-retry.ts` retries both forms for about half a second,
+`packages/db/src/busy-retry.ts` retries both forms for up to 10 seconds,
 so a few BUSY lines in the log are normal; only a request that still fails
 afterwards is a bug. The retry is on only under `alchemy dev`: both
 Workers get `LOCAL_DEV=true` and pass `retryBusy` to `createDb` (the web
-app through `dbFor`). Deployed, D1 is called directly.
+app through `dbFor`). Deployed, D1 is called directly. Adding a feed
+stores all its articles in one batch, so a run of BUSY lines while a big
+feed is added (the keyboard spec's 3,000-article list runs in parallel
+with the other specs) is expected. If adding a big feed takes seconds
+(`duration_ms` in its `feed add finished` line; 6,000 articles take well
+under a second), suspect a query plan: `db.sh "explain query plan ..."`
+shows whether a statement scans a table once per row of another.
 
 If an edit under `packages/` shows `[Sync] Updated` in the log but no
 `[Web] hmr update`, the web Worker is still running the old code; restart
@@ -104,9 +110,10 @@ The sync service fetches real HTTP, so give it something to fetch:
   so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
   you an HTTP error, a timeout and a page that is not a feed.
 - `/generated.xml?run=<id>` is a feed that changes on demand: it starts
-  with three items, and each `curl localhost:5175/generated/add?run=<id>`
-  adds one newer than the rest. Use it to land new articles mid-test (the
-  unread browser tests do), then `trigger-cron.sh` to sync them in.
+  with three items (or `&count=<n>` on the first request, up to 10,000),
+  and each `curl localhost:5175/generated/add?run=<id>` adds one newer than
+  the rest. Use it to land new articles mid-test (the unread browser tests
+  do), then `trigger-cron.sh` to sync them in, or to make a long list.
 - `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
   first sync shows six feeds `ok`, one `http` (404 not found) and one
   `invalid_feed`.
@@ -143,7 +150,7 @@ sync logs. Tests for the sync engine are in
 - `pnpm test:e2e`: Playwright against the running stack, including the
   feed server (start both with `dev-start.sh`). `e2e/subscriptions.spec.ts`
   adds, refuses, renames, imports (OPML) and removes feeds through the
-  subscriptions page, and checks that junk in the URL (`?sort=bogus`)
+  settings page (`/settings`), and checks that junk in the URL (`?sort=bogus`)
   falls back to the default view. Each run subscribes to its own URLs (the
   feed server ignores the query string, so `rss.xml?run=<id>` is a fresh
   feed) and removes them again, so it works on any dev database. The one
@@ -155,7 +162,12 @@ sync logs. Tests for the sync engine are in
   it read, marking it unread again, and "mark all above as read" with
   undo, including a sync landing between loading the list and the action
   (the spec's must-have). Each test subscribes to its own generated feed,
-  since tests run in parallel.
+  since tests run in parallel; the helpers for that are in `e2e/helpers.ts`.
+- `e2e/keyboard.spec.ts` does a full triage pass by keyboard (moving,
+  reading, `m`, `A` with a sync landing in between, `u`, `r`, `?`, `gs` /
+  `ga`), checks that typing in a field never fires a shortcut and that an
+  unfinished `g` times out, and loads a 3,000-article feed to check that
+  only a few dozen rows are in the DOM and `G` reaches the last.
 - The smoke test (`e2e/smoke.spec.ts`) loads the page as the owner and expects the
   background sync request to return 200. The request returns 200 even
   when the run is skipped, so check the outcome in the log:

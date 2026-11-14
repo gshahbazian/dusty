@@ -2,6 +2,7 @@ export { createDb, schema, type Db } from './client.ts'
 
 export {
   getArticle,
+  LIST_LIMIT,
   listUnread,
   markRead,
   markUnread,

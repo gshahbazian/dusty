@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as FeedsFeedIdRouteImport } from './routes/feeds.$feedId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,9 +18,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubscriptionsRoute = SubscriptionsRouteImport.update({
-  id: '/subscriptions',
-  path: '/subscriptions',
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedsFeedIdRoute = FeedsFeedIdRouteImport.update({
@@ -31,31 +31,31 @@ const FeedsFeedIdRoute = FeedsFeedIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/settings': typeof SettingsRoute
   '/feeds/$feedId': typeof FeedsFeedIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/settings': typeof SettingsRoute
   '/feeds/$feedId': typeof FeedsFeedIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/subscriptions': typeof SubscriptionsRoute
+  '/settings': typeof SettingsRoute
   '/feeds/$feedId': typeof FeedsFeedIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/subscriptions' | '/feeds/$feedId'
+  fullPaths: '/' | '/settings' | '/feeds/$feedId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/subscriptions' | '/feeds/$feedId'
-  id: '__root__' | '/' | '/subscriptions' | '/feeds/$feedId'
+  to: '/' | '/settings' | '/feeds/$feedId'
+  id: '__root__' | '/' | '/settings' | '/feeds/$feedId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SubscriptionsRoute: typeof SubscriptionsRoute
+  SettingsRoute: typeof SettingsRoute
   FeedsFeedIdRoute: typeof FeedsFeedIdRoute
 }
 
@@ -68,11 +68,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/subscriptions': {
-      id: '/subscriptions'
-      path: '/subscriptions'
-      fullPath: '/subscriptions'
-      preLoaderRoute: typeof SubscriptionsRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feeds/$feedId': {
@@ -87,7 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SubscriptionsRoute: SubscriptionsRoute,
+  SettingsRoute: SettingsRoute,
   FeedsFeedIdRoute: FeedsFeedIdRoute,
 }
 export const routeTree = rootRouteImport

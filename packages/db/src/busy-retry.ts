@@ -18,12 +18,25 @@
  * Either way nothing was written, so trying again is safe. Still, it is
  * only turned on under `alchemy dev` (`createDb`'s `retryBusy`): deployed
  * D1 never needs it, and a retry there could hide a write that did land.
+ *
+ * Retries run for a time budget, not a fixed number of attempts: the other
+ * Worker can hold the lock for longer than a few quick retries cover.
+ * Adding a feed stores all its articles in one atomic batch (10,000 take
+ * about half a second, longer on a slow machine), and five attempts (about
+ * half a second in all) made pages that loaded meanwhile fail with "Failed
+ * query". Past the budget, the error is real and is thrown.
  */
-const MAX_ATTEMPTS = 5
+const BUDGET_MS = 10_000
 const BASE_DELAY_MS = 15
+const MAX_DELAY_MS = 250
 const RETRYABLE = /SQLITE_BUSY|Failed to get session commit token/
 
-export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
+export const retryBusy = async <T>(
+  run: () => Promise<T>,
+  budgetMs = BUDGET_MS
+): Promise<T> => {
+  const giveUpAt = Date.now() + budgetMs
+
   for (let attempt = 1; ; attempt += 1) {
     try {
       return await run()
@@ -32,11 +45,16 @@ export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
         error instanceof Error &&
         RETRYABLE.test(`${error.message} ${String(error.cause)}`)
 
-      if (!busy || attempt >= MAX_ATTEMPTS) throw error
+      if (!busy || Date.now() >= giveUpAt) throw error
 
-      const delay = BASE_DELAY_MS * 2 ** attempt * (0.5 + Math.random())
+      const backoff = Math.min(BASE_DELAY_MS * 2 ** attempt, MAX_DELAY_MS)
 
-      await new Promise((resolve) => setTimeout(resolve, delay))
+      const delay = Math.min(
+        backoff * (0.5 + Math.random()),
+        giveUpAt - Date.now()
+      )
+
+      await new Promise((resolve) => setTimeout(resolve, Math.max(delay, 0)))
     }
   }
 }
