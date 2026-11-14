@@ -181,12 +181,17 @@ export const recordFeedChanged = async (
 
   // Only articles inserted or changed by this fetch (`updated_at = now`)
   // get their HTML written; unchanged ones keep what they have.
+  //
+  // `cross join` makes SQLite loop over the items and look each article up
+  // by (feed_id, item_key). With a plain join it looped over the feed's
+  // articles and scanned every item for each one, so adding a feed took
+  // quadratic time (6,000 items: 14 s, holding the database the whole time).
   const contentWrites = jsonChunks(contents).map((chunk) =>
     db.run(sql`
       insert into article_content (article_id, html)
       select articles.id, json_extract(item.value, '$.html')
       from json_each(${chunk}) as item
-      join articles
+      cross join articles
         on articles.feed_id = ${feedId}
         and articles.item_key = json_extract(item.value, '$.itemKey')
       where articles.updated_at = ${now}

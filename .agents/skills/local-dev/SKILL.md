@@ -67,9 +67,13 @@ internal error; reference = ...` (reads hit this too, not just writes).
 so a few BUSY lines in the log are normal; only a request that still fails
 afterwards is a bug. The retry is on only under `alchemy dev`: both
 Workers get `LOCAL_DEV=true` and pass `retryBusy` to `createDb` (the web
-app through `dbFor`). Deployed, D1 is called directly. The lock can be
-held for a while: adding a feed stores all its articles in one batch, so
-several BUSY lines in a row during a big add are expected.
+app through `dbFor`). Deployed, D1 is called directly. Adding a feed
+stores all its articles in one batch, so a run of BUSY lines while a big
+feed is added (the keyboard spec's 3,000-article list runs in parallel
+with the other specs) is expected. If adding a big feed takes seconds
+(`duration_ms` in its `feed add finished` line; 6,000 articles take well
+under a second), suspect a query plan: `db.sh "explain query plan ..."`
+shows whether a statement scans a table once per row of another.
 
 If an edit under `packages/` shows `[Sync] Updated` in the log but no
 `[Web] hmr update`, the web Worker is still running the old code; restart
