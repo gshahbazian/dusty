@@ -64,6 +64,46 @@ test('reading by touch: open, next, previous, mark unread, back', async ({
   await unsubscribe(page, feed)
 })
 
+test('back from an article, its row has the cursor at the top of the list', async ({
+  page,
+}) => {
+  const feed = feedFor('phone-back', 30)
+  const feedId = await subscribe(page, feed)
+
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('30 unread')
+
+  // Well down the list (newest first: Generated 30 is the top row; the
+  // list draws rows as they come into view).
+  await page.evaluate(
+    'document.querySelector(\'[aria-label="Unread articles"]\').parentElement.scrollTo({ top: 2000 })'
+  )
+  await expect(articleRow(page, 'Generated 12')).toBeVisible()
+  await tapRow(page, 'Generated 12')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 12')
+
+  // Read on to the next one, then back to the list.
+  await page.getByRole('button', { name: 'Next article' }).tap()
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 11')
+  await page.getByRole('button', { name: '← Back to the list' }).tap()
+  await expect(article(page)).toHaveCount(0)
+
+  // The article just read has the cursor, and starts the list.
+  const row = articleRow(page, 'Generated 11')
+
+  await expect(row).toHaveAttribute('data-cursor', 'true')
+
+  const list = await articleList(page).locator('..').boundingBox()
+
+  await expect(async () => {
+    const box = await row.boundingBox()
+
+    expect(Math.abs((box?.y ?? 0) - (list?.y ?? 0))).toBeLessThanOrEqual(2)
+  }).toPass({ timeout: 3000 })
+
+  await unsubscribe(page, feed)
+})
+
 test('mark all above takes two taps, and says how many', async ({ page }) => {
   const feed = feedFor('phone-above', 4)
   const feedId = await subscribe(page, feed)

@@ -1,9 +1,15 @@
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { useImperativeHandle, useRef, type Ref } from 'react'
+import { measureElement, useVirtualizer } from '@tanstack/react-virtual'
+import { useEffect, useImperativeHandle, useRef, type Ref } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
 import { ArticleListItem } from './article-list-item.tsx'
+
+/** A row's height before it is measured. */
+const ESTIMATED_ROW_PX = 120
+
+/** Where the list sits beside the article; below it, the article replaces it. */
+const WIDE_SCREEN = '(min-width: 64rem)'
 
 /** Room kept above and below the cursor's row (the toast sits below). */
 const REVEAL_TOP_PX = 8
@@ -62,10 +68,44 @@ export function ArticleList({
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scroller.current,
-    estimateSize: () => 120,
+    estimateSize: () => ESTIMATED_ROW_PX,
     overscan: 8,
     getItemKey: (index) => rows[index]?.id ?? index,
+    // On a phone the list is hidden (display: none) while an article is
+    // open, and its rows then measure 0 high. Keep their real heights, or
+    // every row's position is wrong when the list comes back.
+    measureElement: (element, entry, instance) => {
+      const size = measureElement(element, entry, instance)
+
+      if (size > 0) return size
+
+      const index = instance.indexFromElement(element)
+
+      return instance.measurementsCache[index]?.size ?? ESTIMATED_ROW_PX
+    },
   })
+
+  // Back from an article on a phone (the list was hidden behind it): that
+  // article's row, which has the cursor, starts the list. After a frame, so
+  // the list is laid out again and the router's own scroll restoration for
+  // the navigation has run.
+  const previousOpenId = useRef(openId)
+
+  useEffect(() => {
+    const closed = previousOpenId.current !== null && openId === null
+
+    previousOpenId.current = openId
+
+    if (!closed || matchMedia(WIDE_SCREEN).matches) return
+
+    const frame = requestAnimationFrame(() =>
+      virtualizer.scrollToIndex(cursor, { align: 'start' })
+    )
+
+    return () => cancelAnimationFrame(frame)
+    // Only when the open article changes; `cursor` is read as it is then.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [openId])
 
   useImperativeHandle(ref, () => ({
     /**
