@@ -63,7 +63,7 @@ bound.
 | `o`, `Enter` | Open the article | — |
 | `Esc`, `q` | — | Close the article |
 | `v` | Open the original in a new tab | Same |
-| `m` | Toggle read on the cursor row | Same (the open article is the cursor row) |
+| `m` | Toggle read on the cursor row | Toggle read on the open article |
 | `A` | Mark all above the cursor row as read | Same |
 | `u` | Undo the last mark action | Same |
 | `r` | Refresh | Same |
@@ -80,8 +80,16 @@ bound.
   come from the same code, not a copy of it.
 - `u` undoes the latest mark action in this list that hasn't been undone,
   even after its notice was dismissed. With nothing to undo it says so.
-- `]` / `[` walk the sidebar's order (All unread, then each feed with
-  unread articles) and stop at the ends.
+- `]` / `[` walk the feed picker's order (All unread, then each feed with
+  unread articles) and stop at the ends. They start from where the router
+  is going, so a second `]` pressed before the next list loads still moves
+  on (the cloud check found two quick presses landing on the same feed).
+- `m` with an article open acts on that article, which may not be in the
+  list (opened from a link after it was read). Its view then knows it is
+  read and offers Mark unread.
+- An article is marked read once for being opened. A refresh shows it
+  again without "opening" it again, so marking it unread while reading
+  sticks; closing it and opening it again reads it.
 - `ga`, `gs` and `?` work on every page; the rest only on the unread
   lists.
 
@@ -94,7 +102,9 @@ bound.
   the time and returns a command with its count, "waiting for more", or
   nothing. A count or a `g` waits at most 1 s for the next key; after that
   the pending keys are dropped, so a stray `g` never turns a later key into
-  something else. Pending keys show in a small hint at the bottom of the
+  something else. A key that doesn't finish what is pending drops it and
+  counts on its own (`g` then `Ctrl-d` is `Ctrl-d`): a swallowed key would
+  reach the browser, and `Ctrl-d` there bookmarks the page. Pending keys show in a small hint at the bottom of the
   screen while they wait.
 - Keys are ignored while typing (in an input, textarea, select or
   contenteditable), while composing text (IME), and with Cmd or Alt held,
@@ -124,6 +134,17 @@ bound.
   loaded list, whether or not they're currently rendered. Virtualization
   changes what is in the DOM, never what is "on the owner's screen" in the
   spec's sense: the loaded, ordered list.
+
+## Found by the cloud check
+
+- Adding a feed stored its articles' HTML with a join SQLite ran the
+  wrong way round: for every article, a scan of every item. Adding 6,000
+  articles took 14 s and held the database the whole time (deployed D1
+  too). A `cross join` makes SQLite loop over the items and look each
+  article up by index: 6,000 now take about 0.25 s.
+- Locally, that long write outlasted the retry for local D1's lock, so
+  pages loaded meanwhile failed. The retry now runs for a 10 s budget
+  (still dev only).
 
 ## Tests
 

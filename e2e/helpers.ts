@@ -12,6 +12,12 @@ const run = Date.now().toString(36)
 
 export const FEEDS = `http://localhost:${DEV_FEEDS_PORT}`
 
+/**
+ * Refresh waits for the sync, which can run for up to its 25 s budget when
+ * it isn't skipped as recent (other specs add big feeds in parallel).
+ */
+export const AFTER_REFRESH = { timeout: 30_000 }
+
 /** Each test gets its own generated feed: tests run in parallel. */
 export const feedFor = (name: string, count = 3) => {
   const id = `${run}-${name}`

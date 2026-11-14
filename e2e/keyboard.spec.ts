@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import {
+  AFTER_REFRESH,
   articleList,
   articleRow,
   feedFor,
@@ -27,6 +28,8 @@ const keys = async (page: Page, ...presses: string[]) => {
 const article = (page: Page) => page.getByRole('article', { name: 'Article' })
 
 test('a triage pass by keyboard alone', async ({ page, request }) => {
+  test.slow()
+
   const feed = feedFor('keys', 6)
   const feedId = await subscribe(page, feed)
 
@@ -87,14 +90,17 @@ test('a triage pass by keyboard alone', async ({ page, request }) => {
   // `r` refreshes: Generated 7 appears, 5 (read) drops out, and the cursor
   // stays on the same article.
   await keys(page, 'r')
-  await expect(articleList(page).getByRole('listitem')).toHaveText([
-    /Generated 7/,
-    /Generated 6/,
-    /Generated 4/,
-    /Generated 3/,
-    /Generated 2/,
-    /Generated 1/,
-  ])
+  await expect(articleList(page).getByRole('listitem')).toHaveText(
+    [
+      /Generated 7/,
+      /Generated 6/,
+      /Generated 4/,
+      /Generated 3/,
+      /Generated 2/,
+      /Generated 1/,
+    ],
+    AFTER_REFRESH
+  )
   await expectCursorOn(page, 'Generated 3')
 
   // `?` shows every binding; `q` closes it.

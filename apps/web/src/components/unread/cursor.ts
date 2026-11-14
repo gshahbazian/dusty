@@ -23,6 +23,13 @@ export const cursorIndex = (
 export const moveCursor = (index: number, delta: number, length: number) =>
   Math.min(Math.max(index + delta, 0), length - 1)
 
+/** Which list a path shows: a feed's id, or null for all unread. */
+export const feedFromPath = (pathname: string): number | null => {
+  const match = /^\/feeds\/(\d+)/.exec(pathname)
+
+  return match === null ? null : Number(match[1])
+}
+
 /**
  * The feed after (or before) the current one in the sidebar's order: all
  * unread (null) first, then each feed. Undefined at either end.

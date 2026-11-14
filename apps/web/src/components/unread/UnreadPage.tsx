@@ -11,7 +11,12 @@ import type { Command } from '../keyboard/keymap.ts'
 import { RelativeTime } from '../RelativeTime.tsx'
 import { ArticleListItem } from './ArticleListItem.tsx'
 import { ArticleView } from './ArticleView.tsx'
-import { cursorIndex, moveCursor, neighborFeed } from './cursor.ts'
+import {
+  cursorIndex,
+  feedFromPath,
+  moveCursor,
+  neighborFeed,
+} from './cursor.ts'
 import { adjustedCounts, type Counts } from './list-state.ts'
 import { useUnreadList, type Notice } from './useUnreadList.ts'
 
@@ -42,6 +47,11 @@ export function UnreadPage({
 }) {
   const [cursorId, setCursorId] = useState<number | null>(articleId)
 
+  // The article already marked read for being opened. A refresh shows it
+  // again without opening it again, so a "mark unread" made while reading
+  // it stays unread. Closing it clears this: opening it again reads it.
+  const [readOnOpen, setReadOnOpen] = useState<number | null>(null)
+
   return (
     <UnreadSnapshot
       key={data.snapshotAt}
@@ -50,7 +60,12 @@ export function UnreadPage({
       articleId={articleId}
       cursorId={cursorId}
       onCursor={setCursorId}
-      onOpenArticle={onOpenArticle}
+      readOnOpen={readOnOpen}
+      onReadOnOpen={setReadOnOpen}
+      onOpenArticle={(id) => {
+        if (id === null) setReadOnOpen(null)
+        onOpenArticle(id)
+      }}
     />
   )
 }
@@ -68,6 +83,8 @@ function UnreadSnapshot({
   articleId,
   cursorId,
   onCursor,
+  readOnOpen,
+  onReadOnOpen,
   onOpenArticle,
 }: {
   data: UnreadListData
@@ -75,6 +92,8 @@ function UnreadSnapshot({
   articleId: number | null
   cursorId: number | null
   onCursor: (id: number) => void
+  readOnOpen: number | null
+  onReadOnOpen: (id: number) => void
   onOpenArticle: (id: number | null) => void
 }) {
   const { rows } = data
@@ -83,6 +102,7 @@ function UnreadSnapshot({
   const [now] = useState(() => Date.now())
   const { refreshing, refresh } = useRefresh(list.fail)
   const navigate = useNavigate()
+  const router = useRouter()
   const articleScroll = useRef<HTMLElement>(null)
   const { listScroll, virtualizer, reveal } = useVirtualRows(rows)
 
@@ -136,7 +156,7 @@ function UnreadSnapshot({
     const run = commandsFor({
       rows,
       cursor,
-      articleOpen,
+      openId: articleId,
       list,
       moveTo,
       open,
@@ -144,7 +164,10 @@ function UnreadSnapshot({
       close: () => onOpenArticle(null),
       goToFeed: (direction) => {
         const order = [null, ...feeds.map((feed) => feed.feedId)]
-        const next = neighborFeed(order, feedId, direction)
+        // From where the router is going, not this page's feed: a second
+        // `]` pressed before the next list loads still moves on from it.
+        const current = feedFromPath(router.latestLocation.pathname)
+        const next = neighborFeed(order, current, direction)
 
         if (next !== undefined) goToFeed(next)
       },
@@ -278,7 +301,13 @@ function UnreadSnapshot({
           <ArticleView
             articleId={articleId}
             read={list.isRead(articleId)}
-            onOpened={(id) => void list.markOpenedRead(id)}
+            onOpened={(id, alreadyRead) => {
+              // Shown again by a refresh, and unread now: leave it so.
+              if (id === readOnOpen && !alreadyRead) return
+
+              onReadOnOpen(id)
+              void list.markOpenedRead(id, alreadyRead)
+            }}
             onMarkUnread={(id) => void list.markOneUnread(id)}
             onClose={() => onOpenArticle(null)}
           />
@@ -308,7 +337,8 @@ type Commands = Partial<Record<Command, (count: number) => void>>
 function commandsFor(page: {
   rows: readonly ArticleRow[]
   cursor: number
-  articleOpen: boolean
+  /** The open article, if any: `m` acts on it (it may not be in the list). */
+  openId: number | null
   list: UnreadList
   moveTo: (index: number) => void
   open: (index: number) => void
@@ -319,7 +349,8 @@ function commandsFor(page: {
   articleHeight: () => number
   halfPage: (direction: 1 | -1) => void
 }): Commands {
-  const { rows, cursor, articleOpen, list } = page
+  const { rows, cursor, list } = page
+  const articleOpen = page.openId !== null
   const row = rows[cursor]
 
   const always: Commands = {
@@ -388,13 +419,15 @@ function commandsFor(page: {
       window.open(row.url, '_blank', 'noopener,noreferrer')
     },
     toggleRead: () => {
-      if (list.isRead(row.id)) {
-        void list.markOneUnread(row.id)
+      const id = page.openId ?? row.id
+
+      if (list.isRead(id)) {
+        void list.markOneUnread(id)
 
         return
       }
 
-      void list.markOneRead(row.id)
+      void list.markOneRead(id)
     },
     markAllAbove: () => {
       if (cursor === 0) {

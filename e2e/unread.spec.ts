@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import {
+  AFTER_REFRESH,
   articleList,
   articleRow,
   feedFor,
@@ -16,6 +17,8 @@ test('mark all above: a sync landing between load and action is never touched', 
   page,
   request,
 }) => {
+  test.slow()
+
   const feed = feedFor('above')
   const feedId = await subscribe(page, feed)
 
@@ -54,16 +57,18 @@ test('mark all above: a sync landing between load and action is never touched', 
     .click()
   await expect(page.getByText('Marked 2 articles above as read.')).toBeVisible()
   await page.getByRole('button', { name: 'Refresh' }).click()
-  await expect(articleList(page).getByRole('listitem')).toHaveText([
-    /Generated 4/,
-    /Generated 1/,
-  ])
+  await expect(articleList(page).getByRole('listitem')).toHaveText(
+    [/Generated 4/, /Generated 1/],
+    AFTER_REFRESH
+  )
   await expect(heading(page)).toContainText('2 unread')
 
   await unsubscribe(page, feed)
 })
 
 test('open an article to read it; mark it unread again', async ({ page }) => {
+  test.slow()
+
   const feed = feedFor('open')
   const feedId = await subscribe(page, feed)
 
@@ -115,6 +120,31 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   await article.getByRole('button', { name: '← Back to the list' }).click()
   await expect(page).toHaveURL(new RegExp(`/feeds/${feedId}$`))
   await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+
+  // A link to an article that is already read, so not in the list: it
+  // still offers Mark unread, and `m` acts on it, not the top row.
+  await openArticle(page, 'Generated 3')
+  await expect(heading(page)).toContainText('2 unread')
+
+  const link = page.url()
+
+  await page.goto(link)
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(2)
+  await expect(
+    article.getByRole('heading', { name: 'Generated 3' })
+  ).toBeVisible()
+  await expect(
+    article.getByRole('button', { name: 'Mark unread' })
+  ).toBeVisible()
+  await page.keyboard.press('m')
+  await expect(
+    article.getByRole('button', { name: 'Mark unread' })
+  ).toHaveCount(0)
+  await expect(articleRow(page, 'Generated 2')).not.toContainText('(read)')
+
+  // It isn't one of this list's rows, so the count catches up on refresh.
+  await page.getByRole('button', { name: 'Refresh' }).click()
+  await expect(heading(page)).toContainText('3 unread', AFTER_REFRESH)
 
   await unsubscribe(page, feed)
 })

@@ -26,7 +26,8 @@ export function ArticleView({
 }: {
   articleId: number
   read: boolean
-  onOpened: (id: number) => void
+  /** Loaded: the page marks it read, or notes that it already was. */
+  onOpened: (id: number, alreadyRead: boolean) => void
   onMarkUnread: (id: number) => void
   onClose: () => void
 }) {
@@ -48,7 +49,7 @@ export function ArticleView({
 
         setLoaded({ kind: 'ready', article })
 
-        if (article.readAt === null) onOpened(article.id)
+        onOpened(article.id, article.readAt !== null)
       },
       () => {
         if (current) setLoaded({ kind: 'error' })

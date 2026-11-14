@@ -80,7 +80,14 @@ export const createKeyParser = (timeoutMs = SEQUENCE_TIMEOUT_MS) => {
       return { kind: 'pending', typed: pending.count + keys.join('') }
     }
 
-    pending = EMPTY
+    // A key that doesn't finish what was pending drops it and counts on its
+    // own: `g` then `Ctrl-d` is `Ctrl-d`, never a swallowed key (which the
+    // browser would then act on, e.g. bookmarking the page).
+    if (pending.keys.length > 0 || pending.count !== '') {
+      pending = EMPTY
+
+      return feed(token, now)
+    }
 
     return { kind: 'none' }
   }

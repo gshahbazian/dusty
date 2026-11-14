@@ -9,6 +9,7 @@ import {
 import { BINDINGS, sequenceLabel } from '../src/components/keyboard/keymap.ts'
 import {
   cursorIndex,
+  feedFromPath,
   moveCursor,
   neighborFeed,
 } from '../src/components/unread/cursor.ts'
@@ -94,16 +95,26 @@ describe('key parser', () => {
     })
   })
 
-  test('an unknown key, or a sequence gone wrong, does nothing', () => {
+  test('an unknown key does nothing, and leaves nothing pending', () => {
     expect(type(['x'])).toEqual({ kind: 'none' })
     expect(type(['g', 'x'])).toEqual({ kind: 'none' })
 
-    // ...and leaves nothing pending behind.
     const parser = createKeyParser()
 
     parser.feed('g', 0)
     parser.feed('x', 1)
     expect(parser.feed('a', 2)).toEqual({ kind: 'none' })
+  })
+
+  test('a key that breaks a sequence counts on its own', () => {
+    // Never swallowed: the browser would act on it instead.
+    expect(type(['g', 'Ctrl-d'])).toEqual({
+      kind: 'command',
+      command: 'halfPageDown',
+      count: 1,
+    })
+    expect(type(['g', 'j'])).toMatchObject({ command: 'down', count: 1 })
+    expect(type(['5', 'g', 'G'])).toMatchObject({ command: 'last' })
   })
 
   test('every binding in the table reaches its command', () => {
@@ -186,6 +197,12 @@ describe('cursor', () => {
     expect(moveCursor(0, 1, 3)).toBe(1)
     expect(moveCursor(1, 50, 3)).toBe(2)
     expect(moveCursor(1, -50, 3)).toBe(0)
+  })
+
+  test('the list a path shows', () => {
+    expect(feedFromPath('/feeds/12')).toBe(12)
+    expect(feedFromPath('/')).toBeNull()
+    expect(feedFromPath('/settings')).toBeNull()
   })
 
   test('] and [ walk the sidebar and stop at the ends', () => {

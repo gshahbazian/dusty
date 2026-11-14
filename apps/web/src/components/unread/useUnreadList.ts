@@ -107,10 +107,19 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     markOneRead: (id: number) => markRead([id], null, () => 'Marked read.'),
 
     /** Opening an article reads it; quietly, unless it fails. */
-    markOpenedRead: (id: number) =>
+    markOpenedRead: (id: number, alreadyRead: boolean) =>
       attempt(
         async () => {
           if (isRead(overrides, id)) return
+
+          // Read before it was opened (say, from a link to an article not
+          // in this list): the server said so; note it, so Mark unread and
+          // `m` work on it.
+          if (alreadyRead) {
+            apply([id], true)
+
+            return
+          }
 
           const { changed } = await markArticlesRead({
             data: { ids: [id], snapshotAt: null },
