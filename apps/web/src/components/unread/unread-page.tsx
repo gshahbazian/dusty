@@ -17,6 +17,7 @@ import {
 } from './cursor.ts'
 import { ListHeader } from './list-header.tsx'
 import { adjustedCounts } from './list-state.ts'
+import { MobileArticleBar } from './mobile-article-bar.tsx'
 import { NoticeBar } from './notice-bar.tsx'
 import { useUnreadList } from './use-unread-list.ts'
 
@@ -262,7 +263,6 @@ function UnreadSnapshot({
         {articleId !== null && (
           <ArticleView
             articleId={articleId}
-            read={list.isRead(articleId)}
             onOpened={(id, alreadyRead) => {
               // Shown again by a refresh, and unread now: leave it so.
               if (id === readOnOpen && !alreadyRead) return
@@ -270,10 +270,15 @@ function UnreadSnapshot({
               onReadOnOpen(id)
               void list.markOpenedRead(id, alreadyRead)
             }}
-            onMarkUnread={(id) => void list.markOneUnread(id)}
+          />
+        )}
+        {articleId !== null && (
+          <MobileArticleBar
+            read={list.isRead(articleId)}
+            onBack={() => onOpenArticle(null)}
             onPrevious={neighbors.previous}
             onNext={neighbors.next}
-            onClose={() => onOpenArticle(null)}
+            onMarkUnread={() => void list.markOneUnread(articleId)}
           />
         )}
         {articleId === null && rows.length > 0 && (

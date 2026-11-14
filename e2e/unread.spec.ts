@@ -98,8 +98,13 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   ).toBeVisible()
   await expect(article).toContainText('Item 2 of')
   await expect(
-    article.getByRole('link', { name: 'Open the original' })
+    article.getByRole('link', { name: 'Generated 2' })
   ).toHaveAttribute('href', `https://generated.example.com/${feed.id}/2`)
+
+  // The feed's name links to its website.
+  await expect(
+    article.getByRole('link', { name: `Generated ${feed.id}`, exact: true })
+  ).toHaveAttribute('href', 'https://generated.example.com/')
   await expect(page).toHaveURL(/\?article=\d+$/)
 
   // Links open in a new tab; images load lazily and send no referrer.
@@ -122,17 +127,19 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   await expect(articleRow(page, 'Generated 2')).toContainText('(read)')
   expect(await articleRow(page, 'Generated 1').boundingBox()).toEqual(before)
 
-  await article.getByRole('button', { name: 'Mark unread' }).click()
+  // Mark unread is `m` on a wide screen (the button bar is for phones).
+  await page.keyboard.press('m')
   await expect(heading(page)).toContainText('3 unread')
   await expect(articleRow(page, 'Generated 2')).not.toContainText('(read)')
 
-  // Back to the list, which is just as it was.
-  await article.getByRole('button', { name: '← Back to the list' }).click()
+  // Close it (Back is for phones; Esc here), and the list is just as it
+  // was.
+  await page.keyboard.press('Escape')
   await expect(page).toHaveURL(new RegExp(`/feeds/${feedId}$`))
   await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
 
-  // A link to an article that is already read, so not in the list: it
-  // still offers Mark unread, and `m` acts on it, not the top row.
+  // A link to an article that is already read, so not in the list: `m`
+  // marks it unread, not the top row.
   await openArticle(page, 'Generated 3')
   await expect(heading(page)).toContainText('2 unread')
 
@@ -143,13 +150,7 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   await expect(
     article.getByRole('heading', { name: 'Generated 3' })
   ).toBeVisible()
-  await expect(
-    article.getByRole('button', { name: 'Mark unread' })
-  ).toBeVisible()
   await page.keyboard.press('m')
-  await expect(
-    article.getByRole('button', { name: 'Mark unread' })
-  ).toHaveCount(0)
   await expect(articleRow(page, 'Generated 2')).not.toContainText('(read)')
 
   // It isn't one of this list's rows, so the count catches up on refresh.

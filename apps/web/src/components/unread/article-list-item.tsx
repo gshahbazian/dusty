@@ -121,7 +121,7 @@ export function ArticleListItem({
             {read && <span className="sr-only"> (read)</span>}
           </span>
           {row.excerpt !== null && (
-            <span className="text-muted-foreground mt-0.5 line-clamp-2 block text-xs">
+            <span className="text-muted-foreground mt-0.5 line-clamp-2 text-xs">
               {row.excerpt}
             </span>
           )}

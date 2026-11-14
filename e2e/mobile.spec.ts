@@ -114,13 +114,14 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
   )
 
   /**
-   * Visible buttons, selects and header links shorter than 44 px.
+   * Visible buttons, selects and the top bar's links shorter than 44 px.
    */
   const tooSmall = async () => {
     const small: string[] = []
 
     for (const target of await page
-      .locator('button, select, header a')
+      .locator('button, select')
+      .or(page.getByRole('banner').getByRole('link'))
       .filter({ visible: true })
       .all()) {
       const box = await target.boundingBox()
