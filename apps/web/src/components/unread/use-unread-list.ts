@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
@@ -25,55 +26,46 @@ export type Notice =
   | { readonly kind: 'info'; readonly text: string }
   | { readonly kind: 'error'; readonly text: string }
 
+/** A mark-read action: the ids, its snapshot, and how to describe it. */
+interface MarkRead {
+  readonly ids: readonly number[]
+  readonly snapshotAt: number | null
+  readonly describe: (count: number) => string
+}
+
 /**
  * The state of one loaded list (one snapshot): which rows the server has
  * confirmed read, the last undoable action, and a notice to show. The page
  * only ever shows what the server said it saved.
+ *
+ * The writes are mutations; the row actions are disabled while any marking
+ * one is in flight. Opening an article reads it without that, so reading
+ * quickly (`j` / `k`) never greys out the list.
  */
 export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
+  // Local screen state, confirmed by the server: there is no other home.
   const [overrides, setOverrides] = useState<ReadOverrides>(new Map())
-  // Rows a feed's "all" list loaded already read (none in an unread list).
-  const [loadedRead] = useState(() => readWhenLoaded(rows))
   const [notice, setNotice] = useState<Notice | null>(null)
-  const [busy, setBusy] = useState(false)
   // The latest mark action not yet undone, for `u` (even once its notice
   // is dismissed).
   const [lastActionId, setLastActionId] = useState<string | null>(null)
 
+  // Rows a feed's "all" list loaded already read (none in an unread list).
+  // The page is keyed by the snapshot, so `rows` never change under this.
+  const loadedRead = readWhenLoaded(rows)
+
   const apply = (ids: readonly number[], read: boolean) =>
     setOverrides((current) => withRead(current, ids, read))
 
-  /**
-   * Run a write; on failure say so and change nothing on screen. `busy`
-   * disables the row actions meanwhile; opening an article skips it, so
-   * reading quickly (`j` / `k`) never greys out the list.
-   */
-  const attempt = async (
-    work: () => Promise<void>,
-    failure: string,
-    options: { readonly busy: boolean } = { busy: true }
-  ) => {
-    if (options.busy) setBusy(true)
+  const failed = (what: string) =>
+    setNotice({ kind: 'error', text: `${what} Nothing was changed.` })
 
-    try {
-      await work()
-    } catch {
-      setNotice({ kind: 'error', text: `${failure} Nothing was changed.` })
-    } finally {
-      if (options.busy) setBusy(false)
-    }
-  }
-
-  const markRead = (
-    ids: readonly number[],
-    snapshot: number | null,
-    describe: (count: number) => string
-  ) =>
-    attempt(async () => {
-      const { actionId, changed } = await markArticlesRead({
-        data: { ids: [...ids], snapshotAt: snapshot },
-      })
-
+  const markRead = useMutation({
+    mutationFn: (mark: MarkRead) =>
+      markArticlesRead({
+        data: { ids: [...mark.ids], snapshotAt: mark.snapshotAt },
+      }),
+    onSuccess: ({ actionId, changed }, mark) => {
       apply(changed, true)
 
       if (changed.length === 0) {
@@ -82,74 +74,80 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
         return
       }
 
-      setNotice({ kind: 'marked', text: describe(changed.length), actionId })
+      setNotice({
+        kind: 'marked',
+        text: mark.describe(changed.length),
+        actionId,
+      })
       setLastActionId(actionId)
-    }, "Couldn't mark that read.")
+    },
+    onError: () => failed("Couldn't mark that read."),
+  })
 
-  const undo = (actionId: string) =>
-    attempt(async () => {
-      const { restored } = await undoMarkArticlesRead({ data: { actionId } })
+  /** Opening an article reads it; quietly, unless it fails. */
+  const markOpened = useMutation({
+    mutationFn: (id: number) =>
+      markArticlesRead({ data: { ids: [id], snapshotAt: null } }),
+    // Read either way: just now, or already (by another device, say).
+    onSuccess: (_result, id) => apply([id], true),
+    onError: () => failed("Couldn't mark the article read."),
+  })
 
+  const markUnread = useMutation({
+    mutationFn: (id: number) => markArticleUnread({ data: { id } }),
+    onSuccess: ({ changed }, id) => {
+      if (changed) apply([id], false)
+      setNotice(null)
+    },
+    onError: () => failed("Couldn't mark that unread."),
+  })
+
+  const undo = useMutation({
+    mutationFn: (actionId: string) =>
+      undoMarkArticlesRead({ data: { actionId } }),
+    onSuccess: ({ restored }, actionId) => {
       apply(restored, false)
       setLastActionId((last) => (last === actionId ? null : last))
       setNotice({
         kind: 'info',
         text: `Undone: ${articles(restored.length)} unread again.`,
       })
-    }, "Couldn't undo.")
+    },
+    onError: () => failed("Couldn't undo."),
+  })
+
+  const isReadNow = (id: number) => isRead(overrides, id, loadedRead)
 
   return {
     overrides,
     notice,
-    busy,
-    isRead: (id: number) => isRead(overrides, id, loadedRead),
+    busy: markRead.isPending || markUnread.isPending || undo.isPending,
+    isRead: isReadNow,
     dismissNotice: () => setNotice(null),
     say: (text: string) => setNotice({ kind: 'info', text }),
     fail: (text: string) => setNotice({ kind: 'error', text }),
 
-    markOneRead: (id: number) => markRead([id], null, () => 'Marked read.'),
+    markOneRead: (id: number) =>
+      markRead.mutate({
+        ids: [id],
+        snapshotAt: null,
+        describe: () => 'Marked read.',
+      }),
 
-    /** Opening an article reads it; quietly, unless it fails. */
-    markOpenedRead: (id: number, alreadyRead: boolean) =>
-      attempt(
-        async () => {
-          if (isRead(overrides, id, loadedRead)) return
-
-          // Read before it was opened (say, from a link to an article not
-          // in this list): the server said so; note it, so Mark unread and
-          // `m` work on it.
-          if (alreadyRead) {
-            apply([id], true)
-
-            return
-          }
-
-          const { changed } = await markArticlesRead({
-            data: { ids: [id], snapshotAt: null },
-          })
-
-          apply(changed, true)
-        },
-        "Couldn't mark the article read.",
-        { busy: false }
-      ),
+    markOpenedRead: (id: number) => {
+      if (!isReadNow(id)) markOpened.mutate(id)
+    },
 
     markAllAbove: (chosenId: number) =>
-      markRead(
-        idsAbove(rows, chosenId),
+      markRead.mutate({
+        ids: idsAbove(rows, chosenId),
         snapshotAt,
-        (count) => `Marked ${articles(count)} above as read.`
-      ),
+        describe: (count) => `Marked ${articles(count)} above as read.`,
+      }),
 
-    markOneUnread: (id: number) =>
-      attempt(async () => {
-        const { changed } = await markArticleUnread({ data: { id } })
+    markOneUnread: (id: number) => markUnread.mutate(id),
 
-        if (changed) apply([id], false)
-        setNotice(null)
-      }, "Couldn't mark that unread."),
-
-    undo,
+    undo: (actionId: string) => undo.mutate(actionId),
 
     /** Undo the latest mark action, if there is one left to undo. */
     undoLast: () => {
@@ -159,7 +157,7 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
         return
       }
 
-      void undo(lastActionId)
+      undo.mutate(lastActionId)
     },
   }
 }

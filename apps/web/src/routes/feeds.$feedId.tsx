@@ -31,7 +31,10 @@ function FeedArticles() {
   const navigate = useNavigate({ from: Route.fullPath })
 
   return (
+    // A new page for each list (feed, unread or all): it starts at the top
+    // with the cursor on its first row.
     <UnreadPage
+      key={`${feedId}-${show ?? 'unread'}`}
       data={data}
       feedId={Number(feedId)}
       listShow={{

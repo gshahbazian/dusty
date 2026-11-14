@@ -80,13 +80,16 @@ function AppLayout() {
     select: (state) => state.location.pathname,
   })
 
-  const unreadActive = isUnreadPath(pathname)
-  const settingsActive = pathname.startsWith('/settings')
-
   // Loading the app starts a background sync; pages never wait for it.
+  // An effect on purpose: it's a call out when the app first appears. The
+  // root route's onEnter doesn't fire on the first load, and a loader would
+  // fire again after every Refresh.
   useEffect(() => {
     void requestSync({ data: 'on_load' })
   }, [])
+
+  const unreadActive = isUnreadPath(pathname)
+  const settingsActive = pathname.startsWith('/settings')
 
   return (
     <div className="flex h-dvh flex-col">

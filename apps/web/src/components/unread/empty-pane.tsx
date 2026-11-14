@@ -1,41 +1,19 @@
-import { cn } from 'cn'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
-import {
-  FALLBACK_BACKDROP,
-  getBackdrop,
-  type Backdrop,
-} from '../../server/backdrop.ts'
+import { backdropQuery } from '../../lib/queries.ts'
+import { FALLBACK_BACKDROP } from '../../server/backdrop.ts'
 
 /**
  * The article pane with no article open: a calm landscape from Unsplash,
  * centred, with no credit line (the owner's choice). A new one each time
- * the pane empties
- * (or a fixed one, until the Unsplash API can be used). Blank only while
- * it loads.
+ * the pane empties (or a fixed one, until the Unsplash API can be used).
+ * Blank only while it loads.
  */
 export function EmptyPane() {
-  const [backdrop, setBackdrop] = useState<Backdrop | null>(null)
-  const [loaded, setLoaded] = useState(false)
+  const { data, isError } = useQuery(backdropQuery())
+  const backdrop = isError ? FALLBACK_BACKDROP : data
 
-  useEffect(() => {
-    let current = true
-
-    getBackdrop().then(
-      (photo) => {
-        if (current) setBackdrop(photo)
-      },
-      () => {
-        if (current) setBackdrop(FALLBACK_BACKDROP)
-      }
-    )
-
-    return () => {
-      current = false
-    }
-  }, [])
-
-  if (backdrop === null) return null
+  if (backdrop === undefined) return null
 
   return (
     <figure className="flex h-full items-center justify-center p-8">
@@ -50,11 +28,11 @@ export function EmptyPane() {
           alt={backdrop.alt}
           referrerPolicy="no-referrer"
           decoding="async"
-          onLoad={() => setLoaded(true)}
-          className={cn(
-            'aspect-[3/2] w-full rounded-lg object-cover transition-opacity duration-500',
-            !loaded && 'opacity-0'
-          )}
+          // Fades in once loaded; marked on the element itself, so no state.
+          onLoad={(event) => {
+            event.currentTarget.dataset.loaded = 'true'
+          }}
+          className="aspect-[3/2] w-full rounded-lg object-cover opacity-0 transition-opacity duration-500 data-loaded:opacity-100"
         />
       </div>
     </figure>

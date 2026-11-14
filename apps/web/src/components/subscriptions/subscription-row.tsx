@@ -1,5 +1,6 @@
 import { cn } from 'cn'
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useState, type FormEvent } from 'react'
 
 import type { Subscription } from '@dusty/db'
 
@@ -27,19 +28,18 @@ export function SubscriptionRow({
   highlighted: boolean
   onChanged: () => void
 }) {
+  // Which of the row's own forms is open: local UI, nothing else needs it.
   const [renaming, setRenaming] = useState(false)
   const [confirmingRemove, setConfirmingRemove] = useState(false)
-  const [busy, setBusy] = useState(false)
+
+  const remove = useMutation({
+    mutationFn: () => removeSubscription({ data: { id: subscription.id } }),
+    onSuccess: onChanged,
+  })
 
   const label = healthLabel(subscription)
   const failure = failureNote(subscription, now)
   const untitled = subscription.title === subscription.url
-
-  const remove = async () => {
-    setBusy(true)
-    await removeSubscription({ data: { id: subscription.id } })
-    onChanged()
-  }
 
   return (
     <li
@@ -151,8 +151,8 @@ export function SubscriptionRow({
             <Button
               variant="destructive"
               size="sm"
-              disabled={busy}
-              onClick={remove}
+              disabled={remove.isPending}
+              onClick={() => remove.mutate()}
             >
               {removeConfirmation(subscription)}
             </Button>
@@ -178,19 +178,18 @@ function RenameForm({
   subscription: Subscription
   onDone: (changed: boolean) => void
 }) {
-  const [title, setTitle] = useState(subscription.customTitle ?? '')
-  const input = useRef<HTMLInputElement>(null)
+  const rename = useMutation({
+    mutationFn: (title: string) =>
+      renameSubscription({ data: { id: subscription.id, title } }),
+    onSuccess: () => onDone(true),
+  })
 
-  // Opening the form is asking to type a name, so put the cursor there.
-  useEffect(() => {
-    input.current?.focus()
-    input.current?.select()
-  }, [])
-
-  const save = async (event: FormEvent<HTMLFormElement>) => {
+  const save = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    await renameSubscription({ data: { id: subscription.id, title } })
-    onDone(true)
+
+    const field = event.currentTarget.elements.namedItem('title')
+
+    if (field instanceof HTMLInputElement) rename.mutate(field.value)
   }
 
   return (
@@ -198,15 +197,25 @@ function RenameForm({
       <Label className="sr-only" htmlFor={`rename-${subscription.id}`}>
         New name for {subscription.title}
       </Label>
+      {/* Opening the form is asking to type a name: the cursor goes there,
+          with the current name selected. */}
       <Input
-        ref={input}
         id={`rename-${subscription.id}`}
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
+        name="title"
+        defaultValue={subscription.customTitle ?? ''}
+        // The owner just pressed Rename: focus belongs here, not on load.
+        // oxlint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus
+        onFocus={(event) => event.currentTarget.select()}
         placeholder={subscription.feedTitle ?? subscription.url}
         className="w-64"
       />
-      <Button type="submit" variant="outline" size="sm">
+      <Button
+        type="submit"
+        variant="outline"
+        size="sm"
+        disabled={rename.isPending}
+      >
         Save
       </Button>
       <Button

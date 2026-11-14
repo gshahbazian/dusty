@@ -1,5 +1,6 @@
 import { cn } from 'cn'
-import { useState, type FormEvent } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import type { FormEvent } from 'react'
 
 import type { AddFeedResult } from '@dusty/sync/contract'
 
@@ -8,12 +9,6 @@ import { Input } from '@/components/ui/input.tsx'
 import { Label } from '@/components/ui/label.tsx'
 
 import { addSubscription } from '../../server/subscriptions.ts'
-
-type Status =
-  | { readonly kind: 'idle' }
-  | { readonly kind: 'adding' }
-  | { readonly kind: 'done'; readonly result: AddFeedResult }
-  | { readonly kind: 'error' }
 
 /** What to say after an add, in plain words. */
 function resultMessage(result: AddFeedResult): string {
@@ -31,20 +26,6 @@ function resultMessage(result: AddFeedResult): string {
   return `Couldn't add that: ${result.reason}.`
 }
 
-/** The existing subscription an add pointed at, if it did. */
-function existingFeedId(status: Status): number | null {
-  if (status.kind !== 'done') return null
-
-  if (status.result.status !== 'exists') return null
-
-  return status.result.feed.id
-}
-
-/** Whether the message is a refusal, shown as an error. */
-function isRefusal(status: Status): boolean {
-  return status.kind === 'done' && status.result.status === 'invalid'
-}
-
 /**
  * Paste a feed URL, or a site's home page, to subscribe. The feed is
  * checked, its title shown, and its articles pulled straight away.
@@ -56,35 +37,34 @@ export function AddFeedForm({
   onAdded: (feedId: number) => void
   onShowExisting: (feedId: number) => void
 }) {
-  const [url, setUrl] = useState('')
-  const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  const add = useMutation({
+    mutationFn: (url: string) => addSubscription({ data: { url } }),
+  })
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (url.trim() === '') return
+    const form = event.currentTarget
+    const field = form.elements.namedItem('url')
+    const url = field instanceof HTMLInputElement ? field.value.trim() : ''
 
-    setStatus({ kind: 'adding' })
+    if (url === '') return
 
-    try {
-      const result = await addSubscription({ data: { url } })
+    add.mutate(url, {
+      onSuccess: (result) => {
+        if (result.status !== 'added') return
 
-      setStatus({ kind: 'done', result })
-
-      if (result.status === 'added') {
-        setUrl('')
+        form.reset()
         onAdded(result.feed.id)
-      }
-    } catch {
-      setStatus({ kind: 'error' })
-    }
+      },
+    })
   }
 
-  const adding = status.kind === 'adding'
-  const existingId = existingFeedId(status)
+  const result = add.data
+  const existingId = result?.status === 'exists' ? result.feed.id : null
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-2">
+    <form onSubmit={submit} className="group flex flex-col gap-2">
       <Label htmlFor="add-feed-url">Add a feed</Label>
       <div className="flex gap-2">
         <Input
@@ -93,26 +73,32 @@ export function AddFeedForm({
           inputMode="url"
           autoComplete="off"
           spellCheck={false}
+          name="url"
+          required
           placeholder="Feed or website address"
-          value={url}
-          onChange={(event) => setUrl(event.target.value)}
-          disabled={adding}
+          disabled={add.isPending}
           className="flex-1"
         />
-        <Button type="submit" disabled={adding || url.trim() === ''}>
-          {adding ? 'Adding…' : 'Add'}
+        {/* Dimmed while the field is empty (submitting it empty is refused
+            by the browser, as the field is required). */}
+        <Button
+          type="submit"
+          disabled={add.isPending}
+          className="group-has-[input:placeholder-shown]:opacity-50"
+        >
+          {add.isPending ? 'Adding…' : 'Add'}
         </Button>
       </div>
       <output className="block min-h-5 text-xs" aria-live="polite">
-        {status.kind === 'done' && (
+        {result !== undefined && (
           <>
             <span
               className={cn(
-                isRefusal(status) && 'text-destructive',
-                !isRefusal(status) && 'text-muted-foreground'
+                result.status === 'invalid' && 'text-destructive',
+                result.status !== 'invalid' && 'text-muted-foreground'
               )}
             >
-              {resultMessage(status.result)}
+              {resultMessage(result)}
             </span>{' '}
             {existingId !== null && (
               <Button
@@ -126,7 +112,7 @@ export function AddFeedForm({
             )}
           </>
         )}
-        {status.kind === 'error' && (
+        {add.isError && (
           <span className="text-destructive">
             Something went wrong. Please try again.
           </span>

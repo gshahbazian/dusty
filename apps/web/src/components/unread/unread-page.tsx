@@ -1,9 +1,11 @@
 import { cn } from 'cn'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount, ListShow } from '@dusty/db'
 
+import { articleQuery } from '../../lib/queries.ts'
 import { syncForRefresh } from '../../server/functions.ts'
 import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
 import type { Command } from '../keyboard/keymap.ts'
@@ -56,31 +58,12 @@ export function UnreadPage({
   articleId: number | null
   onOpenArticle: (id: number | null) => void
 }) {
+  // The cursor lives above the snapshot, so a refresh keeps it on the same
+  // article. Another list (feed, or unread / all) is a new page (the route
+  // keys it), so it starts on its first row.
   const [cursorId, setCursorId] = useState<number | null>(articleId)
 
-  // The article already marked read for being opened. A refresh shows it
-  // again without opening it again, so a "mark unread" made while reading
-  // it stays unread. Closing it clears this: opening it again reads it.
-  const [readOnOpen, setReadOnOpen] = useState<number | null>(null)
-  const [shownArticle, setShownArticle] = useState(articleId)
-
-  // However the article closes (its button, `q`, the browser's Back), the
-  // next open reads it again.
-  if (articleId !== shownArticle) {
-    setShownArticle(articleId)
-
-    if (articleId === null) setReadOnOpen(null)
-  }
-
-  // Which list this is: another feed, or unread / all, is a new list. It
-  // starts at its top, with the cursor on its first row.
   const listKey = `${feedId ?? 'all'}-${listShow?.show ?? 'unread'}`
-  const [shownList, setShownList] = useState(listKey)
-
-  if (listKey !== shownList) {
-    setShownList(listKey)
-    setCursorId(articleId)
-  }
 
   return (
     <UnreadSnapshot
@@ -92,8 +75,6 @@ export function UnreadPage({
       articleId={articleId}
       cursorId={cursorId}
       onCursor={setCursorId}
-      readOnOpen={readOnOpen}
-      onReadOnOpen={setReadOnOpen}
       onOpenArticle={onOpenArticle}
     />
   )
@@ -110,8 +91,6 @@ function UnreadSnapshot({
   articleId,
   cursorId,
   onCursor,
-  readOnOpen,
-  onReadOnOpen,
   onOpenArticle,
 }: {
   data: UnreadListData
@@ -121,12 +100,32 @@ function UnreadSnapshot({
   articleId: number | null
   cursorId: number | null
   onCursor: (id: number) => void
-  readOnOpen: number | null
-  onReadOnOpen: (id: number) => void
   onOpenArticle: (id: number | null) => void
 }) {
   const { rows } = data
   const list = useUnreadList(rows, data.snapshotAt)
+  const queryClient = useQueryClient()
+
+  // The open article's read state: as this list knows it, or (opened from
+  // a link, not one of these rows) as the server sent it with the article.
+  // The article view asks for the same query, so this costs no request.
+  const openArticle = useQuery({
+    ...articleQuery(articleId ?? 0),
+    enabled: articleId !== null,
+  })
+
+  const isOpenRead = (id: number): boolean => {
+    const known = list.overrides.get(id)
+
+    if (known !== undefined) return known
+
+    if (rows.some((row) => row.id === id)) return list.isRead(id)
+
+    return (openArticle.data?.readAt ?? null) !== null
+  }
+
+  const openRead = articleId !== null && isOpenRead(articleId)
+
   const counts = adjustedCounts(data.counts, rows, list.overrides)
   const [now] = useState(() => Date.now())
   const { refreshing, refresh } = useRefresh(list.fail)
@@ -180,6 +179,16 @@ function UnreadSnapshot({
     onCursor(row.id)
     reveal(index)
     onOpenArticle(row.id)
+    // Opening an article reads it.
+    list.markOpenedRead(row.id)
+
+    // The articles either side, fetched ahead of `j` / `k` (or Next /
+    // Previous on a phone), so moving to them shows them at once.
+    for (const near of [rows[index - 1], rows[index + 1]]) {
+      if (near !== undefined) {
+        void queryClient.prefetchQuery(articleQuery(near.id))
+      }
+    }
   }
 
   const goToFeed = (id: number | null) => {
@@ -198,10 +207,11 @@ function UnreadSnapshot({
       rows,
       cursor,
       openId: articleId,
+      openRead,
       list,
       moveTo,
       open,
-      refresh: () => void refresh(),
+      refresh: () => refresh(),
       close: () => onOpenArticle(null),
       goToFeed: (direction) => {
         const order = [null, ...feeds.map((feed) => feed.feedId)]
@@ -250,7 +260,7 @@ function UnreadSnapshot({
           shown={rows.length}
           truncated={data.truncated}
           refreshing={refreshing}
-          onRefresh={() => void refresh()}
+          onRefresh={() => refresh()}
           onPickFeed={goToFeed}
         />
 
@@ -271,9 +281,9 @@ function UnreadSnapshot({
           busy={list.busy}
           isRead={list.isRead}
           onOpen={open}
-          onMarkRead={(id) => void list.markOneRead(id)}
-          onMarkUnread={(id) => void list.markOneUnread(id)}
-          onMarkAllAbove={(id) => void list.markAllAbove(id)}
+          onMarkRead={(id) => list.markOneRead(id)}
+          onMarkUnread={(id) => list.markOneUnread(id)}
+          onMarkAllAbove={(id) => list.markAllAbove(id)}
         />
       </aside>
 
@@ -288,25 +298,14 @@ function UnreadSnapshot({
           !articleOpen && 'hidden lg:block'
         )}
       >
-        {articleId !== null && (
-          <ArticleView
-            articleId={articleId}
-            onOpened={(id, alreadyRead) => {
-              // Shown again by a refresh, and unread now: leave it so.
-              if (id === readOnOpen && !alreadyRead) return
-
-              onReadOnOpen(id)
-              void list.markOpenedRead(id, alreadyRead)
-            }}
-          />
-        )}
+        {articleId !== null && <ArticleView articleId={articleId} />}
         {articleId !== null && (
           <MobileArticleBar
-            read={list.isRead(articleId)}
+            read={openRead}
             onBack={() => onOpenArticle(null)}
             onPrevious={neighbors.previous}
             onNext={neighbors.next}
-            onMarkUnread={() => void list.markOneUnread(articleId)}
+            onMarkUnread={() => list.markOneUnread(articleId)}
           />
         )}
         {articleId === null && <EmptyPane />}
@@ -363,6 +362,8 @@ function commandsFor(page: {
   cursor: number
   /** The open article, if any: `m` acts on it (it may not be in the list). */
   openId: number | null
+  /** Whether the open article is read. */
+  openRead: boolean
   list: UnreadList
   moveTo: (index: number) => void
   open: (index: number) => void
@@ -468,14 +469,15 @@ function commandsFor(page: {
     undo: whenIdle(list.undoLast),
     toggleRead: whenIdle(() => {
       const id = page.openId ?? row.id
+      const read = page.openId === null ? list.isRead(id) : page.openRead
 
-      if (list.isRead(id)) {
-        void list.markOneUnread(id)
+      if (read) {
+        list.markOneUnread(id)
 
         return
       }
 
-      void list.markOneRead(id)
+      list.markOneRead(id)
     }),
     markAllAbove: whenIdle(() => {
       if (cursor === 0) {
@@ -484,7 +486,7 @@ function commandsFor(page: {
         return
       }
 
-      void list.markAllAbove(row.id)
+      list.markAllAbove(row.id)
     }),
   }
 }
@@ -497,28 +499,20 @@ function commandsFor(page: {
  */
 function useRefresh(onFailed: (text: string) => void) {
   const router = useRouter()
-  const [refreshing, setRefreshing] = useState(false)
 
-  const refresh = async () => {
-    if (refreshing) return
-
-    setRefreshing(true)
-
-    try {
+  const refresh = useMutation({
+    mutationFn: async () => {
       await syncForRefresh()
-    } catch {
-      setRefreshing(false)
-      onFailed("Couldn't check the feeds. The list is unchanged; try again.")
-
-      return
-    }
-
-    try {
       await router.invalidate()
-    } finally {
-      setRefreshing(false)
-    }
-  }
+    },
+    onError: () =>
+      onFailed("Couldn't check the feeds. The list is unchanged; try again."),
+  })
 
-  return { refreshing, refresh }
+  return {
+    refreshing: refresh.isPending,
+    refresh: () => {
+      if (!refresh.isPending) refresh.mutate()
+    },
+  }
 }

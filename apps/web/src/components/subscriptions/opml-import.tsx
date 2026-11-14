@@ -1,4 +1,5 @@
 import { cn } from 'cn'
+import { useMutation } from '@tanstack/react-query'
 import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
@@ -59,9 +60,46 @@ const chunk = <T,>(items: readonly T[], size: number): T[][] =>
  * so the unread list is not flooded.
  */
 export function OpmlImport({ onImported }: { onImported: () => void }) {
-  const [step, setStep] = useState<Step>({ kind: 'idle' })
+  const preview = useMutation({
+    mutationFn: async (file: File) =>
+      previewOpml({ data: { opml: await file.text() } }),
+  })
 
-  const choose = async (event: ChangeEvent<HTMLInputElement>) => {
+  // "Importing… 3 of 12": progress inside one import, only ever shown.
+  const [done, setDone] = useState(0)
+
+  const runImport = useMutation({
+    mutationFn: async (entries: readonly OpmlEntry[]) => {
+      const { toImport, skipped: skippedBefore } = splitPreview(entries)
+      const results: ImportResult[] = []
+
+      setDone(0)
+
+      for (const batch of chunk(toImport, IMPORT_BATCH_SIZE)) {
+        try {
+          results.push(
+            ...(await importSubscriptions({ data: { entries: batch } }))
+          )
+        } catch {
+          // What was imported so far stays; choosing the file again skips it.
+          throw new Error(
+            `it stopped after ${results.length} of ${toImport.length} feeds; choose the file again to import the rest`
+          )
+        }
+
+        setDone(results.length)
+      }
+
+      const failed = results.filter((result) => result.status === 'failed')
+      const added = results.filter((result) => result.status === 'added').length
+      const skipped = skippedBefore + results.length - added - failed.length
+
+      return { added, skipped, failed }
+    },
+    onSettled: onImported,
+  })
+
+  const choose = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
     // Reset, so choosing the same file again fires a change.
@@ -69,58 +107,42 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
 
     if (file === undefined) return
 
-    setStep({ kind: 'reading' })
-
-    try {
-      const preview = await previewOpml({ data: { opml: await file.text() } })
-
-      if (preview.status === 'invalid') {
-        setStep({ kind: 'invalid', reason: preview.reason })
-
-        return
-      }
-
-      setStep({ kind: 'preview', entries: preview.entries })
-    } catch {
-      setStep({ kind: 'invalid', reason: "couldn't read that file" })
-    }
+    runImport.reset()
+    preview.mutate(file)
   }
 
-  const runImport = async (entries: readonly OpmlEntry[]) => {
-    const { toImport, skipped: skippedBefore } = splitPreview(entries)
-    const results: ImportResult[] = []
+  /** Where the import is, from the two steps' states. */
+  const stepNow = (): Step => {
+    if (runImport.isPending) {
+      const total = splitPreview(runImport.variables).toImport.length
 
-    setStep({ kind: 'importing', done: 0, total: toImport.length })
-
-    try {
-      for (const batch of chunk(toImport, IMPORT_BATCH_SIZE)) {
-        const imported = await importSubscriptions({ data: { entries: batch } })
-
-        results.push(...imported)
-        setStep({
-          kind: 'importing',
-          done: results.length,
-          total: toImport.length,
-        })
-      }
-    } catch {
-      // What was imported so far stays; choosing the file again skips it.
-      setStep({
-        kind: 'invalid',
-        reason: `it stopped after ${results.length} of ${toImport.length} feeds; choose the file again to import the rest`,
-      })
-      onImported()
-
-      return
+      return { kind: 'importing', done, total }
     }
 
-    const failed = results.filter((result) => result.status === 'failed')
-    const added = results.filter((result) => result.status === 'added').length
-    const skipped = skippedBefore + results.length - added - failed.length
+    if (runImport.isError) {
+      return { kind: 'invalid', reason: runImport.error.message }
+    }
 
-    setStep({ kind: 'finished', added, skipped, failed })
-    onImported()
+    if (runImport.data !== undefined) {
+      return { kind: 'finished', ...runImport.data }
+    }
+
+    if (preview.isPending) return { kind: 'reading' }
+
+    if (preview.isError) {
+      return { kind: 'invalid', reason: "couldn't read that file" }
+    }
+
+    if (preview.data === undefined) return { kind: 'idle' }
+
+    if (preview.data.status === 'invalid') {
+      return { kind: 'invalid', reason: preview.data.reason }
+    }
+
+    return { kind: 'preview', entries: preview.data.entries }
   }
+
+  const step = stepNow()
 
   return (
     <section className="flex flex-col gap-2" aria-labelledby="import-heading">
@@ -144,7 +166,10 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
         />
       </label>
       <output className="block text-xs" aria-live="polite">
-        <ImportStatus step={step} onImport={runImport} />
+        <ImportStatus
+          step={step}
+          onImport={(entries) => runImport.mutate(entries)}
+        />
       </output>
     </section>
   )
