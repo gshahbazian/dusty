@@ -208,7 +208,7 @@ function ImportStatus({
         <button
           type="button"
           onClick={() => onImport(step.entries)}
-          className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-neutral-100 dark:text-neutral-900"
+          className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
         >
           Import {plural(toImport.length, 'feed', 'feeds')}
         </button>

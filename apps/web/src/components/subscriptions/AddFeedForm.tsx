@@ -100,7 +100,7 @@ export function AddFeedForm({
         <button
           type="submit"
           disabled={adding || url.trim() === ''}
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900"
+          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
         >
           {adding ? 'Adding…' : 'Add'}
         </button>

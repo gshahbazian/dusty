@@ -38,6 +38,11 @@ test('mark all above: a sync landing between load and action is never touched', 
   await articleRow(page, 'Generated 1')
     .getByRole('button', { name: 'Mark all above Generated 1 as read' })
     .click()
+  await articleRow(page, 'Generated 1')
+    .getByRole('button', {
+      name: 'Confirm: mark 2 articles above Generated 1 as read',
+    })
+    .click()
   await expect(page.getByText('Marked 2 articles above as read.')).toBeVisible()
   await expect(articleRow(page, 'Generated 3')).toContainText('(read)')
   await expect(articleRow(page, 'Generated 2')).toContainText('(read)')
@@ -54,6 +59,11 @@ test('mark all above: a sync landing between load and action is never touched', 
   // unread, though it would have sorted above the chosen row.
   await articleRow(page, 'Generated 1')
     .getByRole('button', { name: 'Mark all above Generated 1 as read' })
+    .click()
+  await articleRow(page, 'Generated 1')
+    .getByRole('button', {
+      name: 'Confirm: mark 2 articles above Generated 1 as read',
+    })
     .click()
   await expect(page.getByText('Marked 2 articles above as read.')).toBeVisible()
   await page.getByRole('button', { name: 'Refresh' }).click()

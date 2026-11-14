@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Wide content</title>
+    <link>https://wide.example.com/</link>
+    <description>An article whose content is wider than a phone.</description>
+    <item>
+      <title>Too wide for a phone</title>
+      <guid>wide-1</guid>
+      <link>https://wide.example.com/1</link>
+      <pubDate>Fri, 13 Nov 2026 10:00:00 GMT</pubDate>
+      <description><![CDATA[
+        <p>A very wide image, table and code block, and a long unbroken word.</p>
+        <img src="https://wide.example.com/huge.png" width="2400" height="300" alt="Huge picture">
+        <table><tr><td>one</td><td>two</td><td>three</td><td>four</td><td>five</td><td>six</td><td>seven</td><td>eight</td><td>nine</td><td>ten</td><td>eleven</td><td>twelve</td><td>thirteen</td><td>fourteen</td></tr></table>
+        <pre><code>const aVeryLongLineOfCode = "this line goes on and on and on, far wider than any phone screen could ever show";</code></pre>
+        <p>https://wide.example.com/an/extremely/long/address/without/any/spaces/that/would/otherwise/push/the/page/sideways</p>
+      ]]></description>
+    </item>
+  </channel>
+</rss>

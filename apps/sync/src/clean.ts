@@ -209,13 +209,61 @@ export const cleanHtml = (html: string, base: string | null): string => {
   return DomUtils.getOuterHTML(document, { encodeEntities: 'utf8' }).trim()
 }
 
+/** Elements that end a line: their text is kept apart from what follows. */
+const BLOCKS = new Set([
+  'address',
+  'article',
+  'aside',
+  'blockquote',
+  'br',
+  'dd',
+  'div',
+  'dl',
+  'dt',
+  'figcaption',
+  'figure',
+  'footer',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'header',
+  'hr',
+  'li',
+  'ol',
+  'p',
+  'pre',
+  'section',
+  'table',
+  'td',
+  'th',
+  'tr',
+  'ul',
+])
+
+/** The text of nodes, a space after each block so paragraphs stay apart. */
+const textOf = (nodes: readonly ChildNode[]): string =>
+  nodes
+    .map((node) => {
+      if (isText(node)) return node.data
+
+      if (!isTag(node)) return ''
+
+      const inner = textOf(node.children)
+
+      return BLOCKS.has(node.name) ? `${inner} ` : inner
+    })
+    .join('')
+
 /** HTML (or text with entities) as plain text, whitespace collapsed. */
 export const toPlainText = (html: string): string => {
   const document = parse(html)
 
   sanitize(document.children, null)
 
-  return DomUtils.textContent(document).replaceAll(/\s+/g, ' ').trim()
+  return textOf(document.children).replaceAll(/\s+/g, ' ').trim()
 }
 
 const EXCERPT_LENGTH = 280

@@ -131,7 +131,7 @@ export function SubscriptionRow({
         {!renaming && (
           <button
             type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
             onClick={() => setRenaming(true)}
             aria-label={`Rename ${subscription.title}`}
           >
@@ -141,7 +141,7 @@ export function SubscriptionRow({
         {!confirmingRemove && (
           <button
             type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
             onClick={() => setConfirmingRemove(true)}
             aria-label={`Remove ${subscription.title}`}
           >
@@ -154,13 +154,13 @@ export function SubscriptionRow({
               type="button"
               disabled={busy}
               onClick={remove}
-              className="rounded bg-red-600 px-2 py-1 text-sm font-medium text-white disabled:opacity-50"
+              className="rounded bg-red-600 px-2 py-1 text-sm font-medium text-white disabled:opacity-50 pointer-coarse:min-h-11"
             >
               {removeConfirmation(subscription)}
             </button>
             <button
               type="button"
-              className="shrink-0 rounded px-2 py-1 text-sm whitespace-nowrap text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+              className="shrink-0 rounded px-2 py-1 text-sm whitespace-nowrap text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
               onClick={() => setConfirmingRemove(false)}
             >
               Keep it
@@ -209,13 +209,13 @@ function RenameForm({
       />
       <button
         type="submit"
-        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
       >
         Save
       </button>
       <button
         type="button"
-        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+        className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
         onClick={() => onDone(false)}
       >
         Cancel

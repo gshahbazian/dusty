@@ -8,6 +8,11 @@
   line-height: 1.7;
   overflow-wrap: break-word;
 
+  /* A little larger on a phone, read at arm's length. */
+  @media (width < 64rem) {
+    font-size: 1.0625rem;
+  }
+
   & > * + * {
     margin-top: 1em;
   }

@@ -130,7 +130,7 @@ function Settings() {
                       search: { sort, attention },
                     })
                   }}
-                  className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700"
+                  className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 pointer-coarse:min-h-11"
                 >
                   {SORTS.map((sort) => (
                     <option key={sort.value} value={sort.value}>

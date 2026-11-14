@@ -140,6 +140,14 @@ describe('plain text', () => {
     expect(toPlainText('<p>a</p><script>alert(1)</script>')).toBe('a')
   })
 
+  test('paragraphs and lines are kept apart, inline text is not', () => {
+    expect(toPlainText('<p>One</p><p>Two</p>')).toBe('One Two')
+    expect(toPlainText('<p>a<br>b</p><ul><li>c</li><li>d</li></ul>')).toBe(
+      'a b c d'
+    )
+    expect(toPlainText('<p>un<b>bold</b>ed</p>')).toBe('unbolded')
+  })
+
   test('excerpts are cut on a word boundary', () => {
     const long = `<p>${'word '.repeat(100)}</p>`
     const excerpt = excerptOf(long)

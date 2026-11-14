@@ -1,14 +1,23 @@
 import { cn } from 'cn'
+import { useEffect, useState } from 'react'
+
 import type { ArticleRow } from '@dusty/db'
 
 import { RelativeTime } from '../RelativeTime.tsx'
+import { articles } from './list-state.ts'
+
+/** How long "Mark N above?" waits for its second tap. */
+const CONFIRM_MS = 4000
 
 /**
- * One row of an unread list. Its buttons let go of focus once used, so a
- * later Enter opens the cursor's row rather than pressing one of them
- * again. A read row stays where it is (dimmed) until
+ * One row of an unread list. A read row stays where it is (dimmed) until
  * the list is refreshed, so nothing moves under the cursor. The list is
  * virtualized: the row is placed at `offset` and measured once drawn.
+ *
+ * Its buttons let go of focus once used, so a later Enter opens the
+ * cursor's row rather than pressing one of them again. "Mark all above"
+ * takes two taps, the first saying how many rows it will mark, so it is
+ * never done by accident on a touch screen.
  */
 export function ArticleListItem({
   row,
@@ -46,6 +55,17 @@ export function ArticleListItem({
   onMarkAllAbove: () => void
 }) {
   const title = row.title ?? 'Untitled'
+  const above = position - 1
+  const [confirming, setConfirming] = useState(false)
+
+  // An unanswered "Mark N above?" goes back after a few seconds.
+  useEffect(() => {
+    if (!confirming) return
+
+    const reset = setTimeout(() => setConfirming(false), CONFIRM_MS)
+
+    return () => clearTimeout(reset)
+  }, [confirming])
 
   return (
     <li
@@ -70,7 +90,7 @@ export function ArticleListItem({
           event.currentTarget.blur()
           onOpen()
         }}
-        className="block w-full text-left"
+        className="block w-full text-left pointer-coarse:min-h-11"
         aria-current={open ? 'true' : undefined}
       >
         <span className={cn('block break-words', !read && 'font-medium')}>
@@ -95,7 +115,7 @@ export function ArticleListItem({
         {!read && (
           <button
             type="button"
-            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
             onClick={(event) => {
               event.currentTarget.blur()
               onMarkRead()
@@ -109,7 +129,7 @@ export function ArticleListItem({
         {read && (
           <button
             type="button"
-            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            className="w-28 rounded px-2 py-1 text-left text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
             onClick={(event) => {
               event.currentTarget.blur()
               onMarkUnread()
@@ -120,18 +140,30 @@ export function ArticleListItem({
             Mark unread
           </button>
         )}
-        {!first && (
+        {!first && !confirming && (
           <button
             type="button"
-            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800"
-            onClick={(event) => {
-              event.currentTarget.blur()
-              onMarkAllAbove()
-            }}
+            className="rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
+            onClick={() => setConfirming(true)}
             disabled={busy}
             aria-label={`Mark all above ${title} as read`}
           >
             Mark all above as read
+          </button>
+        )}
+        {!first && confirming && (
+          <button
+            type="button"
+            className="rounded bg-neutral-900 px-2 py-1 text-sm text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 pointer-coarse:min-h-11"
+            onClick={(event) => {
+              event.currentTarget.blur()
+              setConfirming(false)
+              onMarkAllAbove()
+            }}
+            disabled={busy}
+            aria-label={`Confirm: mark ${articles(above)} above ${title} as read`}
+          >
+            Mark {above} above?
           </button>
         )}
       </div>

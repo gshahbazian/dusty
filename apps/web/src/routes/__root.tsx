@@ -24,8 +24,34 @@ export const Route = createRootRoute({
       },
       { name: 'color-scheme', content: 'light dark' },
       { title: 'Dusty' },
+      // Added to a phone's home screen, it opens full screen like an app.
+      {
+        name: 'theme-color',
+        content: '#ffffff',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        name: 'theme-color',
+        content: '#0a0a0a',
+        media: '(prefers-color-scheme: dark)',
+      },
+      { name: 'mobile-web-app-capable', content: 'yes' },
+      { name: 'apple-mobile-web-app-capable', content: 'yes' },
+      { name: 'apple-mobile-web-app-title', content: 'Dusty' },
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'stylesheet', href: appCss },
+      // With credentials: Cloudflare Access is in front of everything, and
+      // without its cookie the manifest request gets a login redirect.
+      {
+        rel: 'manifest',
+        href: '/manifest.webmanifest',
+        crossOrigin: 'use-credentials',
+      },
+      { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+    ],
   }),
   shellComponent: RootDocument,
   component: AppLayout,
@@ -71,7 +97,7 @@ function AppLayout() {
           <Link
             to="/"
             className={cn(
-              'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800',
+              'inline-flex items-center rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11',
               unreadActive &&
                 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
             )}
@@ -81,7 +107,7 @@ function AppLayout() {
           </Link>
           <Link
             to="/settings"
-            className="rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            className="inline-flex items-center rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 pointer-coarse:min-h-11"
             activeProps={{
               className:
                 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100',
@@ -95,7 +121,7 @@ function AppLayout() {
         </span>
         <a
           href={session.logoutUrl}
-          className="text-sm text-neutral-500 hover:underline"
+          className="inline-flex items-center text-sm text-neutral-500 hover:underline pointer-coarse:min-h-11"
           title={`Signed in as ${session.email}`}
         >
           Log out

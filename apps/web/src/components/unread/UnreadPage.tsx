@@ -119,6 +119,10 @@ function UnreadSnapshot({
   const cursor = cursorIndex(rows, cursorId)
   const articleOpen = articleId !== null
 
+  const neighbors = articleNeighbors(rows, cursor, articleId, (index) =>
+    open(index)
+  )
+
   // After a refresh (or opening a link to an article), bring the cursor's
   // row into view once.
   useEffect(() => {
@@ -126,6 +130,9 @@ function UnreadSnapshot({
     // Only when the snapshot first shows.
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Said by screen readers when the cursor moves by key.
+  const [announcement, setAnnouncement] = useState('')
 
   /** Move the cursor, scrolling just enough to keep its row in view. */
   const moveTo = (index: number) => {
@@ -135,6 +142,9 @@ function UnreadSnapshot({
 
     onCursor(row.id)
     reveal(index)
+    setAnnouncement(
+      `${index + 1} of ${rows.length}: ${row.title ?? 'Untitled'}`
+    )
   }
 
   const open = (index: number) => {
@@ -223,7 +233,7 @@ function UnreadSnapshot({
                 event.target.value === '' ? null : Number(event.target.value)
               )
             }}
-            className="rounded border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700"
+            className="rounded border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 pointer-coarse:min-h-11"
           >
             <option value="">All unread ({counts.total})</option>
             {feeds.map((feed) => (
@@ -259,6 +269,10 @@ function UnreadSnapshot({
             Nothing unread. Refresh to check for new articles.
           </p>
         )}
+
+        <p aria-live="polite" className="sr-only">
+          {announcement}
+        </p>
 
         <div ref={listScroll} className="min-h-0 flex-1 overflow-y-auto">
           <ul
@@ -317,6 +331,8 @@ function UnreadSnapshot({
               void list.markOpenedRead(id, alreadyRead)
             }}
             onMarkUnread={(id) => void list.markOneUnread(id)}
+            onPrevious={neighbors.previous}
+            onNext={neighbors.next}
             onClose={() => onOpenArticle(null)}
           />
         )}
@@ -328,6 +344,7 @@ function UnreadSnapshot({
       </section>
 
       <NoticeBar
+        aboveBar={articleOpen}
         notice={list.notice}
         busy={list.busy}
         onUndo={list.undo}
@@ -335,6 +352,36 @@ function UnreadSnapshot({
       />
     </div>
   )
+}
+
+/**
+ * Previous and Next for an open article, as `K` / `J` do: the rows either
+ * side of it, or, if it isn't in the list (opened from a link), the top row
+ * as next and nothing as previous.
+ */
+interface Neighbors {
+  readonly previous: (() => void) | null
+  readonly next: (() => void) | null
+}
+
+function articleNeighbors(
+  rows: readonly ArticleRow[],
+  cursor: number,
+  openId: number | null,
+  open: (index: number) => void
+): Neighbors {
+  if (openId === null || rows.length === 0) {
+    return { previous: null, next: null }
+  }
+
+  if (rows[cursor]?.id !== openId) {
+    return { previous: null, next: () => open(0) }
+  }
+
+  return {
+    previous: cursor > 0 ? () => open(cursor - 1) : null,
+    next: cursor < rows.length - 1 ? () => open(cursor + 1) : null,
+  }
 }
 
 type UnreadList = ReturnType<typeof useUnreadList>
@@ -602,7 +649,7 @@ function RefreshButton({
         type="button"
         onClick={onRefresh}
         disabled={refreshing}
-        className="rounded border border-neutral-300 px-2 py-0.5 disabled:opacity-50 dark:border-neutral-700"
+        className="rounded border border-neutral-300 px-2 py-0.5 disabled:opacity-50 dark:border-neutral-700 pointer-coarse:min-h-11"
       >
         {refreshing ? 'Refreshing…' : 'Refresh'}
       </button>
@@ -612,11 +659,14 @@ function RefreshButton({
 
 /** Marked, undone or failed: a toast, so it never moves the list. */
 function NoticeBar({
+  aboveBar,
   notice,
   busy,
   onUndo,
   onDismiss,
 }: {
+  /** An article's action bar is at the bottom of a phone's screen. */
+  aboveBar: boolean
   notice: Notice | null
   busy: boolean
   onUndo: (actionId: string) => void
@@ -628,7 +678,8 @@ function NoticeBar({
     <output
       aria-live="polite"
       className={cn(
-        'fixed bottom-4 left-1/2 z-30 flex w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-3 rounded border px-3 py-2 text-sm shadow',
+        'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-3 rounded border px-3 py-2 text-sm shadow',
+        aboveBar && 'max-lg:bottom-24',
         notice.kind === 'error' &&
           'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200',
         notice.kind !== 'error' &&
@@ -641,7 +692,7 @@ function NoticeBar({
           type="button"
           onClick={() => onUndo(notice.actionId)}
           disabled={busy}
-          className="font-medium underline disabled:opacity-50"
+          className="font-medium underline disabled:opacity-50 pointer-coarse:min-h-11"
         >
           Undo
         </button>
@@ -650,7 +701,7 @@ function NoticeBar({
         type="button"
         onClick={onDismiss}
         aria-label="Dismiss"
-        className="text-neutral-500"
+        className="text-neutral-500 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
       >
         ×
       </button>
