@@ -13,7 +13,7 @@ test('the app loads as the owner and starts a background sync', async ({
 
   await expect(
     page.getByRole('navigation', { name: 'Main' }).getByRole('link', {
-      name: 'Subscriptions',
+      name: 'Settings',
     })
   ).toBeVisible()
   await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible()

@@ -78,11 +78,8 @@ export function ArticleView({
   }, [articleId])
 
   return (
-    <article
-      aria-label="Article"
-      className="fixed inset-0 z-20 overflow-y-auto bg-white p-4 xl:sticky xl:top-4 xl:z-auto xl:max-h-[calc(100vh-2rem)] xl:rounded-lg xl:border xl:border-neutral-200 dark:bg-neutral-950 xl:dark:border-neutral-800"
-    >
-      <div className="mx-auto max-w-2xl xl:max-w-none">
+    <article aria-label="Article" className="p-4">
+      <div className="mx-auto max-w-2xl">
         <ArticleActions
           read={read}
           onClose={onClose}

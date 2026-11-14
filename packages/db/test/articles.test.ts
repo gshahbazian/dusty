@@ -151,6 +151,32 @@ describe('lists', () => {
     })
   })
 
+  test('a list stops at its limit, in order; counts still count everything', async () => {
+    const a = await addFeed('https://a.test/feed')
+
+    await sync(
+      a,
+      [
+        ['1', T0],
+        ['2', T0 + 1],
+        ['3', T0 + 2],
+      ],
+      T0
+    )
+
+    expect(keysOf(await listUnread(db, { feedId: null, limit: 2 }))).toEqual([
+      '1',
+      '2',
+    ])
+    expect(keysOf(await listUnread(db, { feedId: a, limit: 2 }))).toEqual([
+      '3',
+      '2',
+    ])
+    expect(await unreadCounts(db)).toEqual([
+      { feedId: a, title: 'Feed 1', unread: 3 },
+    ])
+  })
+
   test('unread counts match the lists, zeros included', async () => {
     const a = await addFeed('https://a.test/feed')
     const b = await addFeed('https://b.test/feed')
