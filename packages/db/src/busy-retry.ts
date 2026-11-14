@@ -8,11 +8,19 @@
  * through one primary, so it never does this; locally it made writes fail at
  * random ("sync error, please try again") and browser tests flaky.
  *
- * A busy error means nothing was written, so trying again is safe. Deployed,
- * this never triggers.
+ * The error does not always say SQLITE_BUSY. When the lock is hit while
+ * local D1 reads the transaction's bookmark, workerd logs the SQLite error
+ * and hands JavaScript only "D1_ERROR: Failed to get session commit token:
+ * internal error; reference = ...". That happens to reads as well as
+ * writes. Local D1 rolls the transaction back when it cannot get the
+ * bookmark, so this error also means nothing was written.
+ *
+ * Either way nothing was written, so trying again is safe. Deployed, this
+ * never triggers.
  */
 const MAX_ATTEMPTS = 5
 const BASE_DELAY_MS = 15
+const RETRYABLE = /SQLITE_BUSY|Failed to get session commit token/
 
 export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
   for (let attempt = 1; ; attempt += 1) {
@@ -21,7 +29,7 @@ export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
     } catch (error) {
       const busy =
         error instanceof Error &&
-        /SQLITE_BUSY/.test(`${error.message} ${String(error.cause)}`)
+        RETRYABLE.test(`${error.message} ${String(error.cause)}`)
 
       if (!busy || attempt >= MAX_ATTEMPTS) throw error
 

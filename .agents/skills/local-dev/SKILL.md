@@ -58,6 +58,19 @@ Hot reloads show up there as `[Web] hmr update ...` and
 `[Sync] Updated in ...ms`. Migrations are applied silently; check them with
 `db.sh "select * from __alchemy_migrations"`.
 
+Both Workers open the same local D1 SQLite file from separate processes,
+so one can find it locked by the other. The log then shows
+`database is locked: SQLITE_BUSY` from `workerd/util/sqlite.c++`, while
+JavaScript only sees `D1_ERROR: Failed to get session commit token:
+internal error; reference = ...` (reads hit this too, not just writes).
+`packages/db/src/busy-retry.ts` retries both forms for about half a second,
+so a few BUSY lines in the log are normal; only a request that still fails
+afterwards is a bug.
+
+If an edit under `packages/` shows `[Sync] Updated` in the log but no
+`[Web] hmr update`, the web Worker is still running the old code; restart
+the stack (`dev-stop.sh`, `dev-start.sh`) before trusting what you see.
+
 Don't start it with a bare `pnpm dev > log &` from a script: `.alchemy/`
 does not exist on a fresh checkout, and a background job without job
 control ignores SIGINT, so it is hard to stop cleanly.

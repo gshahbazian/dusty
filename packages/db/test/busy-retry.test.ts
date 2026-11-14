@@ -25,6 +25,27 @@ describe('retryBusy', () => {
     expect(calls).toBe(3)
   })
 
+  test('also tries again when local D1 hides the busy error', async () => {
+    // What workerd hands JavaScript when SQLITE_BUSY hits while local D1
+    // reads the bookmark: the SQLite error itself only goes to its log.
+    const hidden = new Error(
+      'D1_ERROR: Failed to get session commit token: internal error; reference = d8a18bjf1o17a9a971hnp809'
+    )
+
+    let calls = 0
+
+    const result = await retryBusy(async () => {
+      calls += 1
+
+      if (calls < 2) throw hidden
+
+      return 'ok'
+    })
+
+    expect(result).toBe('ok')
+    expect(calls).toBe(2)
+  })
+
   test('gives up after a few attempts', async () => {
     let calls = 0
 
