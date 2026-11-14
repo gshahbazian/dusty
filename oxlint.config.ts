@@ -71,10 +71,14 @@ export default defineConfig({
   },
   overrides: [
     {
-      // shadcn's generated components (added with `shadcn add`): a generic
-      // <Label> is tied to its control where it is used, not here.
+      // shadcn's generated components (added with `shadcn add`), kept as
+      // shadcn writes them: a generic <Label> is tied to its control where
+      // it is used, and their style casts carry no SAFETY comments.
       files: ['apps/web/src/components/ui/**'],
-      rules: { 'jsx-a11y/label-has-associated-control': 'off' },
+      rules: {
+        'jsx-a11y/label-has-associated-control': 'off',
+        'anti-slop/require-safety-comment-for-type-assertion': 'off',
+      },
     },
   ],
 })

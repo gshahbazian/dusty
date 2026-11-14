@@ -20,3 +20,23 @@ export const parseArticleSearch = (search: {
 }): ArticleSearch => ({
   article: Option.getOrUndefined(decodeArticleId(search.article)),
 })
+
+/** A feed page's search: the open article, and `?show=all` for read ones too. */
+export interface FeedSearch extends ArticleSearch {
+  readonly show?: 'all' | undefined
+}
+
+const decodeShow = Schema.decodeUnknownOption(Schema.Literal('all'))
+
+/**
+ * Read a feed page's `?article=` and `?show=`. Unread is the default, so
+ * only `all` is kept; anything else reads as unread. Both keys are always
+ * returned, as with `parseArticleSearch`.
+ */
+export const parseFeedSearch = (search: {
+  readonly article?: unknown
+  readonly show?: unknown
+}): FeedSearch => ({
+  ...parseArticleSearch(search),
+  show: Option.getOrUndefined(decodeShow(search.show)),
+})

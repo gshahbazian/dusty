@@ -2,13 +2,26 @@ import type { ArticleRow, FeedCount } from '@dusty/db'
 
 /**
  * Read state the page has learned since the list was loaded, by article id
- * (true = read). Every row starts unread: the list only holds unread rows.
- * Only server-confirmed changes go in here.
+ * (true = read). Only server-confirmed changes go in here.
  */
 export type ReadOverrides = ReadonlyMap<number, boolean>
 
-export const isRead = (overrides: ReadOverrides, id: number): boolean =>
-  overrides.get(id) === true
+/** The ids of the rows that were already read when the list loaded. */
+export const readWhenLoaded = (
+  rows: readonly ArticleRow[]
+): ReadonlySet<number> =>
+  new Set(rows.flatMap((row) => (row.readAt === null ? [] : [row.id])))
+
+/**
+ * Whether an article is read now: what the page has learned since loading,
+ * else how the list loaded it (an unread list loads every row unread; a
+ * feed's "all" list loads some read).
+ */
+export const isRead = (
+  overrides: ReadOverrides,
+  id: number,
+  loadedRead: ReadonlySet<number> = new Set()
+): boolean => overrides.get(id) ?? loadedRead.has(id)
 
 /** The overrides with these articles set to read (or unread). */
 export const withRead = (
@@ -45,25 +58,30 @@ export interface Counts {
 }
 
 /**
- * The loaded counts, less the rows marked read since: counts and rows agree
- * without reloading the list (which would move rows).
+ * The loaded unread counts, moved by every row whose read state changed
+ * since: down for each marked read, up for each (loaded read) marked
+ * unread. Counts and rows agree without reloading the list (which would
+ * move rows).
  */
 export const adjustedCounts = (
   counts: readonly FeedCount[],
   rows: readonly ArticleRow[],
   overrides: ReadOverrides
 ): Counts => {
-  const readByFeed = new Map<number, number>()
+  const change = new Map<number, number>()
 
   for (const row of rows) {
-    if (!isRead(overrides, row.id)) continue
+    const before = row.readAt !== null
+    const now = overrides.get(row.id) ?? before
 
-    readByFeed.set(row.feedId, (readByFeed.get(row.feedId) ?? 0) + 1)
+    if (now === before) continue
+
+    change.set(row.feedId, (change.get(row.feedId) ?? 0) + (now ? -1 : 1))
   }
 
   const byFeed = counts.map((count) => ({
     ...count,
-    unread: Math.max(0, count.unread - (readByFeed.get(count.feedId) ?? 0)),
+    unread: Math.max(0, count.unread + (change.get(count.feedId) ?? 0)),
   }))
 
   return {

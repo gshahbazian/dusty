@@ -4,7 +4,7 @@ import * as Schema from 'effect/Schema'
 import {
   getArticle,
   LIST_LIMIT,
-  listUnread,
+  listArticles,
   markRead,
   markUnread,
   undoMarkRead,
@@ -18,15 +18,19 @@ import { ownerOnly } from './middleware.ts'
 const MAX_IDS = 20_000
 
 /**
- * An unread list (global, or one feed's) as a snapshot: its rows, the
- * counts that go with them, and the time it was read. Marking all above
- * sends `snapshotAt` back, so nothing that arrived later is touched.
+ * An article list (all unread, or one feed's unread or all) as a
+ * snapshot: its rows, the counts that go with them, and the time it was
+ * read. Marking all above sends `snapshotAt` back, so nothing that arrived
+ * later is touched.
  */
-export const getUnreadList = createServerFn({ method: 'GET' })
+export const getArticleList = createServerFn({ method: 'GET' })
   .middleware([ownerOnly])
   .validator(
     Schema.decodeUnknownSync(
-      Schema.Struct({ feedId: Schema.NullOr(Schema.Int) })
+      Schema.Struct({
+        feedId: Schema.NullOr(Schema.Int),
+        show: Schema.Literals(['unread', 'all']),
+      })
     )
   )
   .handler(async ({ context, data }) => {
@@ -36,7 +40,11 @@ export const getUnreadList = createServerFn({ method: 'GET' })
     const snapshotAt = Date.now()
 
     const [rows, counts] = await Promise.all([
-      listUnread(db, { feedId: data.feedId, seenBy: snapshotAt }),
+      listArticles(db, {
+        feedId: data.feedId,
+        seenBy: snapshotAt,
+        show: data.show,
+      }),
       unreadCounts(db, { seenBy: snapshotAt }),
     ])
 

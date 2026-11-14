@@ -2,7 +2,7 @@ import { cn } from 'cn'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 
-import type { ArticleRow, FeedCount } from '@dusty/db'
+import type { ArticleRow, FeedCount, ListShow } from '@dusty/db'
 
 import { syncForRefresh } from '../../server/functions.ts'
 import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
@@ -21,6 +21,12 @@ import { MobileArticleBar } from './mobile-article-bar.tsx'
 import { NoticeBar } from './notice-bar.tsx'
 import { useUnreadList } from './use-unread-list.ts'
 
+/** Whether a feed's page lists its unread or all articles, and switching. */
+export interface ListShowControl {
+  readonly show: ListShow
+  readonly onChange: (show: ListShow) => void
+}
+
 export interface UnreadListData {
   readonly rows: readonly ArticleRow[]
   readonly counts: readonly FeedCount[]
@@ -38,11 +44,14 @@ export interface UnreadListData {
 export function UnreadPage({
   data,
   feedId,
+  listShow,
   articleId,
   onOpenArticle,
 }: {
   data: UnreadListData
   feedId: number | null
+  /** A feed's page: whether it shows unread or all articles, and switching. */
+  listShow?: ListShowControl
   articleId: number | null
   onOpenArticle: (id: number | null) => void
 }) {
@@ -67,6 +76,7 @@ export function UnreadPage({
       key={data.snapshotAt}
       data={data}
       feedId={feedId}
+      listShow={listShow}
       articleId={articleId}
       cursorId={cursorId}
       onCursor={setCursorId}
@@ -83,6 +93,7 @@ const ARTICLE_STEP_PX = 64
 function UnreadSnapshot({
   data,
   feedId,
+  listShow,
   articleId,
   cursorId,
   onCursor,
@@ -92,6 +103,7 @@ function UnreadSnapshot({
 }: {
   data: UnreadListData
   feedId: number | null
+  listShow: ListShowControl | undefined
   articleId: number | null
   cursorId: number | null
   onCursor: (id: number) => void
@@ -110,9 +122,9 @@ function UnreadSnapshot({
   const listRef = useRef<ArticleListHandle>(null)
   const reveal = (index: number) => listRef.current?.reveal(index)
 
-  const feeds = counts.byFeed.filter(
-    (count) => count.unread > 0 || count.feedId === feedId
-  )
+  // Every feed, caught up or not: a feed's page can show its read
+  // articles too.
+  const feeds = counts.byFeed
 
   const cursor = cursorIndex(rows, cursorId)
   const articleOpen = articleId !== null
@@ -215,6 +227,7 @@ function UnreadSnapshot({
       >
         <ListHeader
           feedId={feedId}
+          listShow={listShow}
           counts={counts}
           feeds={feeds}
           snapshotAt={data.snapshotAt}
@@ -228,7 +241,9 @@ function UnreadSnapshot({
 
         {rows.length === 0 && (
           <p className="text-muted-foreground p-3">
-            Nothing unread. Refresh to check for new articles.
+            {listShow?.show === 'all'
+              ? 'No articles stored for this feed yet.'
+              : 'Nothing unread. Refresh to check for new articles.'}
           </p>
         )}
 

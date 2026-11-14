@@ -205,3 +205,70 @@ test('right-click a row for its actions', async ({ page }) => {
 
   await unsubscribe(page, feed)
 })
+
+test("a feed's page shows its unread articles, or all of them", async ({
+  page,
+}) => {
+  const feed = feedFor('show-all')
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('3 unread')
+
+  const show = page.getByRole('group', { name: 'Show' })
+
+  // Read one: unread now lists two after a reload of the list.
+  await articleRow(page, 'Generated 3')
+    .getByRole('button', { name: 'Mark Generated 3 read' })
+    .click()
+  await expect(heading(page)).toContainText('2 unread')
+
+  // All: all three, the read one dimmed and marked so.
+  await show.getByRole('button', { name: 'All' }).click()
+  await expect(page).toHaveURL(/\?show=all$/)
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+  await expect(articleRow(page, 'Generated 3')).toContainText('(read)')
+  await expect(heading(page)).toContainText('2 unread')
+
+  // Marking it unread from here counts it again.
+  await articleRow(page, 'Generated 3')
+    .getByRole('button', { name: 'Mark Generated 3 unread' })
+    .click()
+  await expect(heading(page)).toContainText('3 unread')
+
+  // Back to unread only, and the choice survives a reload.
+  await show.getByRole('button', { name: 'Unread' }).click()
+  await expect(page).toHaveURL(new RegExp(`/feeds/${feedId}$`))
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+
+  // All unread has no such toggle.
+  await page.goto('/')
+  await expect(show).toHaveCount(0)
+
+  await unsubscribe(page, feed)
+})
+
+test('the feed picker lists every feed, caught up or not', async ({ page }) => {
+  const feed = feedFor('caught-up', 2)
+  const feedId = await subscribe(page, feed)
+
+  await page.goto(`/feeds/${feedId}`)
+
+  for (const title of ['Generated 2', 'Generated 1']) {
+    await articleRow(page, title)
+      .getByRole('button', { name: `Mark ${title} read` })
+      .click()
+  }
+
+  await expect(heading(page)).toContainText('0 unread')
+  await page.goto('/')
+
+  await expect(
+    page.getByRole('combobox', { name: 'Feed' }).getByRole('option', {
+      name: `Generated ${feed.id} (0)`,
+    })
+  ).toHaveCount(1)
+
+  await unsubscribe(page, feed)
+})

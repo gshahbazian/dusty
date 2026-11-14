@@ -1,6 +1,9 @@
+import { cn } from 'cn'
+
 import type { FeedCount } from '@dusty/db'
 
 import { Button } from '@/components/ui/button.tsx'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx'
 import {
   NativeSelect,
   NativeSelectOption,
@@ -8,13 +11,16 @@ import {
 
 import { RelativeTime } from '../relative-time.tsx'
 import type { Counts } from './list-state.ts'
+import type { ListShowControl } from './unread-page.tsx'
 
 /**
  * The top of the sidebar: the feed picker (which names the list and its
- * count), when the list was loaded, and Refresh.
+ * count), on a feed's page whether to show its unread or all articles,
+ * when the list was loaded, and Refresh.
  */
 export function ListHeader({
   feedId,
+  listShow,
   counts,
   feeds,
   snapshotAt,
@@ -26,6 +32,8 @@ export function ListHeader({
   onPickFeed,
 }: {
   feedId: number | null
+  /** A feed's page: unread or all, and switching. Absent on All unread. */
+  listShow: ListShowControl | undefined
   counts: Counts
   /** The feeds to offer: those with unread articles, and this one. */
   feeds: readonly FeedCount[]
@@ -66,9 +74,27 @@ export function ListHeader({
       <h1 className="sr-only">
         {listTitle(feedId, counts)} {countFor(feedId, counts)} unread
       </h1>
-      <div className="text-muted-foreground flex items-center justify-between gap-2 text-xs">
+      <div className="text-muted-foreground flex items-center gap-2 text-xs">
+        {listShow !== undefined && (
+          <ToggleGroup
+            aria-label="Show"
+            variant="outline"
+            size="sm"
+            spacing={0}
+            value={[listShow.show]}
+            onValueChange={(value) => {
+              const [next] = value
+
+              // Pressing the one already on would leave neither: ignore it.
+              if (next === 'unread' || next === 'all') listShow.onChange(next)
+            }}
+          >
+            <ToggleGroupItem value="unread">Unread</ToggleGroupItem>
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+          </ToggleGroup>
+        )}
         {!refreshing && (
-          <span>
+          <span className="ml-auto">
             Updated <RelativeTime at={snapshotAt} now={now} />
           </span>
         )}
@@ -77,7 +103,7 @@ export function ListHeader({
           size="sm"
           onClick={onRefresh}
           disabled={refreshing}
-          className="ml-auto"
+          className={cn(refreshing && 'ml-auto')}
         >
           {refreshing ? 'Refreshing…' : 'Refresh'}
         </Button>

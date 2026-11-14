@@ -2,7 +2,7 @@ import { sql } from 'drizzle-orm'
 
 import type { Db } from './client.ts'
 
-/** One row of an unread list: metadata only, never the article's HTML. */
+/** One row of an article list: metadata only, never the article's HTML. */
 export interface ArticleRow {
   readonly id: number
   readonly feedId: number
@@ -11,9 +11,20 @@ export interface ArticleRow {
   readonly url: string | null
   readonly excerpt: string | null
   readonly publishedAt: number
+  /** When it was read; null while unread (always null in an unread list). */
+  readonly readAt: number | null
 }
 
+/** Which articles a list shows: the unread ones, or all that are stored. */
+export type ListShow = 'unread' | 'all'
+
 const FEED_TITLE = sql`coalesce(feeds.custom_title, feeds.title, feeds.url)`
+
+/** A list row's columns (articles joined to feeds). */
+const ROW_COLUMNS = sql`articles.id as id, articles.feed_id as feedId,
+  ${FEED_TITLE} as feedTitle, articles.title as title, articles.url as url,
+  articles.excerpt as excerpt, articles.published_at as publishedAt,
+  articles.read_at as readAt`
 
 /**
  * Most rows one list loads (about 2.5 MB of JSON). Counts still count
@@ -24,19 +35,21 @@ const FEED_TITLE = sql`coalesce(feeds.custom_title, feeds.title, feeds.url)`
 export const LIST_LIMIT = 5000
 
 /**
- * Unread articles, in list order. The global list (no `feedId`) is oldest
- * first; a feed's list is newest first. `id` breaks ties in the same
- * direction, so the order never shuffles between loads.
+ * Articles, in list order: the unread ones, or (`show: 'all'`, a feed's
+ * list only) every stored one, read or not. The global list (no `feedId`)
+ * is oldest first; a feed's list is newest first. `id` breaks ties in the
+ * same direction, so the order never shuffles between loads.
  *
  * Only articles first seen by `seenBy` (the list's snapshot time) are
  * listed: the same rule "mark all above" checks, so every row on screen is
  * one it will act on, even if a sync lands while the list is being read.
  */
-export const listUnread = (
+export const listArticles = (
   db: Db,
   options: {
     readonly feedId: number | null
     readonly seenBy: number
+    readonly show?: ListShow
     readonly limit?: number
   }
 ): Promise<ArticleRow[]> => {
@@ -44,10 +57,7 @@ export const listUnread = (
 
   if (options.feedId === null) {
     return db.all<ArticleRow>(sql`
-      select articles.id as id, articles.feed_id as feedId,
-        ${FEED_TITLE} as feedTitle, articles.title as title,
-        articles.url as url, articles.excerpt as excerpt,
-        articles.published_at as publishedAt
+      select ${ROW_COLUMNS}
       from articles join feeds on feeds.id = articles.feed_id
       where articles.read_at is null
         and articles.first_seen_at <= ${options.seenBy}
@@ -56,13 +66,13 @@ export const listUnread = (
     `)
   }
 
+  const unreadOnly =
+    options.show === 'all' ? sql`` : sql`and articles.read_at is null`
+
   return db.all<ArticleRow>(sql`
-    select articles.id as id, articles.feed_id as feedId,
-      ${FEED_TITLE} as feedTitle, articles.title as title,
-      articles.url as url, articles.excerpt as excerpt,
-      articles.published_at as publishedAt
+    select ${ROW_COLUMNS}
     from articles join feeds on feeds.id = articles.feed_id
-    where articles.read_at is null and articles.feed_id = ${options.feedId}
+    where articles.feed_id = ${options.feedId} ${unreadOnly}
       and articles.first_seen_at <= ${options.seenBy}
     order by articles.published_at desc, articles.id desc
     limit ${limit}
@@ -97,7 +107,6 @@ export const unreadCounts = (
 export interface Article extends ArticleRow {
   readonly author: string | null
   readonly html: string | null
-  readonly readAt: number | null
   readonly siteUrl: string | null
 }
 

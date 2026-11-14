@@ -5,7 +5,7 @@ import {
   createDb,
   getArticle,
   insertFeed,
-  listUnread,
+  listArticles,
   markRead,
   markUnread,
   recordFeedChanged,
@@ -123,10 +123,10 @@ describe('lists', () => {
       T0
     )
 
-    expect(keysOf(await listUnread(db, { feedId: null, seenBy: ALL }))).toEqual(
-      ['a-old', 'b-mid', 'b-tie', 'a-new']
-    )
-    expect(keysOf(await listUnread(db, { feedId: b, seenBy: ALL }))).toEqual([
+    expect(
+      keysOf(await listArticles(db, { feedId: null, seenBy: ALL }))
+    ).toEqual(['a-old', 'b-mid', 'b-tie', 'a-new'])
+    expect(keysOf(await listArticles(db, { feedId: b, seenBy: ALL }))).toEqual([
       'b-tie',
       'b-mid',
     ])
@@ -138,7 +138,7 @@ describe('lists', () => {
     await sync(a, [['x', T0]], T0)
     await renameFeed(db, a, 'My feed')
 
-    const [row] = await listUnread(db, { feedId: null, seenBy: ALL })
+    const [row] = await listArticles(db, { feedId: null, seenBy: ALL })
 
     expect(row).toEqual({
       id: expect.any(Number),
@@ -148,7 +148,47 @@ describe('lists', () => {
       url: 'https://example.com/x',
       excerpt: 'x',
       publishedAt: T0,
+      readAt: null,
     })
+  })
+
+  test("a feed's list can show read articles too, with when they were read", async () => {
+    const a = await addFeed('https://a.test/feed')
+    const b = await addFeed('https://b.test/feed')
+
+    await sync(
+      a,
+      [
+        ['old', T0],
+        ['new', T0 + HOUR],
+      ],
+      T0
+    )
+    await sync(b, [['other', T0]], T0)
+    await markRead(db, {
+      ids: await idsOf(['old', 'other']),
+      snapshotAt: null,
+      actionId: 'x',
+      now: T0 + 5,
+    })
+
+    // Unread (the default): the read one is gone.
+    expect(keysOf(await listArticles(db, { feedId: a, seenBy: ALL }))).toEqual([
+      'new',
+    ])
+
+    // All: both, newest first, read ones saying when; only this feed.
+    const all = await listArticles(db, { feedId: a, seenBy: ALL, show: 'all' })
+
+    expect(all.map((row) => [row.title, row.readAt])).toEqual([
+      ['new', null],
+      ['old', T0 + 5],
+    ])
+
+    // The global list is always unread only.
+    expect(
+      keysOf(await listArticles(db, { feedId: null, seenBy: ALL, show: 'all' }))
+    ).toEqual(['new'])
   })
 
   test('a list stops at its limit, in order; counts still count everything', async () => {
@@ -165,10 +205,10 @@ describe('lists', () => {
     )
 
     expect(
-      keysOf(await listUnread(db, { feedId: null, seenBy: ALL, limit: 2 }))
+      keysOf(await listArticles(db, { feedId: null, seenBy: ALL, limit: 2 }))
     ).toEqual(['1', '2'])
     expect(
-      keysOf(await listUnread(db, { feedId: a, seenBy: ALL, limit: 2 }))
+      keysOf(await listArticles(db, { feedId: a, seenBy: ALL, limit: 2 }))
     ).toEqual(['3', '2'])
     expect(await unreadCounts(db, { seenBy: ALL })).toEqual([
       { feedId: a, title: 'Feed 1', unread: 3 },
@@ -195,10 +235,10 @@ describe('lists', () => {
 
     // Only what "mark all above" would act on is listed and counted.
     expect(
-      keysOf(await listUnread(db, { feedId: null, seenBy: snapshotAt }))
+      keysOf(await listArticles(db, { feedId: null, seenBy: snapshotAt }))
     ).toEqual(['seen'])
     expect(
-      keysOf(await listUnread(db, { feedId: a, seenBy: snapshotAt }))
+      keysOf(await listArticles(db, { feedId: a, seenBy: snapshotAt }))
     ).toEqual(['seen'])
     expect(await unreadCounts(db, { seenBy: snapshotAt })).toEqual([
       { feedId: a, title: 'Feed 1', unread: 1 },
@@ -206,7 +246,7 @@ describe('lists', () => {
 
     // The next snapshot has it.
     expect(
-      keysOf(await listUnread(db, { feedId: null, seenBy: snapshotAt + 1 }))
+      keysOf(await listArticles(db, { feedId: null, seenBy: snapshotAt + 1 }))
     ).toEqual(['late', 'seen'])
   })
 
@@ -297,7 +337,7 @@ describe('mark all above as read', () => {
 
     // The owner loads the list: this is what is on screen.
     const loadedAt = T0 + MINUTE
-    const onScreen = await listUnread(db, { feedId: null, seenBy: ALL })
+    const onScreen = await listArticles(db, { feedId: null, seenBy: ALL })
 
     // A sync lands before they act. One new article is published *earlier*
     // than everything on screen, so it would sort above the chosen row if
@@ -398,7 +438,7 @@ describe('mark all above as read', () => {
 
     await sync(a, items, T0)
 
-    const ids = (await listUnread(db, { feedId: null, seenBy: ALL })).map(
+    const ids = (await listArticles(db, { feedId: null, seenBy: ALL })).map(
       (row) => row.id
     )
 

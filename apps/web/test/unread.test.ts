@@ -7,9 +7,13 @@ import {
   articles,
   idsAbove,
   isRead,
+  readWhenLoaded,
   withRead,
 } from '../src/components/unread/list-state.ts'
-import { parseArticleSearch } from '../src/lib/article-search.ts'
+import {
+  parseArticleSearch,
+  parseFeedSearch,
+} from '../src/lib/article-search.ts'
 import {
   contentSecurityPolicy,
   createNonce,
@@ -23,6 +27,7 @@ const row = (id: number, feedId: number): ArticleRow => ({
   url: null,
   excerpt: null,
   publishedAt: id,
+  readAt: null,
 })
 
 describe('mark all above', () => {
@@ -67,6 +72,26 @@ describe('read state and counts', () => {
     expect(adjustedCounts(counts, rows, back).total).toBe(5)
   })
 
+  test('a row loaded read (a feed\'s "all" list) counts when marked unread', () => {
+    const loaded = [{ ...row(20, 1), readAt: 5 }, row(21, 1)]
+    const loadedRead = readWhenLoaded(loaded)
+
+    expect(isRead(new Map(), 20, loadedRead)).toBe(true)
+    expect(isRead(new Map(), 21, loadedRead)).toBe(false)
+
+    // Nothing changed yet: the counts are as loaded.
+    expect(adjustedCounts(counts, loaded, new Map()).total).toBe(6)
+
+    // Marking the read one unread adds one; marking it read again, back.
+    const unread = withRead(new Map(), [20], false)
+
+    expect(isRead(unread, 20, loadedRead)).toBe(false)
+    expect(adjustedCounts(counts, loaded, unread).total).toBe(7)
+    expect(
+      adjustedCounts(counts, loaded, withRead(unread, [20], true)).total
+    ).toBe(6)
+  })
+
   test('says "1 article" and "3 articles"', () => {
     expect(articles(1)).toBe('1 article')
     expect(articles(3)).toBe('3 articles')
@@ -82,6 +107,20 @@ describe('?article=', () => {
     [{}, undefined],
   ])('%o reads as %o', (search, article) => {
     expect(parseArticleSearch(search)).toEqual({ article })
+  })
+})
+
+describe("a feed's ?show=", () => {
+  test.each([
+    [{ show: 'all' }, 'all'],
+    [{ show: 'unread' }, undefined],
+    [{ show: 'bogus' }, undefined],
+    [{}, undefined],
+  ])('%o reads as %o', (search, show) => {
+    expect(parseFeedSearch({ ...search, article: 3 })).toEqual({
+      article: 3,
+      show,
+    })
   })
 })
 

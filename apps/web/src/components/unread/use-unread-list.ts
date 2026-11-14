@@ -11,6 +11,7 @@ import {
   articles,
   idsAbove,
   isRead,
+  readWhenLoaded,
   withRead,
   type ReadOverrides,
 } from './list-state.ts'
@@ -31,6 +32,8 @@ export type Notice =
  */
 export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
   const [overrides, setOverrides] = useState<ReadOverrides>(new Map())
+  // Rows a feed's "all" list loaded already read (none in an unread list).
+  const [loadedRead] = useState(() => readWhenLoaded(rows))
   const [notice, setNotice] = useState<Notice | null>(null)
   const [busy, setBusy] = useState(false)
   // The latest mark action not yet undone, for `u` (even once its notice
@@ -99,7 +102,7 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     overrides,
     notice,
     busy,
-    isRead: (id: number) => isRead(overrides, id),
+    isRead: (id: number) => isRead(overrides, id, loadedRead),
     dismissNotice: () => setNotice(null),
     say: (text: string) => setNotice({ kind: 'info', text }),
     fail: (text: string) => setNotice({ kind: 'error', text }),
@@ -110,7 +113,7 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     markOpenedRead: (id: number, alreadyRead: boolean) =>
       attempt(
         async () => {
-          if (isRead(overrides, id)) return
+          if (isRead(overrides, id, loadedRead)) return
 
           // Read before it was opened (say, from a link to an article not
           // in this list): the server said so; note it, so Mark unread and

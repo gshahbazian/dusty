@@ -3,13 +3,14 @@ export { createDb, schema, type Db } from './client.ts'
 export {
   getArticle,
   LIST_LIMIT,
-  listUnread,
+  listArticles,
   markRead,
   markUnread,
   undoMarkRead,
   unreadCounts,
   type Article,
   type ArticleRow,
+  type ListShow,
   type FeedCount,
   type MarkRead,
 } from './articles.ts'

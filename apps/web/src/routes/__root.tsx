@@ -106,7 +106,7 @@ function AppLayout() {
             })}
             aria-current={unreadActive ? 'page' : undefined}
           >
-            Unread
+            Feeds
           </Link>
           <Link
             to="/settings"
