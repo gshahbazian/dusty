@@ -138,8 +138,12 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   const feed = feedFor('open')
   const feedId = await subscribe(page, feed)
 
+  // A wide screen, where the article opens beside the list.
+  await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto(`/feeds/${feedId}`)
   await expect(heading(page)).toContainText('3 unread')
+
+  const before = await articleRow(page, 'Generated 1').boundingBox()
 
   await openArticle(page, 'Generated 2')
 
@@ -154,9 +158,11 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   ).toHaveAttribute('href', `https://generated.example.com/${feed.id}/2`)
   await expect(page).toHaveURL(/\?article=\d+$/)
 
-  // Opening it read it; the row stays where it is, dimmed.
+  // Opening it read it; the row stays where it is, dimmed, and no row
+  // moves or changes size under the cursor.
   await expect(heading(page)).toContainText('2 unread')
   await expect(articleRow(page, 'Generated 2')).toContainText('(read)')
+  expect(await articleRow(page, 'Generated 1').boundingBox()).toEqual(before)
 
   await article.getByRole('button', { name: 'Mark unread' }).click()
   await expect(heading(page)).toContainText('3 unread')

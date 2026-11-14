@@ -70,7 +70,9 @@ function AppLayout() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-4xl px-4 pb-16">
+    <div
+      className={`mx-auto px-4 pb-16 ${unreadActive ? 'max-w-[96rem]' : 'max-w-4xl'}`}
+    >
       <header className="flex items-center gap-2 border-b border-neutral-200 py-3 dark:border-neutral-800">
         <span className="mr-2 font-semibold">Dusty</span>
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">

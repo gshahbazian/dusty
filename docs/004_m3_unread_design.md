@@ -62,8 +62,11 @@ on screen changes.
 ## Reading an article
 
 - Opening a row shows the article over the list (`?article=<id>` on the
-  list's URL), so going back finds the list exactly as it was. On a phone it
-  fills the screen; on a wide screen it sits beside the list.
+  list's URL), so going back finds the list exactly as it was. Below 1280
+  px wide it fills the screen. From 1280 px the reading pane is always
+  there, beside a list of fixed width, with a placeholder until an article
+  opens, so opening one never re-wraps or moves rows (the cloud check found
+  the list shrinking and every row dropping 36 px when it shared the width).
 - Opening marks it read (one action, so it can be undone or marked unread).
 - The HTML is the cleaned copy from `article_content`. Links open in a new
   tab with `rel="noopener noreferrer"`. A link to the original is always
@@ -90,7 +93,8 @@ Every HTML response gets a strict policy with a fresh nonce:
 - The worker makes the nonce and passes it in the request context; the
   router's `ssr.nonce` puts it on every script it renders.
 - `alchemy dev` adds only what Vite's dev server needs (its HMR socket and
-  inline preamble), so the policy is exercised locally too.
+  inline preamble) plus `img-src http:` for the fixture feed server, so the
+  policy is exercised locally too.
 
 ## Follow-ups for M4
 
@@ -104,3 +108,12 @@ Every HTML response gets a strict policy with a fresh nonce:
     plus id), not page number, with every later page limited to
     `first_seen_at <= snapshotAt`. The loaded pages then stay one snapshot,
     so mark all above, undo and the counts work unchanged.
+
+## Follow-ups for M5 (mobile polish)
+
+From the cloud check:
+
+- Row actions ("Mark read", "Mark all above as read") are about 28 px
+  tall, small for a thumb.
+- On a phone, the first row's "Mark read" fits on the date's line while
+  other rows wrap their actions onto a second line, so rows look uneven.

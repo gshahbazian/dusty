@@ -80,28 +80,48 @@ export function ArticleView({
   return (
     <article
       aria-label="Article"
-      className="fixed inset-0 z-20 overflow-y-auto bg-white p-4 lg:sticky lg:top-4 lg:z-auto lg:max-h-[calc(100vh-2rem)] lg:rounded-lg lg:border lg:border-neutral-200 dark:bg-neutral-950 lg:dark:border-neutral-800"
+      className="fixed inset-0 z-20 overflow-y-auto bg-white p-4 xl:sticky xl:top-4 xl:z-auto xl:max-h-[calc(100vh-2rem)] xl:rounded-lg xl:border xl:border-neutral-200 dark:bg-neutral-950 xl:dark:border-neutral-800"
     >
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mx-auto max-w-2xl xl:max-w-none">
+        <ArticleActions
+          read={read}
+          onClose={onClose}
+          onMarkUnread={() => onMarkUnread(articleId)}
+        />
+        <ArticleBody loaded={loaded} content={content} />
+      </div>
+    </article>
+  )
+}
+
+function ArticleActions({
+  read,
+  onClose,
+  onMarkUnread,
+}: {
+  read: boolean
+  onClose: () => void
+  onMarkUnread: () => void
+}) {
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={onClose}
+        className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+      >
+        ← Back to the list
+      </button>
+      {read && (
         <button
           type="button"
-          onClick={onClose}
-          className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          onClick={onMarkUnread}
+          className="ml-auto rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800"
         >
-          ← Back to the list
+          Mark unread
         </button>
-        {read && (
-          <button
-            type="button"
-            onClick={() => onMarkUnread(articleId)}
-            className="rounded-md px-2 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
-          >
-            Mark unread
-          </button>
-        )}
-      </div>
-      <ArticleBody loaded={loaded} content={content} />
-    </article>
+      )}
+    </div>
   )
 }
 

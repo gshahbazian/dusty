@@ -70,7 +70,11 @@ function UnreadSnapshot({
     <div className="flex flex-col gap-6 lg:flex-row">
       <FeedNav counts={counts} feedId={feedId} />
 
-      <section className="flex flex-1 flex-col gap-3 lg:max-w-xl">
+      {/*
+        The list keeps one width whether or not an article is open, so
+        opening one never re-wraps rows or moves them under the cursor.
+      */}
+      <section className="flex flex-col gap-3 lg:w-[32rem] lg:shrink-0">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-xl font-semibold">
             {listTitle(feedId, counts)}{' '}
@@ -114,8 +118,13 @@ function UnreadSnapshot({
         </ul>
       </section>
 
-      {articleId !== null && (
-        <div className="lg:flex-1">
+      {/*
+        On a wide screen the reading pane is always there, so the layout is
+        the same before and after opening an article. Narrower, the article
+        covers the list instead.
+      */}
+      <div className="xl:min-w-0 xl:flex-1">
+        {articleId !== null && (
           <ArticleView
             articleId={articleId}
             read={list.isRead(articleId)}
@@ -123,8 +132,13 @@ function UnreadSnapshot({
             onMarkUnread={(id) => void list.markOneUnread(id)}
             onClose={() => onOpenArticle(null)}
           />
-        </div>
-      )}
+        )}
+        {articleId === null && data.rows.length > 0 && (
+          <p className="sticky top-4 hidden rounded-lg border border-dashed border-neutral-300 p-8 text-center text-neutral-500 xl:block dark:border-neutral-700">
+            Choose an article to read it here.
+          </p>
+        )}
+      </div>
     </div>
   )
 }
