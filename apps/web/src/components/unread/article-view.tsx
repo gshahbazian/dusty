@@ -1,5 +1,5 @@
 import { cn } from 'cn'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import type { Article } from '@dusty/db'
 
@@ -181,15 +181,7 @@ function ArticleBody({ loaded }: { loaded: Loaded }) {
           </a>
         )}
       </header>
-      {article.html !== null && (
-        <div
-          className="article-body"
-          // The HTML was cleaned with a strict allowlist when it was stored
-          // (apps/sync/src/clean.ts), and the CSP blocks scripts regardless.
-          // oxlint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: prepareArticleHtml(article.html) }}
-        />
-      )}
+      {article.html !== null && <ArticleHtml html={article.html} />}
       {article.html === null && (
         <p className="text-muted-foreground">
           {article.excerpt ?? 'This article has no content in its feed.'}{' '}
@@ -197,5 +189,24 @@ function ArticleBody({ loaded }: { loaded: Loaded }) {
         </p>
       )}
     </>
+  )
+}
+
+/**
+ * The article's HTML, prepared once per article. The page re-renders on
+ * every scroll of the list, and parsing a long article each time made
+ * scrolling stutter.
+ */
+function ArticleHtml({ html }: { html: string }) {
+  const prepared = useMemo(() => prepareArticleHtml(html), [html])
+
+  return (
+    <div
+      className="article-body"
+      // The HTML was cleaned with a strict allowlist when it was stored
+      // (apps/sync/src/clean.ts), and the CSP blocks scripts regardless.
+      // oxlint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: prepared }}
+    />
   )
 }

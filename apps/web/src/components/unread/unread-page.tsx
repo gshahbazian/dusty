@@ -1,22 +1,13 @@
 import { cn } from 'cn'
 import { useNavigate, useRouter } from '@tanstack/react-router'
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { XIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount } from '@dusty/db'
 
-import { Button } from '@/components/ui/button.tsx'
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from '@/components/ui/native-select.tsx'
-
 import { syncForRefresh } from '../../server/functions.ts'
 import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
 import type { Command } from '../keyboard/keymap.ts'
-import { RelativeTime } from '../relative-time.tsx'
-import { ArticleListItem } from './article-list-item.tsx'
+import { ArticleList, type ArticleListHandle } from './article-list.tsx'
 import { ArticleView } from './article-view.tsx'
 import {
   cursorIndex,
@@ -24,8 +15,10 @@ import {
   moveCursor,
   neighborFeed,
 } from './cursor.ts'
-import { adjustedCounts, type Counts } from './list-state.ts'
-import { useUnreadList, type Notice } from './use-unread-list.ts'
+import { ListHeader } from './list-header.tsx'
+import { adjustedCounts } from './list-state.ts'
+import { NoticeBar } from './notice-bar.tsx'
+import { useUnreadList } from './use-unread-list.ts'
 
 export interface UnreadListData {
   readonly rows: readonly ArticleRow[]
@@ -83,10 +76,6 @@ export function UnreadPage({
   )
 }
 
-/** Room kept above and below the cursor's row (the toast sits below). */
-const REVEAL_TOP_PX = 8
-const REVEAL_BOTTOM_PX = 72
-
 /** How far the arrow keys scroll an open article, per press. */
 const ARTICLE_STEP_PX = 64
 
@@ -117,7 +106,8 @@ function UnreadSnapshot({
   const navigate = useNavigate()
   const router = useRouter()
   const articleScroll = useRef<HTMLElement>(null)
-  const { listScroll, virtualizer, reveal } = useVirtualRows(rows)
+  const listRef = useRef<ArticleListHandle>(null)
+  const reveal = (index: number) => listRef.current?.reveal(index)
 
   const feeds = counts.byFeed.filter(
     (count) => count.unread > 0 || count.feedId === feedId
@@ -198,18 +188,11 @@ function UnreadSnapshot({
         articleScroll.current?.scrollBy({ top: pixels }),
       articleHeight: () => articleScroll.current?.clientHeight ?? 0,
       halfPage: (direction) => {
-        const element = listScroll.current
-
-        if (element === null) return
-
-        const half = (element.clientHeight / 2) * direction
-        const start = virtualizer.measurementsCache[cursor]?.start ?? 0
-        const target = virtualizer.getVirtualItemForOffset(start + half)
+        const target = listRef.current?.halfPage(cursor, direction)
 
         // The list moves with the cursor, so its row stays about where it
         // was; then make sure all of it shows.
-        element.scrollBy({ top: half })
-        moveTo(target?.index ?? (direction === 1 ? rows.length - 1 : 0))
+        if (target !== undefined) moveTo(target)
       },
     })[command]
 
@@ -229,48 +212,18 @@ function UnreadSnapshot({
           articleOpen && 'hidden lg:flex'
         )}
       >
-        <div className="flex flex-col gap-2 border-b p-3">
-          <NativeSelect
-            aria-label="Feed"
-            value={feedId ?? ''}
-            onChange={(event) => {
-              // Let go of the keyboard, or the next `j` would pick a feed.
-              event.currentTarget.blur()
-              goToFeed(
-                event.target.value === '' ? null : Number(event.target.value)
-              )
-            }}
-            className="w-full"
-          >
-            <NativeSelectOption value="">
-              All unread ({counts.total})
-            </NativeSelectOption>
-            {feeds.map((feed) => (
-              <NativeSelectOption key={feed.feedId} value={feed.feedId}>
-                {feed.title} ({feed.unread})
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-          {/* The feed picker shows the list and its count; the heading is
-              for screen readers. */}
-          <h1 className="sr-only">
-            {listTitle(feedId, counts)} {countFor(feedId, counts)} unread
-          </h1>
-          <div className="flex items-center gap-2">
-            <RefreshButton
-              snapshotAt={data.snapshotAt}
-              now={now}
-              refreshing={refreshing}
-              onRefresh={() => void refresh()}
-            />
-          </div>
-          {data.truncated && (
-            <p className="text-muted-foreground text-sm">
-              Showing the first {rows.length.toLocaleString('en-US')}. Refresh
-              after clearing these to load more.
-            </p>
-          )}
-        </div>
+        <ListHeader
+          feedId={feedId}
+          counts={counts}
+          feeds={feeds}
+          snapshotAt={data.snapshotAt}
+          now={now}
+          shown={rows.length}
+          truncated={data.truncated}
+          refreshing={refreshing}
+          onRefresh={() => void refresh()}
+          onPickFeed={goToFeed}
+        />
 
         {rows.length === 0 && (
           <p className="text-muted-foreground p-3">
@@ -282,41 +235,20 @@ function UnreadSnapshot({
           {announcement}
         </p>
 
-        <div ref={listScroll} className="min-h-0 flex-1 overflow-y-auto">
-          <ul
-            aria-label="Unread articles"
-            className="relative"
-            style={{ height: virtualizer.getTotalSize() }}
-          >
-            {virtualizer.getVirtualItems().map((item) => {
-              const row = rows[item.index]
-
-              if (row === undefined) return null
-
-              return (
-                <ArticleListItem
-                  key={row.id}
-                  row={row}
-                  read={list.isRead(row.id)}
-                  first={item.index === 0}
-                  open={articleId === row.id}
-                  cursor={item.index === cursor}
-                  position={item.index + 1}
-                  setSize={rows.length}
-                  offset={item.start}
-                  measureRef={virtualizer.measureElement}
-                  now={now}
-                  showFeed={feedId === null}
-                  busy={list.busy}
-                  onOpen={() => open(item.index)}
-                  onMarkRead={() => void list.markOneRead(row.id)}
-                  onMarkUnread={() => void list.markOneUnread(row.id)}
-                  onMarkAllAbove={() => void list.markAllAbove(row.id)}
-                />
-              )
-            })}
-          </ul>
-        </div>
+        <ArticleList
+          ref={listRef}
+          rows={rows}
+          cursor={cursor}
+          openId={articleId}
+          now={now}
+          showFeed={feedId === null}
+          busy={list.busy}
+          isRead={list.isRead}
+          onOpen={open}
+          onMarkRead={(id) => void list.markOneRead(id)}
+          onMarkUnread={(id) => void list.markOneUnread(id)}
+          onMarkAllAbove={(id) => void list.markAllAbove(id)}
+        />
       </aside>
 
       <section
@@ -529,66 +461,6 @@ function commandsFor(page: {
 }
 
 /**
- * Draw only the rows in view of the sidebar, so thousands of them cost a
- * few dozen DOM nodes.
- */
-function useVirtualRows(rows: readonly ArticleRow[]) {
-  const listScroll = useRef<HTMLDivElement>(null)
-
-  // TanStack Virtual hands back functions the React Compiler can't memoize;
-  // the compiler skips this hook, which is what it needs.
-  // oxlint-disable-next-line react/incompatible-library
-  const virtualizer = useVirtualizer({
-    count: rows.length,
-    getScrollElement: () => listScroll.current,
-    estimateSize: () => 120,
-    overscan: 8,
-    getItemKey: (index) => rows[index]?.id ?? index,
-  })
-
-  /**
-   * Scroll just enough to show a row. Measured against the live scroll
-   * position: the virtualizer's own lags a frame behind, and its 'auto'
-   * alignment would scroll back to it. A row not drawn yet (a far jump) is
-   * left to the virtualizer, which measures as it goes.
-   */
-  const reveal = (index: number) => {
-    const element = listScroll.current
-
-    if (element === null) return
-
-    const drawn = virtualizer
-      .getVirtualItems()
-      .some((item) => item.index === index)
-
-    const item = virtualizer.measurementsCache[index]
-
-    if (!drawn || item === undefined) {
-      virtualizer.scrollToIndex(index, { align: 'center' })
-
-      return
-    }
-
-    const top = element.scrollTop + REVEAL_TOP_PX
-    const bottom = element.scrollTop + element.clientHeight - REVEAL_BOTTOM_PX
-
-    if (item.start < top) {
-      element.scrollTo({ top: item.start - REVEAL_TOP_PX })
-
-      return
-    }
-
-    if (item.end > bottom) {
-      element.scrollTo({
-        top: item.end - element.clientHeight + REVEAL_BOTTOM_PX,
-      })
-    }
-  }
-
-  return { listScroll, virtualizer, reveal }
-}
-
-/**
  * Run the sync, wait for it, then reload the list and counts, so what it
  * fetched shows at once. A sync that ran a few minutes ago is skipped and
  * returns at once; a running one takes at most its on-demand budget. If the
@@ -620,103 +492,4 @@ function useRefresh(onFailed: (text: string) => void) {
   }
 
   return { refreshing, refresh }
-}
-
-function listTitle(feedId: number | null, counts: Counts): string {
-  if (feedId === null) return 'All unread'
-
-  const feed = counts.byFeed.find((count) => count.feedId === feedId)
-
-  return feed?.title ?? 'Feed not found'
-}
-
-const countFor = (feedId: number | null, counts: Counts): number => {
-  if (feedId === null) return counts.total
-
-  return counts.byFeed.find((count) => count.feedId === feedId)?.unread ?? 0
-}
-
-/**
- * Reload the list and counts, and ask the sync service to run (skipped if
- * one ran in the last few minutes). Shows when the data was last loaded.
- */
-function RefreshButton({
-  snapshotAt,
-  now,
-  refreshing,
-  onRefresh,
-}: {
-  snapshotAt: number
-  now: number
-  refreshing: boolean
-  onRefresh: () => void
-}) {
-  return (
-    <div className="text-muted-foreground flex flex-1 items-center justify-between gap-2 text-xs">
-      {!refreshing && (
-        <span>
-          Updated <RelativeTime at={snapshotAt} now={now} label="Updated" />
-        </span>
-      )}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onRefresh}
-        disabled={refreshing}
-      >
-        {refreshing ? 'Refreshing…' : 'Refresh'}
-      </Button>
-    </div>
-  )
-}
-
-/** Marked, undone or failed: a toast, so it never moves the list. */
-function NoticeBar({
-  aboveBar,
-  notice,
-  busy,
-  onUndo,
-  onDismiss,
-}: {
-  /** An article's action bar is at the bottom of a phone's screen. */
-  aboveBar: boolean
-  notice: Notice | null
-  busy: boolean
-  onUndo: (actionId: string) => void
-  onDismiss: () => void
-}) {
-  if (notice === null) return <output aria-live="polite" className="sr-only" />
-
-  return (
-    <output
-      aria-live="polite"
-      className={cn(
-        'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-2 border py-1 pr-1 pl-3 text-xs shadow-md',
-        aboveBar && 'max-lg:bottom-24',
-        'bg-popover text-popover-foreground',
-        notice.kind === 'error' && 'border-destructive/50 text-destructive'
-      )}
-    >
-      <span className="flex-1">{notice.text}</span>
-      {notice.kind === 'marked' && (
-        <Button
-          variant="link"
-          size="sm"
-          onClick={() => onUndo(notice.actionId)}
-          disabled={busy}
-        >
-          Undo
-        </Button>
-      )}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={onDismiss}
-        aria-label="Dismiss"
-        className="text-muted-foreground pointer-coarse:min-w-11"
-      >
-        <XIcon />
-      </Button>
-    </output>
-  )
 }
