@@ -1,4 +1,3 @@
-import { cn } from 'cn'
 import {
   HeadContent,
   Link,
@@ -12,11 +11,10 @@ import { useEffect, type ReactNode } from 'react'
 import { buttonVariants } from '@/components/ui/button.tsx'
 
 import { KeyboardShortcuts } from '../components/keyboard/keyboard-shortcuts.tsx'
-import { getSession, requestSync } from '../server/functions.ts'
+import { requestSync } from '../server/functions.ts'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
-  loader: () => getSession(),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -78,8 +76,6 @@ const isUnreadPath = (pathname: string): boolean =>
   pathname === '/' || pathname.startsWith('/feeds/')
 
 function AppLayout() {
-  const session = Route.useLoaderData()
-
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -122,19 +118,6 @@ function AppLayout() {
             Settings
           </Link>
         </nav>
-        <span className="text-muted-foreground hidden text-xs lg:inline">
-          <kbd className="font-mono">?</kbd> for shortcuts
-        </span>
-        <a
-          href={session.logoutUrl}
-          title={`Signed in as ${session.email}`}
-          className={cn(
-            buttonVariants({ variant: 'link' }),
-            'text-muted-foreground'
-          )}
-        >
-          Log out
-        </a>
       </header>
       <main className="min-h-0 flex-1">
         <KeyboardShortcuts>

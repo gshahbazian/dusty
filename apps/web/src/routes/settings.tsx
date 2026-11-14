@@ -8,6 +8,7 @@ import {
   NativeSelectOption,
 } from '@/components/ui/native-select.tsx'
 
+import { AccountSection } from '../components/settings/account-section.tsx'
 import { AddFeedForm } from '../components/subscriptions/add-feed-form.tsx'
 import {
   needsAttention,
@@ -17,6 +18,7 @@ import {
 import { parseSubscriptionsSearch } from '../components/subscriptions/search.ts'
 import { OpmlImport } from '../components/subscriptions/opml-import.tsx'
 import { SubscriptionRow } from '../components/subscriptions/subscription-row.tsx'
+import { getSession } from '../server/functions.ts'
 import { getSubscriptions } from '../server/subscriptions.ts'
 
 const SORTS: ReadonlyArray<{
@@ -33,7 +35,14 @@ const isSortOrder = (value: string): value is SortOrder =>
 
 export const Route = createFileRoute('/settings')({
   validateSearch: parseSubscriptionsSearch,
-  loader: () => getSubscriptions(),
+  loader: async () => {
+    const [list, session] = await Promise.all([
+      getSubscriptions(),
+      getSession(),
+    ])
+
+    return { ...list, session }
+  },
   component: Settings,
 })
 
@@ -58,7 +67,7 @@ function useHighlight() {
 
 /** Settings: the subscriptions, with adding, importing and their health. */
 function Settings() {
-  const { subscriptions, now } = Route.useLoaderData()
+  const { subscriptions, now, session } = Route.useLoaderData()
   const { sort = 'attention', attention = false } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const router = useRouter()
@@ -166,6 +175,8 @@ function Settings() {
             ))}
           </ul>
         </div>
+
+        <AccountSection email={session.email} logoutUrl={session.logoutUrl} />
       </section>
     </div>
   )

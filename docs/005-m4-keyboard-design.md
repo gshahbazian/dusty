@@ -11,7 +11,7 @@ Follow-ups M3 left for M4 are in `docs/004-m3-unread-design.md`.
 Kept deliberately plain (the owner will design the UI by hand later); the
 point is the right elements, working:
 
-- **Top bar**: Unread, Settings, a `?` hint and Log out.
+- **Top bar**: Unread, Settings, a `?` hint and Log out. (Later cut to Unread and Settings: `?` still opens the shortcuts, and Log out moved to the bottom of Settings.)
 - **Article sidebar**: a feed picker (`<select>`: All unread, then each
   feed with unread articles, with counts), the list's title, count and
   Refresh, then the articles. It scrolls on its own. This replaces M3's
