@@ -158,6 +158,20 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
   ).toHaveAttribute('href', `https://generated.example.com/${feed.id}/2`)
   await expect(page).toHaveURL(/\?article=\d+$/)
 
+  // Links open in a new tab; images load lazily and send no referrer.
+  await expect(article.getByRole('link', { name: 'More' })).toHaveAttribute(
+    'rel',
+    'noopener noreferrer'
+  )
+  await expect(article.getByRole('img', { name: 'Picture 2' })).toHaveAttribute(
+    'loading',
+    'lazy'
+  )
+  await expect(article.getByRole('img', { name: 'Picture 2' })).toHaveAttribute(
+    'referrerpolicy',
+    'no-referrer'
+  )
+
   // Opening it read it; the row stays where it is, dimmed, and no row
   // moves or changes size under the cursor.
   await expect(heading(page)).toContainText('2 unread')

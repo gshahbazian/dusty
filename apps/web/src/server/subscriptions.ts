@@ -5,15 +5,10 @@ import { createServerFn } from '@tanstack/react-start'
 import * as Schema from 'effect/Schema'
 import { parseOpml } from 'feedsmith'
 
-import {
-  createDb,
-  listSubscriptions,
-  removeFeed,
-  renameFeed,
-  schema,
-} from '@dusty/db'
+import { listSubscriptions, removeFeed, renameFeed, schema } from '@dusty/db'
 
 import type { RequestContext } from './context.ts'
+import { dbFor } from './db.ts'
 import { ownerOnly } from './middleware.ts'
 
 const HOUR = 3_600_000
@@ -37,7 +32,7 @@ export const getSubscriptions = createServerFn({ method: 'GET' })
   .middleware([ownerOnly])
   .handler(async ({ context }) => ({
     subscriptions: await listSubscriptions(
-      createDb(context.env.DB),
+      dbFor(context.env),
       healthOptions(context.env)
     ),
     now: Date.now(),
@@ -67,14 +62,14 @@ export const renameSubscription = createServerFn({ method: 'POST' })
     )
   )
   .handler(({ context, data }) =>
-    renameFeed(createDb(context.env.DB), data.id, data.title)
+    renameFeed(dbFor(context.env), data.id, data.title)
   )
 
 /** Unsubscribe; the feed's articles leave every list at once. */
 export const removeSubscription = createServerFn({ method: 'POST' })
   .middleware([ownerOnly])
   .validator(Schema.decodeUnknownSync(Schema.Struct({ id: Schema.Int })))
-  .handler(({ context, data }) => removeFeed(createDb(context.env.DB), data.id))
+  .handler(({ context, data }) => removeFeed(dbFor(context.env), data.id))
 
 export interface OpmlEntry extends ImportEntry {
   /** Already subscribed, or listed earlier in the same file. */
@@ -132,7 +127,7 @@ export const previewOpml = createServerFn({ method: 'POST' })
 
     if (listed.length === 0) return invalidOpml('no feeds in this file')
 
-    const subscribed = await createDb(context.env.DB)
+    const subscribed = await dbFor(context.env)
       .select({ url: schema.feeds.url })
       .from(schema.feeds)
 

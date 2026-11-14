@@ -6,9 +6,13 @@ import * as schema from './schema.ts'
 export type Db = DrizzleD1Database
 
 /**
- * Wrap a D1 binding. Both the web app and the sync service use this. Calls
- * that hit SQLITE_BUSY (local dev only; see `busy-retry.ts`) are retried.
+ * Wrap a D1 binding. Both the web app and the sync service use this. Under
+ * `alchemy dev` (and only there) they pass `retryBusy`, so calls that hit
+ * the local SQLite lock are retried; see `busy-retry.ts`.
  */
-export const createDb = (d1: D1Database): Db => drizzle(withBusyRetry(d1))
+export const createDb = (
+  d1: D1Database,
+  options: { readonly retryBusy?: boolean } = {}
+): Db => drizzle(options.retryBusy === true ? withBusyRetry(d1) : d1)
 
 export { schema }

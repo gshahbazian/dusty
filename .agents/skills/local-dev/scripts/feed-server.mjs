@@ -62,7 +62,7 @@ const generatedFeed = (run) => {
     const n = i + 1
     const date = new Date(GENERATED_START + n * 3_600_000).toUTCString()
 
-    return `<item><title>Generated ${n}</title><guid>generated-${run}-${n}</guid><link>https://generated.example.com/${run}/${n}</link><pubDate>${date}</pubDate><description>Item ${n} of ${run}</description></item>`
+    return `<item><title>Generated ${n}</title><guid>generated-${run}-${n}</guid><link>https://generated.example.com/${run}/${n}</link><pubDate>${date}</pubDate><description><![CDATA[<p>Item ${n} of ${run}</p><p><a href="https://generated.example.com/${run}/${n}/more">More</a></p><img src="https://generated.example.com/${run}/${n}.png" alt="Picture ${n}">]]></description></item>`
   })
 
   return `<?xml version="1.0"?><rss version="2.0"><channel><title>Generated ${run}</title><link>https://generated.example.com/</link>${items.join('')}</channel></rss>`

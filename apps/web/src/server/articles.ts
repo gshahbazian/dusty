@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start'
 import * as Schema from 'effect/Schema'
 
 import {
-  createDb,
   getArticle,
   listUnread,
   markRead,
@@ -11,6 +10,7 @@ import {
   unreadCounts,
 } from '@dusty/db'
 
+import { dbFor } from './db.ts'
 import { ownerOnly } from './middleware.ts'
 
 /** Most articles one mark-read action may name. */
@@ -29,13 +29,14 @@ export const getUnreadList = createServerFn({ method: 'GET' })
     )
   )
   .handler(async ({ context, data }) => {
-    const db = createDb(context.env.DB)
-    // Read the time first: anything stored after it is not in this list.
+    const db = dbFor(context.env)
+    // Read the time first: the list and counts leave out anything stored
+    // after it, which is exactly what "mark all above" will refuse.
     const snapshotAt = Date.now()
 
     const [rows, counts] = await Promise.all([
-      listUnread(db, { feedId: data.feedId }),
-      unreadCounts(db),
+      listUnread(db, { feedId: data.feedId, seenBy: snapshotAt }),
+      unreadCounts(db, { seenBy: snapshotAt }),
     ])
 
     return { rows, counts, snapshotAt }
@@ -45,7 +46,7 @@ export const getUnreadList = createServerFn({ method: 'GET' })
 export const getArticleToRead = createServerFn({ method: 'GET' })
   .middleware([ownerOnly])
   .validator(Schema.decodeUnknownSync(Schema.Struct({ id: Schema.Int })))
-  .handler(({ context, data }) => getArticle(createDb(context.env.DB), data.id))
+  .handler(({ context, data }) => getArticle(dbFor(context.env), data.id))
 
 /**
  * Mark articles read as one undoable action: a single row, an opened
@@ -65,7 +66,7 @@ export const markArticlesRead = createServerFn({ method: 'POST' })
   .handler(async ({ context, data }) => {
     const actionId = crypto.randomUUID()
 
-    const changed = await markRead(createDb(context.env.DB), {
+    const changed = await markRead(dbFor(context.env), {
       ids: data.ids,
       snapshotAt: data.snapshotAt,
       actionId,
@@ -80,7 +81,7 @@ export const markArticleUnread = createServerFn({ method: 'POST' })
   .middleware([ownerOnly])
   .validator(Schema.decodeUnknownSync(Schema.Struct({ id: Schema.Int })))
   .handler(async ({ context, data }) => ({
-    changed: await markUnread(createDb(context.env.DB), data.id),
+    changed: await markUnread(dbFor(context.env), data.id),
   }))
 
 /** Undo a mark-read action; returns the articles that are unread again. */
@@ -94,5 +95,5 @@ export const undoMarkArticlesRead = createServerFn({ method: 'POST' })
     )
   )
   .handler(async ({ context, data }) => ({
-    restored: await undoMarkRead(createDb(context.env.DB), data.actionId),
+    restored: await undoMarkRead(dbFor(context.env), data.actionId),
   }))

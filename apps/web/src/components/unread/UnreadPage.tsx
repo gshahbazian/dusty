@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import type { ArticleRow, FeedCount } from '@dusty/db'
 
-import { requestSync } from '../../server/functions.ts'
+import { syncForRefresh } from '../../server/functions.ts'
 import { RelativeTime } from '../RelativeTime.tsx'
 import { ArticleListItem } from './ArticleListItem.tsx'
 import { ArticleView } from './ArticleView.tsx'
@@ -83,7 +83,11 @@ function UnreadSnapshot({
               {shownCount} unread
             </span>
           </h1>
-          <RefreshButton snapshotAt={data.snapshotAt} now={now} />
+          <RefreshButton
+            snapshotAt={data.snapshotAt}
+            now={now}
+            onFailed={list.fail}
+          />
         </div>
 
         <NoticeBar
@@ -220,15 +224,20 @@ function FeedLinks({
 }
 
 /**
- * Reload the list and counts, and ask the sync service to run (skipped if
- * one ran in the last few minutes). Shows when the data was last loaded.
+ * Run the sync, wait for it, then reload the list and counts, so what it
+ * fetched shows at once. A sync that ran a few minutes ago is skipped and
+ * returns at once; a running one takes at most its on-demand budget. If the
+ * sync can't be reached, say so and leave the list as it is. Shows when the
+ * data was last loaded.
  */
 function RefreshButton({
   snapshotAt,
   now,
+  onFailed,
 }: {
   snapshotAt: number
   now: number
+  onFailed: (text: string) => void
 }) {
   const router = useRouter()
   const [refreshing, setRefreshing] = useState(false)
@@ -237,7 +246,15 @@ function RefreshButton({
     setRefreshing(true)
 
     try {
-      await requestSync({ data: 'refresh' })
+      await syncForRefresh()
+    } catch {
+      setRefreshing(false)
+      onFailed("Couldn't check the feeds. The list is unchanged; try again.")
+
+      return
+    }
+
+    try {
       await router.invalidate()
     } finally {
       setRefreshing(false)

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { retryBusy } from '../src/busy-retry.ts'
+import { retryBusy, withBusyRetry } from '../src/busy-retry.ts'
 import { createDb, insertFeed, listSubscriptions } from '../src/index.ts'
 import { createTestD1 } from '../src/testing.ts'
 
@@ -74,7 +74,7 @@ describe('retryBusy', () => {
 describe('createDb with the retrying binding', () => {
   test('statements and batches still work through the wrapper', async () => {
     const testD1 = await createTestD1()
-    const db = createDb(testD1.d1)
+    const db = createDb(testD1.d1, { retryBusy: true })
 
     try {
       expect(
@@ -97,6 +97,19 @@ describe('createDb with the retrying binding', () => {
           staleAfterMs: 1,
         })
       ).toHaveLength(1)
+    } finally {
+      await testD1.dispose()
+    }
+  })
+
+  test('sessions still work through the wrapper', async () => {
+    const testD1 = await createTestD1()
+    const wrapped = withBusyRetry(testD1.d1)
+
+    try {
+      expect(
+        await wrapped.withSession().prepare('select 1 as one').first()
+      ).toEqual({ one: 1 })
     } finally {
       await testD1.dispose()
     }
