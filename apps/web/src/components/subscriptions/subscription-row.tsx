@@ -96,11 +96,7 @@ export function SubscriptionRow({
           <dd>
             {subscription.lastPublishedAt === null && 'none yet'}
             {subscription.lastPublishedAt !== null && (
-              <RelativeTime
-                at={subscription.lastPublishedAt}
-                now={now}
-                label="Last article"
-              />
+              <RelativeTime at={subscription.lastPublishedAt} now={now} />
             )}
           </dd>
         </div>
@@ -109,11 +105,7 @@ export function SubscriptionRow({
           <dd>
             {subscription.lastSuccessAt === null && 'never'}
             {subscription.lastSuccessAt !== null && (
-              <RelativeTime
-                at={subscription.lastSuccessAt}
-                now={now}
-                label="Last synced"
-              />
+              <RelativeTime at={subscription.lastSuccessAt} now={now} />
             )}
           </dd>
         </div>

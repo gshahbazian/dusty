@@ -114,9 +114,7 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
   )
 
   /**
-   * Visible buttons, selects and header links shorter than 44 px. Not the
-   * relative times ("2 hours ago", which swap in the exact time): an
-   * optional extra, and 44 px each would make every row much taller.
+   * Visible buttons, selects and header links shorter than 44 px.
    */
   const tooSmall = async () => {
     const small: string[] = []
@@ -124,7 +122,6 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
     for (const target of await page
       .locator('button, select, header a')
       .filter({ visible: true })
-      .filter({ hasNotText: /ago$|^just now$/ })
       .all()) {
       const box = await target.boundingBox()
 

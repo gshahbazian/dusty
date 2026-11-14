@@ -108,9 +108,9 @@ export function KeyboardShortcuts({ children }: { children: ReactNode }) {
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      // While a dialog (the `?` overlay) is open, only closing it does
-      // anything (Esc closes a dialog by itself).
-      if (document.querySelector('[role="dialog"]') !== null) {
+      // While a dialog (the `?` overlay) or a menu (a row's right-click
+      // menu) is open, keys are its own: Esc closes it, not the article.
+      if (document.querySelector('[role="dialog"], [role="menu"]') !== null) {
         if (event.key === 'q' || event.key === '?') setHelpOpen(false)
 
         return

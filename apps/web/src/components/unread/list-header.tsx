@@ -69,7 +69,7 @@ export function ListHeader({
       <div className="text-muted-foreground flex items-center justify-between gap-2 text-xs">
         {!refreshing && (
           <span>
-            Updated <RelativeTime at={snapshotAt} now={now} label="Updated" />
+            Updated <RelativeTime at={snapshotAt} now={now} />
           </span>
         )}
         <Button

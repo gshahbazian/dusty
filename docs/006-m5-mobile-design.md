@@ -63,9 +63,10 @@ point is that every feature works by touch, one-handed.
 - Excerpts ran paragraphs together ("…end of oneStart of two"): plain text
   now keeps a space after each block element (paragraph, list item, line
   break, heading…).
-- The relative times in a row ("2 hours ago", which swap in the exact
-  time) stay small: 44 px each would make every row much taller, and a
-  larger invisible tap area would overlap the row's buttons below.
+- Relative times ("2 hours ago") are plain text with the exact time as a
+  hover tooltip. They used to swap to the exact time on a tap; the owner
+  dropped that (after M5) as noise, so a phone shows only the relative
+  time.
 - The icon is the logo, a pixel-art dustpan (`apps/web/public/logo.svg`,
   also the favicon). The PNGs are drawn from its 16×16 grid at whole
   pixels per grid cell (12 px for 192, 32 px for 512, 11 px centred on the

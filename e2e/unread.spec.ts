@@ -158,3 +158,49 @@ test('open an article to read it; mark it unread again', async ({ page }) => {
 
   await unsubscribe(page, feed)
 })
+
+test('right-click a row for its actions', async ({ page }) => {
+  const feed = feedFor('context', 4)
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('4 unread')
+
+  const menu = page.getByRole('menu')
+  const item = (name: RegExp) => menu.getByRole('menuitem', { name })
+
+  // Mark one read.
+  await articleRow(page, 'Generated 4').click({ button: 'right' })
+  await item(/^Mark read/).click()
+  await expect(heading(page)).toContainText('3 unread')
+
+  // Mark all above, straight from the menu (no second step).
+  await articleRow(page, 'Generated 2').click({ button: 'right' })
+  await item(/^Mark all above as read/).click()
+  await expect(heading(page)).toContainText('2 unread')
+
+  // The top row has nothing above it.
+  await articleRow(page, 'Generated 4').click({ button: 'right' })
+  await expect(item(/^Mark all above as read/)).toBeDisabled()
+
+  // Esc closes the menu and nothing else.
+  await page.keyboard.press('Escape')
+  await expect(menu).toHaveCount(0)
+
+  // Open.
+  await articleRow(page, 'Generated 1').click({ button: 'right' })
+  await item(/^Open(?! page)/).click()
+  await expect(
+    page.getByRole('article', { name: 'Article' }).getByRole('heading')
+  ).toHaveText('Generated 1')
+
+  // With the article open, Esc on a menu leaves the article open.
+  await articleRow(page, 'Generated 2').click({ button: 'right' })
+  await expect(menu).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(menu).toHaveCount(0)
+  await expect(page.getByRole('article', { name: 'Article' })).toBeVisible()
+
+  await unsubscribe(page, feed)
+})

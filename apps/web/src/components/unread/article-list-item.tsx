@@ -1,9 +1,24 @@
 import { cn } from 'cn'
+import {
+  BookOpenIcon,
+  CheckCheckIcon,
+  CheckIcon,
+  CircleDotIcon,
+  ExternalLinkIcon,
+} from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
 import { Button } from '@/components/ui/button.tsx'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu.tsx'
 
 import { RelativeTime } from '../relative-time.tsx'
 import { articles } from './list-state.ts'
@@ -70,107 +85,162 @@ export function ArticleListItem({
   }, [confirming])
 
   return (
-    <li
-      ref={measureRef}
-      data-index={position - 1}
-      data-article-id={row.id}
-      data-cursor={cursor ? 'true' : undefined}
-      aria-posinset={position}
-      aria-setsize={setSize}
-      style={{ transform: `translateY(${offset}px)` }}
-      className={cn(
-        'absolute top-0 left-0 w-full border-b px-3 py-3',
-        read && 'opacity-50',
-        open && 'bg-muted',
-        cursor &&
-          'before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-primary'
-      )}
-    >
-      <button
-        type="button"
-        onClick={(event) => {
-          event.currentTarget.blur()
-          onOpen()
-        }}
-        className="block w-full text-left pointer-coarse:min-h-11"
-        aria-current={open ? 'true' : undefined}
-      >
-        <span className={cn('block break-words', !read && 'font-medium')}>
-          <span>{title}</span>
-          {read && <span className="sr-only"> (read)</span>}
-        </span>
-        {row.excerpt !== null && (
-          <span className="text-muted-foreground mt-0.5 line-clamp-2 block text-xs">
-            {row.excerpt}
-          </span>
+    <ContextMenu>
+      {/* Right-click a row for its actions (the trigger is the row itself). */}
+      <ContextMenuTrigger
+        render={<li ref={measureRef} />}
+        data-index={position - 1}
+        data-article-id={row.id}
+        data-cursor={cursor ? 'true' : undefined}
+        aria-posinset={position}
+        aria-setsize={setSize}
+        style={{ transform: `translateY(${offset}px)` }}
+        className={cn(
+          'hover:bg-muted/50 absolute top-0 left-0 w-full border-b px-3 py-3',
+          read && 'opacity-50',
+          open && 'bg-muted',
+          cursor &&
+            'before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-primary'
         )}
-      </button>
-      <div className="text-muted-foreground mt-1 flex flex-wrap gap-x-3 text-xs">
-        {showFeed && <span>{row.feedTitle}</span>}
-        <RelativeTime at={row.publishedAt} now={now} label="Published" />
-      </div>
-      {/*
-        Actions get their own line, and the read toggle a fixed width, so
-        marking a row never changes its height and moves the rows below.
+      >
+        <button
+          type="button"
+          onClick={(event) => {
+            event.currentTarget.blur()
+            onOpen()
+          }}
+          // Stretched over the whole row, so a click anywhere opens it; the
+          // row's other controls sit above this layer.
+          className="focus-visible:after:ring-ring block w-full text-left outline-none after:absolute after:inset-0 focus-visible:after:ring-2 focus-visible:after:ring-inset pointer-coarse:min-h-11"
+          aria-current={open ? 'true' : undefined}
+        >
+          {/* Same weight read or unread: a bolder title wraps differently and
+            would change the row's height. Read rows are dimmed instead. */}
+          <span className="block font-medium break-words">
+            <span>{title}</span>
+            {read && <span className="sr-only"> (read)</span>}
+          </span>
+          {row.excerpt !== null && (
+            <span className="text-muted-foreground mt-0.5 line-clamp-2 block text-xs">
+              {row.excerpt}
+            </span>
+          )}
+        </button>
+        <div className="text-muted-foreground mt-1 flex flex-wrap gap-x-3 text-xs">
+          {showFeed && <span>{row.feedTitle}</span>}
+          <RelativeTime
+            at={row.publishedAt}
+            now={now}
+            className="relative z-10"
+          />
+        </div>
+        {/*
+        Actions get their own line, and both read toggles are the same size,
+        so marking a row never changes its height and moves the rows below.
       */}
-      <div className="mt-1 -ml-2 flex gap-1">
+        <div className="mt-1 -ml-2 flex gap-1">
+          {!read && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
+              onClick={(event) => {
+                event.currentTarget.blur()
+                onMarkRead()
+              }}
+              disabled={busy}
+              aria-label={`Mark ${title} read`}
+              title="Mark read"
+            >
+              <CheckIcon />
+            </Button>
+          )}
+          {read && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
+              onClick={(event) => {
+                event.currentTarget.blur()
+                onMarkUnread()
+              }}
+              disabled={busy}
+              aria-label={`Mark ${title} unread`}
+              title="Mark unread"
+            >
+              <CircleDotIcon />
+            </Button>
+          )}
+          {!first && !confirming && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
+              onClick={() => setConfirming(true)}
+              disabled={busy}
+              aria-label={`Mark all above ${title} as read`}
+              title="Mark all above as read"
+            >
+              <CheckCheckIcon />
+            </Button>
+          )}
+          {!first && confirming && (
+            <Button
+              size="sm"
+              className="relative z-10"
+              onClick={(event) => {
+                event.currentTarget.blur()
+                setConfirming(false)
+                onMarkAllAbove()
+              }}
+              disabled={busy}
+              aria-label={`Confirm: mark ${articles(above)} above ${title} as read`}
+            >
+              Mark {above} above?
+            </Button>
+          )}
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="min-w-56">
+        <ContextMenuItem onClick={onOpen}>
+          <BookOpenIcon />
+          Open
+          <ContextMenuShortcut>↵</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem
+          disabled={row.url === null}
+          onClick={() => {
+            if (row.url === null) return
+
+            window.open(row.url, '_blank', 'noopener,noreferrer')
+          }}
+        >
+          <ExternalLinkIcon />
+          Open page in new tab
+          <ContextMenuShortcut>o</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuSeparator />
         {!read && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground w-24 justify-start"
-            onClick={(event) => {
-              event.currentTarget.blur()
-              onMarkRead()
-            }}
-            disabled={busy}
-            aria-label={`Mark ${title} read`}
-          >
+          <ContextMenuItem disabled={busy} onClick={onMarkRead}>
+            <CheckIcon />
             Mark read
-          </Button>
+            <ContextMenuShortcut>m</ContextMenuShortcut>
+          </ContextMenuItem>
         )}
         {read && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground w-24 justify-start"
-            onClick={(event) => {
-              event.currentTarget.blur()
-              onMarkUnread()
-            }}
-            disabled={busy}
-            aria-label={`Mark ${title} unread`}
-          >
+          <ContextMenuItem disabled={busy} onClick={onMarkUnread}>
+            <CircleDotIcon />
             Mark unread
-          </Button>
+            <ContextMenuShortcut>m</ContextMenuShortcut>
+          </ContextMenuItem>
         )}
-        {!first && !confirming && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground"
-            onClick={() => setConfirming(true)}
-            disabled={busy}
-            aria-label={`Mark all above ${title} as read`}
-          >
-            Mark all above as read
-          </Button>
-        )}
-        {!first && confirming && (
-          <Button
-            size="sm"
-            onClick={(event) => {
-              event.currentTarget.blur()
-              setConfirming(false)
-              onMarkAllAbove()
-            }}
-            disabled={busy}
-            aria-label={`Confirm: mark ${articles(above)} above ${title} as read`}
-          >
-            Mark {above} above?
-          </Button>
-        )}
-      </div>
-    </li>
+        {/* Chosen from a menu, so no second "are you sure?" step. */}
+        <ContextMenuItem disabled={busy || first} onClick={onMarkAllAbove}>
+          <CheckCheckIcon />
+          Mark all above as read
+          <ContextMenuShortcut>A</ContextMenuShortcut>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
