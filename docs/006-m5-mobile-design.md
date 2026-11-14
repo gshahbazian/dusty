@@ -2,7 +2,7 @@
 
 M5 makes the phone a first-class reader. The brief is the spec's "Mobile"
 section; follow-ups from earlier milestones are at the end of
-`docs/004_m3_unread_design.md` and `docs/005_m4_keyboard_design.md`. The
+`docs/004-m3-unread-design.md` and `docs/005-m4-keyboard-design.md`. The
 UI stays deliberately plain (the owner will design it by hand later): the
 point is that every feature works by touch, one-handed.
 

@@ -7,7 +7,7 @@ import {
   removeSubscription,
   renameSubscription,
 } from '../../server/subscriptions.ts'
-import { RelativeTime } from '../RelativeTime.tsx'
+import { RelativeTime } from '../relative-time.tsx'
 import { failureNote, healthLabel, removeConfirmation } from './health.ts'
 
 /** One subscription: its name, unread count, health and actions. */

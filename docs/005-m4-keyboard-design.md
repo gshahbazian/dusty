@@ -4,7 +4,7 @@ M4 makes a full triage pass possible without the mouse, and keeps long
 lists fast. The spec's "Keyboard shortcuts (vim motions)" section is the
 brief; "Unread lists" asks that thousands of rows not slow scrolling or
 key presses, and "Manual refresh" says where the cursor lands afterwards.
-Follow-ups M3 left for M4 are in `docs/004_m3_unread_design.md`.
+Follow-ups M3 left for M4 are in `docs/004-m3-unread-design.md`.
 
 ## Layout
 

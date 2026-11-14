@@ -1,6 +1,6 @@
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
 
-import { UnreadPage } from '../components/unread/UnreadPage.tsx'
+import { UnreadPage } from '../components/unread/unread-page.tsx'
 import { parseArticleSearch } from '../lib/article-search.ts'
 import { getUnreadList } from '../server/articles.ts'
 

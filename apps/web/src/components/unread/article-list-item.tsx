@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
-import { RelativeTime } from '../RelativeTime.tsx'
+import { RelativeTime } from '../relative-time.tsx'
 import { articles } from './list-state.ts'
 
 /** How long "Mark N above?" waits for its second tap. */

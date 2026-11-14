@@ -1,7 +1,7 @@
 # Dusty
 
 A personal, single-user RSS reader on Cloudflare. See
-[`docs/001_project_spec.md`](docs/001_project_spec.md) for what it does and why.
+[`docs/001-project-spec.md`](docs/001-project-spec.md) for what it does and why.
 
 ## Quick start (local, no Cloudflare account)
 

@@ -37,6 +37,9 @@ export default defineConfig({
     'eslint/no-else-return': ['error', { allowElseIf: false }],
     'eslint/no-nested-ternary': 'error',
 
+    // Every file name is kebab-case (`article-list-item.tsx`).
+    'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+
     '@tanstack/router/create-route-property-order': 'error',
     '@tanstack/router/route-param-names': 'error',
 

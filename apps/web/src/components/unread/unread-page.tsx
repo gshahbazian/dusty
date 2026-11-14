@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from 'react'
 import type { ArticleRow, FeedCount } from '@dusty/db'
 
 import { syncForRefresh } from '../../server/functions.ts'
-import { useCommands } from '../keyboard/KeyboardShortcuts.tsx'
+import { useCommands } from '../keyboard/keyboard-shortcuts.tsx'
 import type { Command } from '../keyboard/keymap.ts'
-import { RelativeTime } from '../RelativeTime.tsx'
-import { ArticleListItem } from './ArticleListItem.tsx'
-import { ArticleView } from './ArticleView.tsx'
+import { RelativeTime } from '../relative-time.tsx'
+import { ArticleListItem } from './article-list-item.tsx'
+import { ArticleView } from './article-view.tsx'
 import {
   cursorIndex,
   feedFromPath,
@@ -18,7 +18,7 @@ import {
   neighborFeed,
 } from './cursor.ts'
 import { adjustedCounts, type Counts } from './list-state.ts'
-import { useUnreadList, type Notice } from './useUnreadList.ts'
+import { useUnreadList, type Notice } from './use-unread-list.ts'
 
 export interface UnreadListData {
   readonly rows: readonly ArticleRow[]

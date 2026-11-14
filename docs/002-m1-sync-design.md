@@ -1,7 +1,7 @@
 # M1: sync engine design
 
 Decisions made while building M1 (sync engine, schema, health fields,
-pruning, tracing, logs and metrics). The spec (`001_project_spec.md`) says
+pruning, tracing, logs and metrics). The spec (`001-project-spec.md`) says
 what and why; this says how, where the spec leaves it open.
 
 ## Schema (D1, times in epoch ms)

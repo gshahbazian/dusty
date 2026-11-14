@@ -1,7 +1,7 @@
 # Dusty: notes for agents
 
 Dusty is a single-user RSS reader on Cloudflare. **Read
-`docs/001_project_spec.md` first**; it says what to build and why. Decisions
+`docs/001-project-spec.md` first**; it says what to build and why. Decisions
 made after the spec are recorded below and in `docs/`.
 
 ## Layout
@@ -42,7 +42,7 @@ Read the matching `SKILL.md` before doing these:
 - Sync work must be traced: wrap units of work in `Effect.fn` /
   `Effect.withSpan` and annotate spans with the same details as logs.
 - The sync engine's design (schema, run budget, pruning, health, metrics)
-  is in `docs/002_m1_sync_design.md`. Every sync setting is an env var
+  is in `docs/002-m1-sync-design.md`. Every sync setting is an env var
   listed in `SETTING_DEFAULTS` (`apps/sync/src/config.ts`) and
   `.env.example`; add new ones there so they reach the deployed Worker.
 - Sync talks to the web only through the `HttpFetch` service. Tests serve
@@ -54,4 +54,9 @@ Read the matching `SKILL.md` before doing these:
   element, never kept in variables, constants or maps, and conditional
   classes joined with `cn` (`import { cn } from 'cn'`), never template
   strings or ternaries. Lint enforces the first two.
+- File names are kebab-case: `article-list-item.tsx`, `use-unread-list.ts`,
+  `001-project-spec.md`. Lint enforces it for code (`unicorn/filename-case`).
+  The exceptions are names that tools look for (`README.md`, `AGENTS.md`,
+  `CLAUDE.md`, `SKILL.md`, `LICENSE`) and TanStack Router's route files
+  (`__root.tsx`, `feeds.$feedId.tsx`, the generated `routeTree.gen.ts`).
 - Commit titles are all lowercase; bodies use normal punctuation.

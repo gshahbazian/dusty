@@ -1,15 +1,15 @@
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
-import { AddFeedForm } from '../components/subscriptions/AddFeedForm.tsx'
+import { AddFeedForm } from '../components/subscriptions/add-feed-form.tsx'
 import {
   needsAttention,
   sortSubscriptions,
   type SortOrder,
 } from '../components/subscriptions/health.ts'
 import { parseSubscriptionsSearch } from '../components/subscriptions/search.ts'
-import { OpmlImport } from '../components/subscriptions/OpmlImport.tsx'
-import { SubscriptionRow } from '../components/subscriptions/SubscriptionRow.tsx'
+import { OpmlImport } from '../components/subscriptions/opml-import.tsx'
+import { SubscriptionRow } from '../components/subscriptions/subscription-row.tsx'
 import { getSubscriptions } from '../server/subscriptions.ts'
 
 const SORTS: ReadonlyArray<{

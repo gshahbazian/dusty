@@ -36,7 +36,7 @@ export interface SyncSettings {
 
 /**
  * Sync settings the spec says must be configurable without code changes,
- * with their defaults (the spec's, or `docs/002_m1_sync_design.md`'s where
+ * with their defaults (the spec's, or `docs/002-m1-sync-design.md`'s where
  * the spec gives none). All are whole numbers in the unit their name says.
  */
 export const SETTING_DEFAULTS = {

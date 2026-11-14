@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 
-import { KeyboardShortcuts } from '../components/keyboard/KeyboardShortcuts.tsx'
+import { KeyboardShortcuts } from '../components/keyboard/keyboard-shortcuts.tsx'
 import { getSession, requestSync } from '../server/functions.ts'
 import appCss from '../styles.css?url'
 
