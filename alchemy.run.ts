@@ -90,6 +90,9 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
         DB: Database,
         SYNC: Sync,
         AUTH_MODE: dev ? 'dev' : 'access',
+        // Under `alchemy dev` both Workers share one SQLite file from two
+        // processes; this turns on the retry for its lock (see busy-retry.ts).
+        LOCAL_DEV: dev ? 'true' : 'false',
         OWNER_EMAIL: ownerEmail,
         ACCESS_TEAM_DOMAIN: access?.teamDomain ?? '',
         ACCESS_AUD: access?.application.aud ?? '',

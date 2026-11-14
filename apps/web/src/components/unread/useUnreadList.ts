@@ -40,16 +40,24 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
   const apply = (ids: readonly number[], read: boolean) =>
     setOverrides((current) => withRead(current, ids, read))
 
-  /** Run a write; on failure say so and change nothing on screen. */
-  const attempt = async (work: () => Promise<void>, failure: string) => {
-    setBusy(true)
+  /**
+   * Run a write; on failure say so and change nothing on screen. `busy`
+   * disables the row actions meanwhile; opening an article skips it, so
+   * reading quickly (`J` / `K`) never greys out the list.
+   */
+  const attempt = async (
+    work: () => Promise<void>,
+    failure: string,
+    options: { readonly busy: boolean } = { busy: true }
+  ) => {
+    if (options.busy) setBusy(true)
 
     try {
       await work()
     } catch {
       setNotice({ kind: 'error', text: `${failure} Nothing was changed.` })
     } finally {
-      setBusy(false)
+      if (options.busy) setBusy(false)
     }
   }
 
@@ -94,20 +102,25 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     isRead: (id: number) => isRead(overrides, id),
     dismissNotice: () => setNotice(null),
     say: (text: string) => setNotice({ kind: 'info', text }),
+    fail: (text: string) => setNotice({ kind: 'error', text }),
 
     markOneRead: (id: number) => markRead([id], null, () => 'Marked read.'),
 
     /** Opening an article reads it; quietly, unless it fails. */
     markOpenedRead: (id: number) =>
-      attempt(async () => {
-        if (isRead(overrides, id)) return
+      attempt(
+        async () => {
+          if (isRead(overrides, id)) return
 
-        const { changed } = await markArticlesRead({
-          data: { ids: [id], snapshotAt: null },
-        })
+          const { changed } = await markArticlesRead({
+            data: { ids: [id], snapshotAt: null },
+          })
 
-        apply(changed, true)
-      }, "Couldn't mark the article read."),
+          apply(changed, true)
+        },
+        "Couldn't mark the article read.",
+        { busy: false }
+      ),
 
     markAllAbove: (chosenId: number) =>
       markRead(

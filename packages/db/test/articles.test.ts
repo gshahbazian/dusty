@@ -22,6 +22,9 @@ const MINUTE = 60_000
 const HOUR = 60 * MINUTE
 const T0 = Date.UTC(2026, 10, 20)
 
+/** A snapshot later than anything stored, for tests not about the snapshot. */
+const ALL = Number.MAX_SAFE_INTEGER
+
 let db: Db
 let dispose: () => Promise<void>
 
@@ -120,13 +123,10 @@ describe('lists', () => {
       T0
     )
 
-    expect(keysOf(await listUnread(db, { feedId: null }))).toEqual([
-      'a-old',
-      'b-mid',
-      'b-tie',
-      'a-new',
-    ])
-    expect(keysOf(await listUnread(db, { feedId: b }))).toEqual([
+    expect(keysOf(await listUnread(db, { feedId: null, seenBy: ALL }))).toEqual(
+      ['a-old', 'b-mid', 'b-tie', 'a-new']
+    )
+    expect(keysOf(await listUnread(db, { feedId: b, seenBy: ALL }))).toEqual([
       'b-tie',
       'b-mid',
     ])
@@ -138,7 +138,7 @@ describe('lists', () => {
     await sync(a, [['x', T0]], T0)
     await renameFeed(db, a, 'My feed')
 
-    const [row] = await listUnread(db, { feedId: null })
+    const [row] = await listUnread(db, { feedId: null, seenBy: ALL })
 
     expect(row).toEqual({
       id: expect.any(Number),
@@ -164,17 +164,50 @@ describe('lists', () => {
       T0
     )
 
-    expect(keysOf(await listUnread(db, { feedId: null, limit: 2 }))).toEqual([
-      '1',
-      '2',
-    ])
-    expect(keysOf(await listUnread(db, { feedId: a, limit: 2 }))).toEqual([
-      '3',
-      '2',
-    ])
-    expect(await unreadCounts(db)).toEqual([
+    expect(
+      keysOf(await listUnread(db, { feedId: null, seenBy: ALL, limit: 2 }))
+    ).toEqual(['1', '2'])
+    expect(
+      keysOf(await listUnread(db, { feedId: a, seenBy: ALL, limit: 2 }))
+    ).toEqual(['3', '2'])
+    expect(await unreadCounts(db, { seenBy: ALL })).toEqual([
       { feedId: a, title: 'Feed 1', unread: 3 },
     ])
+  })
+
+  test('a list and its counts leave out what a sync stored after the snapshot', async () => {
+    const a = await addFeed('https://a.test/feed')
+
+    await sync(a, [['seen', T0]], T0)
+
+    // The list's snapshot is taken; then a sync lands before its queries
+    // run, storing an article that sorts first.
+    const snapshotAt = T0 + MINUTE
+
+    await sync(
+      a,
+      [
+        ['seen', T0],
+        ['late', T0 - HOUR],
+      ],
+      snapshotAt + 1
+    )
+
+    // Only what "mark all above" would act on is listed and counted.
+    expect(
+      keysOf(await listUnread(db, { feedId: null, seenBy: snapshotAt }))
+    ).toEqual(['seen'])
+    expect(
+      keysOf(await listUnread(db, { feedId: a, seenBy: snapshotAt }))
+    ).toEqual(['seen'])
+    expect(await unreadCounts(db, { seenBy: snapshotAt })).toEqual([
+      { feedId: a, title: 'Feed 1', unread: 1 },
+    ])
+
+    // The next snapshot has it.
+    expect(
+      keysOf(await listUnread(db, { feedId: null, seenBy: snapshotAt + 1 }))
+    ).toEqual(['late', 'seen'])
   })
 
   test('unread counts match the lists, zeros included', async () => {
@@ -196,7 +229,7 @@ describe('lists', () => {
       now: T0,
     })
 
-    expect(await unreadCounts(db)).toEqual([
+    expect(await unreadCounts(db, { seenBy: ALL })).toEqual([
       { feedId: a, title: 'Feed 1', unread: 1 },
       { feedId: b, title: 'https://b.test/feed', unread: 0 },
     ])
@@ -264,7 +297,7 @@ describe('mark all above as read', () => {
 
     // The owner loads the list: this is what is on screen.
     const loadedAt = T0 + MINUTE
-    const onScreen = await listUnread(db, { feedId: null })
+    const onScreen = await listUnread(db, { feedId: null, seenBy: ALL })
 
     // A sync lands before they act. One new article is published *earlier*
     // than everything on screen, so it would sort above the chosen row if
@@ -365,7 +398,9 @@ describe('mark all above as read', () => {
 
     await sync(a, items, T0)
 
-    const ids = (await listUnread(db, { feedId: null })).map((row) => row.id)
+    const ids = (await listUnread(db, { feedId: null, seenBy: ALL })).map(
+      (row) => row.id
+    )
 
     const changed = await markRead(db, {
       ids,

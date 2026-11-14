@@ -65,7 +65,9 @@ JavaScript only sees `D1_ERROR: Failed to get session commit token:
 internal error; reference = ...` (reads hit this too, not just writes).
 `packages/db/src/busy-retry.ts` retries both forms for about half a second,
 so a few BUSY lines in the log are normal; only a request that still fails
-afterwards is a bug.
+afterwards is a bug. The retry is on only under `alchemy dev`: both
+Workers get `LOCAL_DEV=true` and pass `retryBusy` to `createDb` (the web
+app through `dbFor`). Deployed, D1 is called directly.
 
 If an edit under `packages/` shows `[Sync] Updated` in the log but no
 `[Web] hmr update`, the web Worker is still running the old code; restart

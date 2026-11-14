@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount } from '@dusty/db'
 
-import { requestSync } from '../../server/functions.ts'
+import { syncForRefresh } from '../../server/functions.ts'
 import { useCommands } from '../keyboard/KeyboardShortcuts.tsx'
 import type { Command } from '../keyboard/keymap.ts'
 import { RelativeTime } from '../RelativeTime.tsx'
@@ -81,7 +81,7 @@ function UnreadSnapshot({
   const list = useUnreadList(rows, data.snapshotAt)
   const counts = adjustedCounts(data.counts, rows, list.overrides)
   const [now] = useState(() => Date.now())
-  const { refreshing, refresh } = useRefresh()
+  const { refreshing, refresh } = useRefresh(list.fail)
   const navigate = useNavigate()
   const articleScroll = useRef<HTMLElement>(null)
   const { listScroll, virtualizer, reveal } = useVirtualRows(rows)
@@ -468,8 +468,13 @@ function useVirtualRows(rows: readonly ArticleRow[]) {
   return { listScroll, virtualizer, reveal }
 }
 
-/** Reload the list and counts, and ask the sync service to run. */
-function useRefresh() {
+/**
+ * Run the sync, wait for it, then reload the list and counts, so what it
+ * fetched shows at once. A sync that ran a few minutes ago is skipped and
+ * returns at once; a running one takes at most its on-demand budget. If the
+ * sync can't be reached, say so and leave the list as it is.
+ */
+function useRefresh(onFailed: (text: string) => void) {
   const router = useRouter()
   const [refreshing, setRefreshing] = useState(false)
 
@@ -479,7 +484,15 @@ function useRefresh() {
     setRefreshing(true)
 
     try {
-      await requestSync({ data: 'refresh' })
+      await syncForRefresh()
+    } catch {
+      setRefreshing(false)
+      onFailed("Couldn't check the feeds. The list is unchanged; try again.")
+
+      return
+    }
+
+    try {
       await router.invalidate()
     } finally {
       setRefreshing(false)

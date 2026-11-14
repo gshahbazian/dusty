@@ -53,3 +53,14 @@ export const requestSync = createServerFn({ method: 'POST' })
 
     return { requested: true as const }
   })
+
+/**
+ * Refresh: run the sync and wait for it (within its on-demand budget, and
+ * at once when it is skipped as recent), so the list reloaded afterwards
+ * has what it just fetched.
+ */
+export const syncForRefresh = createServerFn({ method: 'POST' })
+  .middleware([ownerOnly])
+  .handler(({ context }) =>
+    toRpcAsync<Sync>(context.env.SYNC).syncNow('refresh')
+  )

@@ -27,10 +27,18 @@ export const LIST_LIMIT = 5000
  * Unread articles, in list order. The global list (no `feedId`) is oldest
  * first; a feed's list is newest first. `id` breaks ties in the same
  * direction, so the order never shuffles between loads.
+ *
+ * Only articles first seen by `seenBy` (the list's snapshot time) are
+ * listed: the same rule "mark all above" checks, so every row on screen is
+ * one it will act on, even if a sync lands while the list is being read.
  */
 export const listUnread = (
   db: Db,
-  options: { readonly feedId: number | null; readonly limit?: number }
+  options: {
+    readonly feedId: number | null
+    readonly seenBy: number
+    readonly limit?: number
+  }
 ): Promise<ArticleRow[]> => {
   const limit = options.limit ?? LIST_LIMIT
 
@@ -42,6 +50,7 @@ export const listUnread = (
         articles.published_at as publishedAt
       from articles join feeds on feeds.id = articles.feed_id
       where articles.read_at is null
+        and articles.first_seen_at <= ${options.seenBy}
       order by articles.published_at asc, articles.id asc
       limit ${limit}
     `)
@@ -54,6 +63,7 @@ export const listUnread = (
       articles.published_at as publishedAt
     from articles join feeds on feeds.id = articles.feed_id
     where articles.read_at is null and articles.feed_id = ${options.feedId}
+      and articles.first_seen_at <= ${options.seenBy}
     order by articles.published_at desc, articles.id desc
     limit ${limit}
   `)
@@ -65,14 +75,21 @@ export interface FeedCount {
   readonly unread: number
 }
 
-/** Unread counts for every feed (zeros included), in one query. */
-export const unreadCounts = (db: Db): Promise<FeedCount[]> =>
+/**
+ * Unread counts for every feed (zeros included), in one query, counting
+ * the same articles the list shows: those first seen by `seenBy`.
+ */
+export const unreadCounts = (
+  db: Db,
+  options: { readonly seenBy: number }
+): Promise<FeedCount[]> =>
   db.all<FeedCount>(sql`
     select feeds.id as feedId, ${FEED_TITLE} as title,
       count(articles.id) as unread
     from feeds
     left join articles
       on articles.feed_id = feeds.id and articles.read_at is null
+        and articles.first_seen_at <= ${options.seenBy}
     group by feeds.id
     order by lower(${FEED_TITLE}), feeds.id
   `)

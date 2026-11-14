@@ -1,29 +1,16 @@
-import { useEffect, useRef, useState, type RefObject } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { Article } from '@dusty/db'
 
 import { exactTime } from '../../lib/time.ts'
 import { getArticleToRead } from '../../server/articles.ts'
+import { prepareArticleHtml } from './article-html.ts'
 
 type Loaded =
   | { readonly kind: 'loading' }
   | { readonly kind: 'missing' }
   | { readonly kind: 'error' }
   | { readonly kind: 'ready'; readonly article: Article }
-
-/** Links inside an article open in a new tab, and send no referrer. */
-function useOutboundLinks(html: string | null) {
-  const container = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    for (const link of container.current?.querySelectorAll('a[href]') ?? []) {
-      link.setAttribute('target', '_blank')
-      link.setAttribute('rel', 'noopener noreferrer')
-    }
-  }, [html])
-
-  return container
-}
 
 /**
  * One article, for reading. Its HTML was cleaned with a strict allowlist
@@ -44,8 +31,6 @@ export function ArticleView({
   onClose: () => void
 }) {
   const [loaded, setLoaded] = useState<Loaded>({ kind: 'loading' })
-  const html = loaded.kind === 'ready' ? loaded.article.html : null
-  const content = useOutboundLinks(html)
 
   useEffect(() => {
     let current = true
@@ -85,7 +70,7 @@ export function ArticleView({
           onClose={onClose}
           onMarkUnread={() => onMarkUnread(articleId)}
         />
-        <ArticleBody loaded={loaded} content={content} />
+        <ArticleBody loaded={loaded} />
       </div>
     </article>
   )
@@ -122,13 +107,7 @@ function ArticleActions({
   )
 }
 
-function ArticleBody({
-  loaded,
-  content,
-}: {
-  loaded: Loaded
-  content: RefObject<HTMLDivElement | null>
-}) {
+function ArticleBody({ loaded }: { loaded: Loaded }) {
   if (loaded.kind === 'loading') {
     return <p className="text-neutral-500">Loading…</p>
   }
@@ -173,12 +152,11 @@ function ArticleBody({
       </header>
       {article.html !== null && (
         <div
-          ref={content}
           className="article-body"
           // The HTML was cleaned with a strict allowlist when it was stored
           // (apps/sync/src/clean.ts), and the CSP blocks scripts regardless.
           // oxlint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: article.html }}
+          dangerouslySetInnerHTML={{ __html: prepareArticleHtml(article.html) }}
         />
       )}
       {article.html === null && (
