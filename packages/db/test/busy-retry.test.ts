@@ -46,16 +46,39 @@ describe('retryBusy', () => {
     expect(calls).toBe(2)
   })
 
-  test('gives up after a few attempts', async () => {
+  test('keeps trying for its time budget, then gives up', async () => {
     let calls = 0
+    const started = Date.now()
 
     await expect(
       retryBusy(async () => {
         calls += 1
         throw busy()
-      })
+      }, 300)
     ).rejects.toThrow('SQLITE_BUSY')
-    expect(calls).toBe(5)
+
+    const elapsed = Date.now() - started
+
+    expect(elapsed).toBeGreaterThanOrEqual(300)
+    expect(elapsed).toBeLessThan(1000)
+    expect(calls).toBeGreaterThan(2)
+  })
+
+  test('outlasts a lock held for longer than a second', async () => {
+    // Adding a 3,000-article feed holds the write lock for seconds locally.
+    const lockedUntil = Date.now() + 1500
+    let calls = 0
+
+    const result = await retryBusy(async () => {
+      calls += 1
+
+      if (Date.now() < lockedUntil) throw busy()
+
+      return 'ok'
+    })
+
+    expect(result).toBe('ok')
+    expect(calls).toBeGreaterThan(5)
   })
 
   test('other errors are not retried', async () => {

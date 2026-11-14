@@ -63,11 +63,13 @@ so one can find it locked by the other. The log then shows
 `database is locked: SQLITE_BUSY` from `workerd/util/sqlite.c++`, while
 JavaScript only sees `D1_ERROR: Failed to get session commit token:
 internal error; reference = ...` (reads hit this too, not just writes).
-`packages/db/src/busy-retry.ts` retries both forms for about half a second,
+`packages/db/src/busy-retry.ts` retries both forms for up to 10 seconds,
 so a few BUSY lines in the log are normal; only a request that still fails
 afterwards is a bug. The retry is on only under `alchemy dev`: both
 Workers get `LOCAL_DEV=true` and pass `retryBusy` to `createDb` (the web
-app through `dbFor`). Deployed, D1 is called directly.
+app through `dbFor`). Deployed, D1 is called directly. The lock can be
+held for a while: adding a feed stores all its articles in one batch, so
+several BUSY lines in a row during a big add are expected.
 
 If an edit under `packages/` shows `[Sync] Updated` in the log but no
 `[Web] hmr update`, the web Worker is still running the old code; restart
