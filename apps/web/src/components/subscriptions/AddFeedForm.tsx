@@ -1,3 +1,4 @@
+import { cn } from 'cn'
 import { useState, type FormEvent } from 'react'
 
 import type { AddFeedResult } from '@dusty/sync/contract'
@@ -108,11 +109,10 @@ export function AddFeedForm({
         {status.kind === 'done' && (
           <>
             <span
-              className={
-                isRefusal(status)
-                  ? 'text-red-600 dark:text-red-400'
-                  : 'text-neutral-600 dark:text-neutral-400'
-              }
+              className={cn(
+                isRefusal(status) && 'text-red-600 dark:text-red-400',
+                !isRefusal(status) && 'text-neutral-600 dark:text-neutral-400'
+              )}
             >
               {resultMessage(status.result)}
             </span>{' '}

@@ -1,3 +1,4 @@
+import { cn } from 'cn'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 
 import type { Subscription } from '@dusty/db'
@@ -38,9 +39,10 @@ export function SubscriptionRow({
   return (
     <li
       id={`feed-${subscription.id}`}
-      className={`flex flex-col gap-1 border-b border-neutral-200 py-3 transition-colors dark:border-neutral-800 ${
-        highlighted ? 'bg-yellow-50 dark:bg-yellow-950/40' : ''
-      }`}
+      className={cn(
+        'flex flex-col gap-1 border-b border-neutral-200 py-3 transition-colors dark:border-neutral-800',
+        highlighted && 'bg-yellow-50 dark:bg-yellow-950/40'
+      )}
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         {renaming && (
@@ -57,7 +59,15 @@ export function SubscriptionRow({
           <h3 className="font-medium break-words">{subscription.title}</h3>
         )}
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${label.tone === 'good' ? 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300' : ''} ${label.tone === 'warn' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : ''} ${label.tone === 'bad' ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300' : ''}`}
+          className={cn(
+            'rounded-full px-2 py-0.5 text-xs font-medium',
+            label.tone === 'good' &&
+              'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
+            label.tone === 'warn' &&
+              'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+            label.tone === 'bad' &&
+              'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+          )}
         >
           {label.text}
         </span>
@@ -107,11 +117,11 @@ export function SubscriptionRow({
 
       {failure !== null && (
         <p
-          className={
-            failure.flagged
-              ? 'text-sm text-red-700 dark:text-red-400'
-              : 'text-sm text-neutral-600 dark:text-neutral-400'
-          }
+          className={cn(
+            'text-sm',
+            failure.flagged && 'text-red-700 dark:text-red-400',
+            !failure.flagged && 'text-neutral-600 dark:text-neutral-400'
+          )}
         >
           {failure.text}
         </p>

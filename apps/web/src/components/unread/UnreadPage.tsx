@@ -1,3 +1,4 @@
+import { cn } from 'cn'
 import { Link, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -278,7 +279,13 @@ function NoticeBar({
   return (
     <output
       aria-live="polite"
-      className={`flex flex-wrap items-center gap-3 rounded-md border px-3 py-2 text-sm ${notice.kind === 'error' ? 'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200' : 'border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900'}`}
+      className={cn(
+        'flex flex-wrap items-center gap-3 rounded-md border px-3 py-2 text-sm',
+        notice.kind === 'error' &&
+          'border-red-300 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200',
+        notice.kind !== 'error' &&
+          'border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900'
+      )}
     >
       <span className="flex-1">{notice.text}</span>
       {notice.kind === 'marked' && (

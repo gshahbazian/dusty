@@ -1,3 +1,4 @@
+import { cn } from 'cn'
 import {
   HeadContent,
   Link,
@@ -63,14 +64,22 @@ function AppLayout() {
 
   return (
     <div
-      className={`mx-auto px-4 pb-16 ${unreadActive ? 'max-w-[96rem]' : 'max-w-4xl'}`}
+      className={cn(
+        'mx-auto px-4 pb-16',
+        unreadActive && 'max-w-[96rem]',
+        !unreadActive && 'max-w-4xl'
+      )}
     >
       <header className="flex items-center gap-2 border-b border-neutral-200 py-3 dark:border-neutral-800">
         <span className="mr-2 font-semibold">Dusty</span>
         <nav className="flex flex-1 items-center gap-1" aria-label="Main">
           <Link
             to="/"
-            className={`rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 ${unreadActive ? 'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''}`}
+            className={cn(
+              'rounded-md px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+              unreadActive &&
+                'bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
+            )}
             aria-current={unreadActive ? 'page' : undefined}
           >
             Unread

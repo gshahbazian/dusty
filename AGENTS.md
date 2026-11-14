@@ -51,6 +51,7 @@ Read the matching `SKILL.md` before doing these:
   `if` whose body is on its own line (one-line `if (x) return y` is fine);
   ternaries only when both branches are short and obvious; React props typed
   inline at the component; Tailwind classes written inline on the JSX
-  element, never kept in variables, constants or maps. Lint enforces the
-  first two.
+  element, never kept in variables, constants or maps, and conditional
+  classes joined with `cn` (`import { cn } from 'cn'`), never template
+  strings or ternaries. Lint enforces the first two.
 - Commit titles are all lowercase; bodies use normal punctuation.

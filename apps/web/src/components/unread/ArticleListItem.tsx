@@ -1,3 +1,4 @@
+import { cn } from 'cn'
 import type { ArticleRow } from '@dusty/db'
 
 import { RelativeTime } from '../RelativeTime.tsx'
@@ -36,9 +37,11 @@ export function ArticleListItem({
   return (
     <li
       data-article-id={row.id}
-      className={`border-b border-neutral-200 py-3 dark:border-neutral-800 ${
-        read ? 'opacity-50' : ''
-      } ${open ? 'bg-neutral-50 dark:bg-neutral-900' : ''}`}
+      className={cn(
+        'border-b border-neutral-200 py-3 dark:border-neutral-800',
+        read && 'opacity-50',
+        open && 'bg-neutral-50 dark:bg-neutral-900'
+      )}
     >
       <button
         type="button"
@@ -46,7 +49,7 @@ export function ArticleListItem({
         className="block w-full text-left"
         aria-current={open ? 'true' : undefined}
       >
-        <span className={`block break-words ${read ? '' : 'font-medium'}`}>
+        <span className={cn('block break-words', !read && 'font-medium')}>
           <span>{title}</span>
           {read && <span className="sr-only"> (read)</span>}
         </span>
