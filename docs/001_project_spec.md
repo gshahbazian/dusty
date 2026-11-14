@@ -214,9 +214,9 @@ Every triage action can be done from the keyboard with vim-style keys, so a full
 | `5j`, `5k` | Move by a count |
 | `gg` / `G` | First / last row |
 | `Ctrl-d` / `Ctrl-u` | Half a page down / up |
-| `o` or `Enter` | Open the article |
+| `Enter` | Open the article |
 | `Esc` or `q` | Close the article, back to the list |
-| `v` | Open the original page in a new tab |
+| `o` | Open the original page in a new tab |
 | `m` | Toggle read on the current row |
 | `A` | Mark all rows above the current one as read |
 | `u` | Undo the last mark action |

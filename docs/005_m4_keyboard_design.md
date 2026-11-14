@@ -61,9 +61,9 @@ bound.
 | `Space` / `Shift-Space` | Half a page down / up | Scroll the article a page down / up |
 | `gg` / `G` | First / last row | First / last row |
 | `Ctrl-d` / `Ctrl-u` | Half a page down / up | Scroll the article half a page |
-| `o`, `Enter` | Open the article | — |
+| `Enter` | Open the article | — |
 | `Esc`, `q` | — | Close the article |
-| `v` | Open the original in a new tab | Same |
+| `o` | Open the original in a new tab | Same |
 | `m` | Toggle read on the cursor row | Toggle read on the open article |
 | `A` | Mark all above the cursor row as read | Same |
 | `u` | Undo the last mark action | Same |

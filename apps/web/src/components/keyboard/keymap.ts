@@ -95,7 +95,7 @@ export const BINDINGS: readonly Binding[] = [
   },
   {
     command: 'open',
-    sequences: [['o'], ['Enter']],
+    sequences: [['Enter']],
     list: 'Open the article',
     article: 'Nothing (already open)',
   },
@@ -107,7 +107,7 @@ export const BINDINGS: readonly Binding[] = [
   },
   {
     command: 'openOriginal',
-    sequences: [['v']],
+    sequences: [['o']],
     list: 'Open the original page in a new tab',
   },
   { command: 'toggleRead', sequences: [['m']], list: 'Mark read or unread' },

@@ -52,7 +52,7 @@ test('a triage pass by keyboard alone', async ({ page, request }) => {
 
   // Reading: open, then j / k go to the next and previous article without
   // closing; q closes.
-  await keys(page, 'o')
+  await keys(page, 'Enter')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 6')
   await expect(page).toHaveURL(/\?article=\d+$/)
   await keys(page, 'j')
@@ -221,6 +221,20 @@ test('after clicking a row, j and k go to the next and previous article', async 
   // The arrow keys and Space scroll it instead: still the same article.
   await keys(page, 'ArrowDown', 'Space', 'Shift+Space', 'ArrowUp')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 4')
+
+  // `o` opens its original page in a new tab (answered here, not fetched).
+  await page
+    .context()
+    .route('https://generated.example.com/**', (route) =>
+      route.fulfill({ body: 'original' })
+    )
+
+  const original = page.context().waitForEvent('page')
+
+  await keys(page, 'o')
+  await expect(await original).toHaveURL(
+    `https://generated.example.com/${feed.id}/4`
+  )
 
   await unsubscribe(page, feed)
 })
