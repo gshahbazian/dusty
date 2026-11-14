@@ -17,6 +17,7 @@ import {
 } from './cursor.ts'
 import { ListHeader } from './list-header.tsx'
 import { adjustedCounts } from './list-state.ts'
+import { EmptyPane } from './empty-pane.tsx'
 import { MobileArticleBar } from './mobile-article-bar.tsx'
 import { NoticeBar } from './notice-bar.tsx'
 import { useUnreadList } from './use-unread-list.ts'
@@ -240,14 +241,8 @@ function UnreadSnapshot({
           onPickFeed={goToFeed}
         />
 
-        {rows.length === 0 && (
-          <p className="text-muted-foreground p-3">
-            {listShow?.show === 'all'
-              ? 'No articles stored for this feed yet.'
-              : 'Nothing unread. Refresh to check for new articles.'}
-          </p>
-        )}
-
+        {/* An empty list is just empty: the picker's count says (0), and the
+            screen-reader heading says "0 unread". */}
         <p aria-live="polite" className="sr-only">
           {announcement}
         </p>
@@ -300,11 +295,7 @@ function UnreadSnapshot({
             onMarkUnread={() => void list.markOneUnread(articleId)}
           />
         )}
-        {articleId === null && rows.length > 0 && (
-          <p className="text-muted-foreground p-8 text-center">
-            Choose an article to read it here.
-          </p>
-        )}
+        {articleId === null && <EmptyPane />}
       </section>
 
       <NoticeBar

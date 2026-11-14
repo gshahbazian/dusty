@@ -6,6 +6,7 @@ import { AlchemyContext } from 'alchemy/AlchemyContext'
 import * as Config from 'effect/Config'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
+import * as Redacted from 'effect/Redacted'
 
 import { SETTING_DEFAULTS } from './apps/sync/src/config.ts'
 import { Sync } from './apps/sync/src/contract.ts'
@@ -63,6 +64,13 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
 
     const access = yield* deployedAccess(dev, ownerEmail)
 
+    // Optional: the empty article pane's photo (Unsplash). A secret on the
+    // Worker; without it the pane is just blank.
+    const unsplashKey = yield* Config.Redacted('UNSPLASH_ACCESS_KEY').pipe(
+      Config.withDefault(Redacted.make('')),
+      Effect.orDie
+    )
+
     // The subscriptions view shows health; it must use the same thresholds
     // as the sync service's metrics.
     const healthEnv = {
@@ -96,6 +104,7 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
         OWNER_EMAIL: ownerEmail,
         ACCESS_TEAM_DOMAIN: access?.teamDomain ?? '',
         ACCESS_AUD: access?.application.aud ?? '',
+        UNSPLASH_ACCESS_KEY: unsplashKey,
         ...healthEnv,
       },
     }
