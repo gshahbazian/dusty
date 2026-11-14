@@ -17,12 +17,25 @@
  *
  * Either way nothing was written, so trying again is safe. Deployed, this
  * never triggers.
+ *
+ * Retries run for a time budget, not a fixed number of attempts: the other
+ * Worker can hold the lock for seconds. Adding a feed stores all its articles
+ * in one atomic batch, and locally a 3,000-article feed took 3.5 to 4 s, so
+ * half a second of retries made pages that loaded meanwhile fail with
+ * "Failed query". The budget outlasts the largest feed a test or a person is
+ * likely to add locally; past it, the error is real and is thrown.
  */
-const MAX_ATTEMPTS = 5
+const BUDGET_MS = 10_000
 const BASE_DELAY_MS = 15
+const MAX_DELAY_MS = 250
 const RETRYABLE = /SQLITE_BUSY|Failed to get session commit token/
 
-export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
+export const retryBusy = async <T>(
+  run: () => Promise<T>,
+  budgetMs = BUDGET_MS
+): Promise<T> => {
+  const giveUpAt = Date.now() + budgetMs
+
   for (let attempt = 1; ; attempt += 1) {
     try {
       return await run()
@@ -31,11 +44,16 @@ export const retryBusy = async <T>(run: () => Promise<T>): Promise<T> => {
         error instanceof Error &&
         RETRYABLE.test(`${error.message} ${String(error.cause)}`)
 
-      if (!busy || attempt >= MAX_ATTEMPTS) throw error
+      if (!busy || Date.now() >= giveUpAt) throw error
 
-      const delay = BASE_DELAY_MS * 2 ** attempt * (0.5 + Math.random())
+      const backoff = Math.min(BASE_DELAY_MS * 2 ** attempt, MAX_DELAY_MS)
 
-      await new Promise((resolve) => setTimeout(resolve, delay))
+      const delay = Math.min(
+        backoff * (0.5 + Math.random()),
+        giveUpAt - Date.now()
+      )
+
+      await new Promise((resolve) => setTimeout(resolve, Math.max(delay, 0)))
     }
   }
 }
