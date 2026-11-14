@@ -80,7 +80,7 @@ export function UnreadPage({
 const REVEAL_TOP_PX = 8
 const REVEAL_BOTTOM_PX = 72
 
-/** How far `j` / `k` scroll an open article, per press. */
+/** How far the arrow keys scroll an open article, per press. */
 const ARTICLE_STEP_PX = 64
 
 function UnreadSnapshot({
@@ -355,7 +355,7 @@ function UnreadSnapshot({
 }
 
 /**
- * Previous and Next for an open article, as `K` / `J` do: the rows either
+ * Previous and Next for an open article, as `k` / `j` do: the rows either
  * side of it, or, if it isn't in the list (opened from a link), the top row
  * as next and nothing as previous.
  */
@@ -418,8 +418,8 @@ function commandsFor(page: {
 
   if (row === undefined) return always
 
-  /** `j` / `k`: scroll an open article, else move the cursor. */
-  const step = (delta: number) => {
+  /** Arrow keys: scroll an open article, else move the cursor. */
+  const scroll = (delta: number) => {
     if (articleOpen) {
       page.scrollArticle(ARTICLE_STEP_PX * delta)
 
@@ -430,11 +430,11 @@ function commandsFor(page: {
   }
 
   /**
-   * `J` / `K`: with an article open, open the next one in its place. If the
-   * open article isn't in the list (opened from a link), `J` starts at the
-   * top and `K` has nowhere to go.
+   * `j` / `k`: move the cursor; with an article open, open the next (or
+   * previous) one in its place. If the open article isn't in the list
+   * (opened from a link), `j` starts at the top and `k` has nowhere to go.
    */
-  const stepArticle = (delta: number) => {
+  const step = (delta: number) => {
     if (articleOpen && row.id !== page.openId) {
       if (delta > 0) page.open(0)
 
@@ -460,10 +460,13 @@ function commandsFor(page: {
     if (!list.busy) write()
   }
 
-  /** `Ctrl-d` / `Ctrl-u`: half a page of the article, or of the list. */
-  const halfPage = (direction: 1 | -1) => {
+  /**
+   * `Ctrl-d` / `Ctrl-u` (half a page) and Space / Shift-Space (most of a
+   * page) scroll an open article; on the list, both move half a page.
+   */
+  const pageBy = (direction: 1 | -1, share: number) => {
     if (articleOpen) {
-      page.scrollArticle((page.articleHeight() / 2) * direction)
+      page.scrollArticle(page.articleHeight() * share * direction)
 
       return
     }
@@ -475,12 +478,14 @@ function commandsFor(page: {
     ...always,
     down: (count) => step(count),
     up: (count) => step(-count),
-    nextArticle: (count) => stepArticle(count),
-    previousArticle: (count) => stepArticle(-count),
+    scrollDown: (count) => scroll(count),
+    scrollUp: (count) => scroll(-count),
     first: () => page.moveTo(0),
     last: () => page.moveTo(rows.length - 1),
-    halfPageDown: () => halfPage(1),
-    halfPageUp: () => halfPage(-1),
+    halfPageDown: () => pageBy(1, 0.5),
+    halfPageUp: () => pageBy(-1, 0.5),
+    pageDown: () => pageBy(1, 0.9),
+    pageUp: () => pageBy(-1, 0.9),
     open: () => page.open(cursor),
     openOriginal: () => {
       if (row.url === null) {

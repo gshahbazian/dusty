@@ -43,7 +43,7 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
   /**
    * Run a write; on failure say so and change nothing on screen. `busy`
    * disables the row actions meanwhile; opening an article skips it, so
-   * reading quickly (`J` / `K`) never greys out the list.
+   * reading quickly (`j` / `k`) never greys out the list.
    */
   const attempt = async (
     work: () => Promise<void>,

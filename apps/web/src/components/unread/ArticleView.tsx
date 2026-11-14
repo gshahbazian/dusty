@@ -88,7 +88,7 @@ export function ArticleView({
 /**
  * The article's actions. On a phone they sit in a bar at the bottom of the
  * screen, within thumb reach (clear of the home indicator); wider, at the
- * top of the article. Previous and Next are the touch version of `K` / `J`.
+ * top of the article. Previous and Next are the touch version of `k` / `j`.
  */
 function ArticleActions({
   read,

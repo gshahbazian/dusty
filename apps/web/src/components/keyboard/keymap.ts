@@ -5,8 +5,10 @@
 export type Command =
   | 'down'
   | 'up'
-  | 'nextArticle'
-  | 'previousArticle'
+  | 'scrollDown'
+  | 'scrollUp'
+  | 'pageDown'
+  | 'pageUp'
   | 'first'
   | 'last'
   | 'halfPageDown'
@@ -41,29 +43,41 @@ export const BINDINGS: readonly Binding[] = [
     command: 'down',
     sequences: [['j']],
     list: 'Next row',
-    article: 'Scroll the article down',
+    article: 'Open the next article',
     counted: true,
   },
   {
     command: 'up',
     sequences: [['k']],
     list: 'Previous row',
+    article: 'Open the previous article',
+    counted: true,
+  },
+  {
+    command: 'scrollDown',
+    sequences: [['ArrowDown']],
+    list: 'Next row',
+    article: 'Scroll the article down',
+    counted: true,
+  },
+  {
+    command: 'scrollUp',
+    sequences: [['ArrowUp']],
+    list: 'Previous row',
     article: 'Scroll the article up',
     counted: true,
   },
   {
-    command: 'nextArticle',
-    sequences: [['J']],
-    list: 'Next row',
-    article: 'Open the next article',
-    counted: true,
+    command: 'pageDown',
+    sequences: [['Space']],
+    list: 'Half a page down',
+    article: 'Scroll the article a page down',
   },
   {
-    command: 'previousArticle',
-    sequences: [['K']],
-    list: 'Previous row',
-    article: 'Open the previous article',
-    counted: true,
+    command: 'pageUp',
+    sequences: [['Shift-Space']],
+    list: 'Half a page up',
+    article: 'Scroll the article a page up',
   },
   { command: 'first', sequences: [['g', 'g']], list: 'First row' },
   { command: 'last', sequences: [['G']], list: 'Last row' },
@@ -119,6 +133,12 @@ export const BINDINGS: readonly Binding[] = [
   { command: 'help', sequences: [['?']], list: 'Show these shortcuts' },
 ]
 
-/** How a sequence is written in the overlay: `gg`, `Ctrl-d`, `Esc`. */
+const LABELS = new Map([
+  ['Escape', 'Esc'],
+  ['ArrowDown', '↓'],
+  ['ArrowUp', '↑'],
+])
+
+/** How a sequence is written in the overlay: `gg`, `Ctrl-d`, `Esc`, `↓`. */
 export const sequenceLabel = (sequence: readonly string[]): string =>
-  sequence.map((token) => (token === 'Escape' ? 'Esc' : token)).join('')
+  sequence.map((token) => LABELS.get(token) ?? token).join('')

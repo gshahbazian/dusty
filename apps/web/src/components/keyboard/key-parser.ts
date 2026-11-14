@@ -100,6 +100,7 @@ export interface KeyLike {
   readonly ctrlKey: boolean
   readonly metaKey: boolean
   readonly altKey: boolean
+  readonly shiftKey?: boolean
   readonly isComposing?: boolean
 }
 
@@ -119,6 +120,10 @@ export const keyToken = (event: KeyLike): string | null => {
 
   if (event.ctrlKey) {
     return event.key === 'd' || event.key === 'u' ? `Ctrl-${event.key}` : null
+  }
+
+  if (event.key === ' ') {
+    return event.shiftKey === true ? 'Shift-Space' : 'Space'
   }
 
   return event.key

@@ -56,8 +56,9 @@ bound.
 
 | Keys | List | Article open |
 | --- | --- | --- |
-| `j` / `k` (count) | Next / previous row | Scroll the article down / up |
-| `J` / `K` (count) | Same as `j` / `k` | Next / previous article, opened in place |
+| `j` / `k` (count) | Next / previous row | Next / previous article, opened in place |
+| `↓` / `↑` (count) | Next / previous row | Scroll the article down / up |
+| `Space` / `Shift-Space` | Half a page down / up | Scroll the article a page down / up |
 | `gg` / `G` | First / last row | First / last row |
 | `Ctrl-d` / `Ctrl-u` | Half a page down / up | Scroll the article half a page |
 | `o`, `Enter` | Open the article | — |
@@ -71,10 +72,13 @@ bound.
 | `ga` / `gs` | Go to all unread / settings | Same |
 | `?` | Show the shortcuts | Same |
 
-- `J` / `K` are the spec's "moving to the next article does not need
-  closing first": with an article open, `j` / `k` scroll its text, and
-  `J` / `K` open the next or previous one.
-- Counts (`5j`) apply to `j`, `k`, `J` and `K`, capped at 999.
+- With an article open, `j` / `k` open the next or previous article in
+  its place (the spec's "moving to the next article does not need closing
+  first"); the arrow keys, Space / Shift-Space and `Ctrl-d` / `Ctrl-u`
+  scroll it. (Changed after deploying M5: first, `j` / `k` scrolled the
+  article and `J` / `K` moved on, which, with the article beside the list,
+  made `j` look broken after clicking a row.)
+- Counts (`5j`) apply to `j`, `k` and the arrow keys, capped at 999.
 - `A` calls the same `markAllAbove(cursorId)` the button does: the ids of
   the rows above on screen, plus the list's snapshot time. The guarantees
   come from the same code, not a copy of it.
@@ -150,10 +154,10 @@ bound.
   so `u` can't undo an earlier action while a later one is saving.
 - However an article closes (its button, `q`, the browser's Back),
   opening it again marks it read again.
-- With an article open that isn't in the list, `J` opens the top row and
-  `K` does nothing, rather than stepping from a row the owner never
+- With an article open that isn't in the list, `j` opens the top row and
+  `k` does nothing, rather than stepping from a row the owner never
   chose.
-- Caps Lock makes `j` act as `J`, as in vim. Left as is.
+- Caps Lock made `j` act as `J`, as in vim. (`J` / `K` are no longer bound.)
 
 ## Found by the cloud check
 

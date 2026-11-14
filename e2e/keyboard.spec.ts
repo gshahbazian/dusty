@@ -50,14 +50,15 @@ test('a triage pass by keyboard alone', async ({ page, request }) => {
   await keys(page, 'g', 'g')
   await expectCursorOn(page, 'Generated 6')
 
-  // Reading: open, next article without closing, back, close.
+  // Reading: open, then j / k go to the next and previous article without
+  // closing; q closes.
   await keys(page, 'o')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 6')
   await expect(page).toHaveURL(/\?article=\d+$/)
-  await keys(page, 'Shift+J')
+  await keys(page, 'j')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 5')
   await expectCursorOn(page, 'Generated 5')
-  await keys(page, 'Shift+K')
+  await keys(page, 'k')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 6')
   await keys(page, 'q')
   await expect(article(page)).toHaveCount(0)
@@ -195,6 +196,31 @@ test('a clicked row button lets go of the keyboard', async ({ page }) => {
   await expectCursorOn(page, 'Generated 3')
   await keys(page, 'Enter')
   await expect(article(page).getByRole('heading')).toHaveText('Generated 3')
+
+  await unsubscribe(page, feed)
+})
+
+test('after clicking a row, j and k go to the next and previous article', async ({
+  page,
+}) => {
+  const feed = feedFor('click-jk', 4)
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`/feeds/${feedId}`)
+
+  // The owner's report: click a row with the mouse, then j and k.
+  await articleRow(page, 'Generated 3').getByRole('button').first().click()
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 3')
+  await keys(page, 'j')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 2')
+  await expectCursorOn(page, 'Generated 2')
+  await keys(page, 'k', 'k')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 4')
+
+  // The arrow keys and Space scroll it instead: still the same article.
+  await keys(page, 'ArrowDown', 'Space', 'Shift+Space', 'ArrowUp')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 4')
 
   await unsubscribe(page, feed)
 })

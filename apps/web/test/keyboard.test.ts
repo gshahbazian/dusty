@@ -42,9 +42,9 @@ describe('key parser', () => {
       command: 'down',
       count: 5,
     })
-    expect(type(['1', '2', 'K'])).toEqual({
+    expect(type(['1', '2', 'k'])).toEqual({
       kind: 'command',
-      command: 'previousArticle',
+      command: 'up',
       count: 12,
     })
   })
@@ -148,8 +148,11 @@ describe('which keys are ours', () => {
     altKey: mods.alt ?? false,
   })
 
-  test('plain keys and Ctrl-d / Ctrl-u', () => {
+  test('plain keys, Space and Ctrl-d / Ctrl-u', () => {
     expect(keyToken(key('j'))).toBe('j')
+    expect(keyToken(key(' '))).toBe('Space')
+    expect(keyToken({ ...key(' '), shiftKey: true })).toBe('Shift-Space')
+    expect(keyToken(key('ArrowDown'))).toBe('ArrowDown')
     expect(keyToken(key('G'))).toBe('G')
     expect(keyToken(key('d', { ctrl: true }))).toBe('Ctrl-d')
   })

@@ -229,7 +229,7 @@ Every triage action can be done from the keyboard with vim-style keys, so a full
 
 - A visible cursor marks the current row, and the view scrolls to keep it on screen.
 - `A` acts on the row the cursor is on, with the same guarantees as Mark all above as read.
-- Inside an open article, `j` / `k` scroll the text, and moving to the next article does not need closing first.
+- With an article open, `j` / `k` open the next or previous article in its place, so moving on never needs closing first; the arrow keys, Space and `Ctrl-d` / `Ctrl-u` scroll the text.
 - Shortcuts are off while typing in a field, so adding a feed URL never fires an action.
 - Multi-key sequences (`gg`, `ga`, counts) time out cleanly if not finished.
 - The `?` overlay is the source of truth for what is bound.

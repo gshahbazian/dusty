@@ -27,7 +27,7 @@ point is that every feature works by touch, one-handed.
 
 - With an article open on a phone, its actions sit in a bar at the bottom
   of the screen: Back, Mark unread, Previous and Next. Previous and Next
-  are the touch version of `K` / `J`, so reading through a list needs no
+  are the touch version of `k` / `j`, so reading through a list needs no
   trip back to it. On wider screens the same bar sits at the top of the
   article.
 - On a touch screen (`pointer: coarse`), buttons in rows and bars are at
