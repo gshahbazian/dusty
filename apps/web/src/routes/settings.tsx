@@ -115,7 +115,9 @@ function Settings() {
               )}
             </h2>
             <div className="flex flex-wrap items-center gap-4">
-              <Label>
+              {/* Tall enough for a thumb on a touch screen: the box itself
+                  is small, and the label is what gets tapped. */}
+              <Label className="pointer-coarse:min-h-11">
                 <Checkbox
                   checked={attention}
                   onCheckedChange={(checked) =>

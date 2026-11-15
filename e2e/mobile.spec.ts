@@ -200,6 +200,32 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
   await unsubscribe(page, feed)
 })
 
+test('settings controls are at least 44 px tall', async ({ page }) => {
+  await page.goto('/settings')
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+
+  // The checkbox is small; its label is what a thumb hits.
+  const attention = page.locator('label', {
+    has: page.getByRole('checkbox', { name: 'Only feeds that need attention' }),
+  })
+
+  const small: string[] = []
+
+  for (const target of await page
+    .locator('button, select')
+    .or(attention)
+    .filter({ visible: true })
+    .all()) {
+    const box = await target.boundingBox()
+
+    if (box !== null && box.height < 44) {
+      small.push(`${(await target.textContent())?.trim()}: ${box.height}`)
+    }
+  }
+
+  expect(small).toEqual([])
+})
+
 test('a wide article never scrolls the page sideways', async ({ page }) => {
   const url = `${FEEDS}/wide.xml?run=${Date.now().toString(36)}`
 
