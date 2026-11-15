@@ -26,12 +26,19 @@ point is that every feature works by touch, one-handed.
 ## Thumb reach and tap targets
 
 - With an article open on a phone, its actions sit in a bar at the bottom
-  of the screen: Back, Mark unread, Previous and Next. Previous and Next
-  are the touch version of `k` / `j`, so reading through a list needs no
-  trip back to it. On wider screens the same bar sits at the top of the
-  article.
+  of the screen: four icon buttons spread evenly across it, Back (←),
+  Previous (↑, the article above in the list), Next (↓) and a read toggle
+  (Mark unread, or Mark read once it's unread again), each a 44 px square
+  with a screen-reader name. Previous and Next are the touch version of
+  `k` / `j`, so reading through a list needs no trip back to it. On wider
+  screens there is no bar: the list stays beside the article and the keys
+  do all of it.
 - On a touch screen (`pointer: coarse`), buttons in rows and bars are at
   least 44 px tall. Mouse screens keep the compact size.
+- Later changes: the list header's controls (feed picker, Unread / All,
+  Refresh) are 36 px tall on a phone, and the picker's text 14 px. The
+  viewport has `maximum-scale=1`, so an iPhone doesn't zoom in when a field
+  with text under 16 px is tapped (iOS still allows pinch-zoom).
 - The toast sits above the bottom bar, not on it.
 - Bars respect the safe areas (the iPhone's home indicator and notch) when
   the app runs full screen.

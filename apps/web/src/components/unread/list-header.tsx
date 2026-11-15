@@ -51,7 +51,10 @@ export function ListHeader({
   onPickFeed: (feedId: number | null) => void
 }) {
   return (
-    <div className="flex flex-col gap-2 border-b p-3">
+    // On a phone these controls are 36 px tall, a little under the 44 px
+    // the rest of the app uses: full 44 px here made the header chunky.
+    // (`data-list-header`: the phone tap-target test allows this.)
+    <div data-list-header className="flex flex-col gap-2 border-b p-3">
       <NativeSelect
         aria-label="Feed"
         value={feedId ?? ''}
@@ -62,7 +65,9 @@ export function ListHeader({
             event.target.value === '' ? null : Number(event.target.value)
           )
         }}
-        className="w-full"
+        // 36 px tall with 14 px text on a phone (the viewport's
+        // maximum-scale keeps an iPhone from zooming when it's tapped).
+        className="w-full pointer-coarse:[&_select]:h-9 pointer-coarse:[&_select]:text-sm"
       >
         <NativeSelectOption value="">
           {withCount('All unread', counts.total)}
@@ -94,10 +99,16 @@ export function ListHeader({
             }}
           >
             {/* At least the same width each, so the two halves look even. */}
-            <ToggleGroupItem value="unread" className="min-w-16">
+            <ToggleGroupItem
+              value="unread"
+              className="min-w-16 pointer-coarse:min-h-9"
+            >
               Unread
             </ToggleGroupItem>
-            <ToggleGroupItem value="all" className="min-w-16">
+            <ToggleGroupItem
+              value="all"
+              className="min-w-16 pointer-coarse:min-h-9"
+            >
               All
             </ToggleGroupItem>
           </ToggleGroup>
@@ -125,6 +136,8 @@ export function ListHeader({
           title="Refresh (r)"
           onClick={onRefresh}
           disabled={refreshing}
+          // Square on a touch screen too, matching the toggle's height.
+          className="pointer-coarse:min-h-9 pointer-coarse:min-w-9"
         >
           {/* Spins while a refresh (or a reload) is under way. */}
           <RefreshCwIcon

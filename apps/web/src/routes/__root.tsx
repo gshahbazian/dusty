@@ -20,7 +20,11 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       {
         name: 'viewport',
-        content: 'width=device-width, initial-scale=1, viewport-fit=cover',
+        // maximum-scale=1: an iPhone doesn't zoom the page in when a form
+        // field with text under 16 px is tapped (pinch-zoom still works
+        // there; iOS ignores this for that). The owner reads on an iPhone.
+        content:
+          'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
       },
       { name: 'color-scheme', content: 'light dark' },
       { title: 'Dusty' },

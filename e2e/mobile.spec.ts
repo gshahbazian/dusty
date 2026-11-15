@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 import {
   articleList,
@@ -39,7 +39,7 @@ test('reading by touch: open, next, previous, mark unread, back', async ({
   ).toBeHidden()
 
   // Its actions sit at the bottom of the screen, within thumb reach.
-  const back = page.getByRole('button', { name: '← Back to the list' })
+  const back = page.getByRole('button', { name: 'Back to the list' })
   const box = await back.boundingBox()
 
   expect(box?.y ?? 0).toBeGreaterThan(844 - 80)
@@ -55,8 +55,10 @@ test('reading by touch: open, next, previous, mark unread, back', async ({
   ).toBeDisabled()
 
   // Mark unread, then back to the list: three opened, one unread again.
+  // The read toggle stays in its place: it turns into Mark read.
   await page.getByRole('button', { name: 'Mark unread' }).tap()
   await expect(page.getByRole('button', { name: 'Mark unread' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Mark read' })).toBeVisible()
   await back.tap()
   await expect(article(page)).toHaveCount(0)
   await expect(heading(page)).toContainText('2 unread')
@@ -85,7 +87,7 @@ test('back from an article, its row has the cursor at the top of the list', asyn
   // Read on to the next one, then back to the list.
   await page.getByRole('button', { name: 'Next article' }).tap()
   await expect(article(page).getByRole('heading')).toHaveText('Generated 11')
-  await page.getByRole('button', { name: '← Back to the list' }).tap()
+  await page.getByRole('button', { name: 'Back to the list' }).tap()
   await expect(article(page)).toHaveCount(0)
 
   // The article just read has the cursor, and starts the list.
@@ -172,21 +174,34 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
 
   /**
    * Visible buttons, selects and the top bar's links shorter than 44 px.
+   * The list header's controls (feed picker, Unread / All, Refresh) are
+   * allowed 36 px: at 44 the header looked chunky.
    */
   const tooSmall = async () => {
     const small: string[] = []
 
-    for (const target of await page
-      .locator('button, select')
-      .or(page.getByRole('banner').getByRole('link'))
-      .filter({ visible: true })
-      .all()) {
-      const box = await target.boundingBox()
+    const check = async (targets: Locator, minimum: number) => {
+      for (const target of await targets.filter({ visible: true }).all()) {
+        const box = await target.boundingBox()
 
-      if (box !== null && box.height < 44) {
-        small.push(`${(await target.textContent())?.trim()}: ${box.height}`)
+        if (box !== null && box.height < minimum) {
+          small.push(`${(await target.textContent())?.trim()}: ${box.height}`)
+        }
       }
     }
+
+    await check(
+      page
+        .locator(
+          'button:not([data-list-header] *), select:not([data-list-header] *)'
+        )
+        .or(page.getByRole('banner').getByRole('link')),
+      44
+    )
+    await check(
+      page.locator('[data-list-header] button, [data-list-header] select'),
+      36
+    )
 
     return small
   }

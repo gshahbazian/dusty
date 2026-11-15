@@ -250,6 +250,7 @@ function UnreadSnapshot({
             onBack={() => onOpenArticle(null)}
             onPrevious={neighbors.previous}
             onNext={neighbors.next}
+            onMarkRead={() => list.markOneRead(articleId)}
             onMarkUnread={() => list.markOneUnread(articleId)}
           />
         )}
