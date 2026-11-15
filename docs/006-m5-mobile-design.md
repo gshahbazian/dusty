@@ -69,7 +69,10 @@ point is that every feature works by touch, one-handed.
   dropped that (after M5) as noise, so a phone shows only the relative
   time.
 - The icon is the logo, a pixel-art dustpan (`apps/web/public/logo.svg`,
-  also the favicon). The PNGs are drawn from its 16×16 grid at whole
+  also the favicon). The SVG has no background: green in light mode, white
+  in dark (a `prefers-color-scheme` rule inside it). The app icons are PNGs
+  only, green on a white tile; the manifest no longer lists the SVG, so an
+  installed app never shows a bare outline. The PNGs are drawn from its 16×16 grid at whole
   pixels per grid cell (12 px for 192, 32 px for 512, 11 px centred on the
   180 px Apple icon), so they stay sharp. The maskable icon has a white
   margin so the dustpan sits inside the safe circle.
