@@ -8,7 +8,7 @@ import { ToggleGroup, ToggleGroupItem } from '#/components/ui/toggle-group'
 import { NativeSelect, NativeSelectOption } from '#/components/ui/native-select'
 
 import { RelativeTime } from '#/components/relative-time'
-import type { Counts } from '#/components/unread/list-state'
+import { withCount, type Counts } from '#/components/unread/list-state'
 import type { ListShowControl } from '#/components/unread/unread-page'
 
 /**
@@ -65,11 +65,11 @@ export function ListHeader({
         className="w-full"
       >
         <NativeSelectOption value="">
-          All unread ({counts.total})
+          {withCount('All unread', counts.total)}
         </NativeSelectOption>
         {feeds.map((feed) => (
           <NativeSelectOption key={feed.feedId} value={feed.feedId}>
-            {feed.title} ({feed.unread})
+            {withCount(feed.title, feed.unread)}
           </NativeSelectOption>
         ))}
       </NativeSelect>

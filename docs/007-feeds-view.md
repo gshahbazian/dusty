@@ -8,8 +8,8 @@ see a feed's read articles too. This records what changed.
 - The top bar's first item is **Feeds** (it was "Unread"). `/` is still
   every unread article, oldest first: the daily triage pass.
 - The feed picker lists **All unread** and then **every** feed, with its
-  unread count, including feeds with nothing unread (`Name (0)`), so a
-  caught-up feed's history is one pick away.
+  unread count, including feeds with nothing unread (listed by name
+  alone, no "(0)"), so a caught-up feed's history is one pick away.
 - On a feed's page, an **Unread / All** toggle sits under the picker.
   Unread is the default; All lists every stored article of that feed,
   newest first, read ones dimmed and offering Mark unread. All unread has

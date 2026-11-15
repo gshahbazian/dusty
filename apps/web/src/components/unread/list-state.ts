@@ -92,6 +92,16 @@ export const adjustedCounts = (
   }
 }
 
+/**
+ * A feed picker label: "Title (n)" with its unread count, or just the title
+ * when nothing is unread (a "(0)" on every caught-up feed is noise).
+ */
+export const withCount = (label: string, count: number): string => {
+  if (count === 0) return label
+
+  return `${label} (${count})`
+}
+
 /** "1 article" / "3 articles". */
 export const articles = (count: number): string =>
   count === 1 ? '1 article' : `${count} articles`

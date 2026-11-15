@@ -264,9 +264,11 @@ test('the feed picker lists every feed, caught up or not', async ({ page }) => {
   await expect(heading(page)).toContainText('0 unread')
   await page.goto('/')
 
+  // Listed by name alone: no "(0)" on a caught-up feed.
   await expect(
     page.getByRole('combobox', { name: 'Feed' }).getByRole('option', {
-      name: `Generated ${feed.id} (0)`,
+      name: `Generated ${feed.id}`,
+      exact: true,
     })
   ).toHaveCount(1)
 

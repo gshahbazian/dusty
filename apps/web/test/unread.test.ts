@@ -9,6 +9,7 @@ import {
   feedsByName,
   isRead,
   readWhenLoaded,
+  withCount,
   withRead,
 } from '#/components/unread/list-state'
 import { parseArticleSearch, parseFeedSearch } from '#/lib/article-search'
@@ -157,6 +158,12 @@ describe('Content Security Policy', () => {
 })
 
 describe('the feed picker', () => {
+  test('shows a count only when something is unread', () => {
+    expect(withCount('All unread', 12)).toBe('All unread (12)')
+    expect(withCount('Daring Fireball', 1)).toBe('Daring Fireball (1)')
+    expect(withCount('Daring Fireball', 0)).toBe('Daring Fireball')
+  })
+
   test('lists feeds by name, numbers by value, ignoring case', () => {
     const feed = (feedId: number, title: string): FeedCount => ({
       feedId,
