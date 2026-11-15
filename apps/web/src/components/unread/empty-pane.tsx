@@ -20,7 +20,8 @@ export function EmptyPane() {
       {/* The photo's own colour holds its place while it loads. */}
       <div
         // Rounded like the images in an article (Typeset uses --radius).
-        className="w-full max-w-[29rem] overflow-hidden rounded-lg"
+        // Gone (colour and all) if the photo can't load.
+        className="w-full max-w-[29rem] overflow-hidden rounded-lg has-[img[data-failed]]:hidden"
         style={{ backgroundColor: backdrop.color ?? undefined }}
       >
         <img
@@ -31,6 +32,9 @@ export function EmptyPane() {
           // Fades in once loaded; marked on the element itself, so no state.
           onLoad={(event) => {
             event.currentTarget.dataset.loaded = 'true'
+          }}
+          onError={(event) => {
+            event.currentTarget.dataset.failed = 'true'
           }}
           className="aspect-[3/2] w-full rounded-lg object-cover opacity-0 transition-opacity duration-500 data-loaded:opacity-100"
         />

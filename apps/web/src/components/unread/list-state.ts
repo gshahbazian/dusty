@@ -1,5 +1,7 @@
 import type { ArticleRow, FeedCount } from '@dusty/db'
 
+import { compareNames } from '#/lib/names'
+
 /**
  * Read state the page has learned since the list was loaded, by article id
  * (true = read). Only server-confirmed changes go in here.
@@ -93,3 +95,7 @@ export const adjustedCounts = (
 /** "1 article" / "3 articles". */
 export const articles = (count: number): string =>
   count === 1 ? '1 article' : `${count} articles`
+
+/** Feeds as the picker lists them: by name, numbers by value. */
+export const feedsByName = (feeds: readonly FeedCount[]): FeedCount[] =>
+  feeds.toSorted((a, b) => compareNames(a.title, b.title))

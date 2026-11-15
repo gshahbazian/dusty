@@ -16,7 +16,7 @@ import {
   neighborFeed,
 } from '#/components/unread/cursor'
 import { ListHeader } from '#/components/unread/list-header'
-import { adjustedCounts } from '#/components/unread/list-state'
+import { adjustedCounts, feedsByName } from '#/components/unread/list-state'
 import { EmptyPane } from '#/components/unread/empty-pane'
 import { MobileArticleBar } from '#/components/unread/mobile-article-bar'
 import { NoticeBar } from '#/components/unread/notice-bar'
@@ -115,7 +115,7 @@ function UnreadSnapshot({
 
   // Every feed, caught up or not: a feed's page can show its read
   // articles too.
-  const feeds = counts.byFeed
+  const feeds = feedsByName(counts.byFeed)
 
   const cursor = cursorIndex(rows, cursorId)
   const articleOpen = articleId !== null

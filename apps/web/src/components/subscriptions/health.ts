@@ -1,6 +1,7 @@
 import type { Subscription } from '@dusty/db'
 
 import { duration } from '#/lib/time'
+import { compareNames } from '#/lib/names'
 
 export type SortOrder = 'attention' | 'name' | 'unread'
 
@@ -60,7 +61,7 @@ export function failureNote(
 const ATTENTION_ORDER = { failing: 0, stale: 1, healthy: 2 } as const
 
 const byName = (a: Subscription, b: Subscription) =>
-  a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+  compareNames(a.title, b.title)
 
 /** Sort for display. `attention` puts failing, then stale, feeds first. */
 export function sortSubscriptions(

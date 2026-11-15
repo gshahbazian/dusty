@@ -6,6 +6,7 @@ import {
   adjustedCounts,
   articles,
   idsAbove,
+  feedsByName,
   isRead,
   readWhenLoaded,
   withRead,
@@ -152,5 +153,29 @@ describe('Content Security Policy', () => {
   test('nonces are fresh each time', () => {
     expect(createNonce()).not.toBe(createNonce())
     expect(createNonce()).toMatch(/^[A-Za-z0-9+/]{22}==$/)
+  })
+})
+
+describe('the feed picker', () => {
+  test('lists feeds by name, numbers by value, ignoring case', () => {
+    const feed = (feedId: number, title: string): FeedCount => ({
+      feedId,
+      title,
+      unread: 0,
+    })
+
+    const sorted = feedsByName([
+      feed(1, 'Gen 10'),
+      feed(2, 'gen 2'),
+      feed(3, 'Armin'),
+      feed(4, 'Gen 1'),
+    ])
+
+    expect(sorted.map((count) => count.title)).toEqual([
+      'Armin',
+      'Gen 1',
+      'gen 2',
+      'Gen 10',
+    ])
   })
 })

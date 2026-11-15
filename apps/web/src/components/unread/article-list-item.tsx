@@ -200,7 +200,9 @@ export function ArticleListItem({
         <ContextMenuItem onClick={onOpen}>
           <BookOpenIcon />
           Open
-          <ContextMenuShortcut>↵</ContextMenuShortcut>
+          <ContextMenuShortcut className="pointer-coarse:hidden">
+            ↵
+          </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem
           disabled={row.url === null}
@@ -210,19 +212,25 @@ export function ArticleListItem({
         >
           <ExternalLinkIcon />
           Open page in new tab
-          <ContextMenuShortcut>o</ContextMenuShortcut>
+          <ContextMenuShortcut className="pointer-coarse:hidden">
+            o
+          </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem disabled={busy} onClick={toggleRead}>
           {read ? <CircleDotIcon /> : <CheckIcon />}
           {read ? 'Mark unread' : 'Mark read'}
-          <ContextMenuShortcut>m</ContextMenuShortcut>
+          <ContextMenuShortcut className="pointer-coarse:hidden">
+            m
+          </ContextMenuShortcut>
         </ContextMenuItem>
         {/* Chosen from a menu, so no second "are you sure?" step. */}
         <ContextMenuItem disabled={busy || first} onClick={onMarkAllAbove}>
           <CheckCheckIcon />
           Mark all above as read
-          <ContextMenuShortcut>A</ContextMenuShortcut>
+          <ContextMenuShortcut className="pointer-coarse:hidden">
+            A
+          </ContextMenuShortcut>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
