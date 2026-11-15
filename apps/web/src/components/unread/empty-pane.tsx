@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { backdropQuery } from '#/lib/queries'
-import { FALLBACK_BACKDROP } from '#/server/backdrop'
+import { FALLBACK_BACKDROP } from '#/lib/backdrop'
 
 /**
  * The article pane with no article open: a calm landscape from Unsplash,

@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
@@ -8,6 +8,7 @@ import {
   markArticlesRead,
   undoMarkArticlesRead,
 } from '#/server/articles'
+import { articleQuery } from '#/lib/queries'
 import {
   articles,
   idsAbove,
@@ -34,15 +35,22 @@ interface MarkRead {
 }
 
 /**
- * The state of one loaded list (one snapshot): which rows the server has
- * confirmed read, the last undoable action, and a notice to show. The page
- * only ever shows what the server said it saved.
+ * The state of one loaded list (one snapshot): which articles the server
+ * has confirmed read, the last undoable action, and a notice to show. The
+ * page only ever shows what the server said it saved, and asks only this
+ * hook whether an article is read (`isRead`), the open one included.
  *
  * The writes are mutations; the row actions are disabled while any marking
  * one is in flight. Opening an article reads it without that, so reading
  * quickly (`j` / `k`) never greys out the list.
  */
-export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
+export function useUnreadList(
+  rows: readonly ArticleRow[],
+  snapshotAt: number,
+  /** The open article: it may not be one of these rows (opened by link). */
+  openId: number | null
+) {
+  const queryClient = useQueryClient()
   // Local screen state, confirmed by the server: there is no other home.
   const [overrides, setOverrides] = useState<ReadOverrides>(new Map())
   const [notice, setNotice] = useState<Notice | null>(null)
@@ -54,8 +62,28 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
   // The page is keyed by the snapshot, so `rows` never change under this.
   const loadedRead = readWhenLoaded(rows)
 
-  const apply = (ids: readonly number[], read: boolean) =>
+  // The open article, for its read state when it isn't one of these rows.
+  // The article view asks for the same query, so this costs no request.
+  useQuery({ ...articleQuery(openId ?? 0), enabled: openId !== null })
+
+  const listed = new Set(rows.map((row) => row.id))
+
+  /**
+   * A write confirmed: note it for this list, and in the cached article,
+   * whose `readAt` is kept for good (`staleTime: Infinity`) and would
+   * otherwise say the old state the next time it's shown.
+   */
+  const apply = (ids: readonly number[], read: boolean) => {
     setOverrides((current) => withRead(current, ids, read))
+
+    const readAt = read ? Date.now() : null
+
+    for (const id of ids) {
+      queryClient.setQueryData(articleQuery(id).queryKey, (article) =>
+        article ? { ...article, readAt } : article
+      )
+    }
+  }
 
   const failed = (what: string) =>
     setNotice({ kind: 'error', text: `${what} Nothing was changed.` })
@@ -116,7 +144,20 @@ export function useUnreadList(rows: readonly ArticleRow[], snapshotAt: number) {
     onError: () => failed("Couldn't undo."),
   })
 
-  const isReadNow = (id: number) => isRead(overrides, id, loadedRead)
+  /**
+   * Whether an article is read now: as written since this list loaded,
+   * else as the list loaded it, else (not one of its rows: opened by link)
+   * as its cached article says.
+   */
+  const isReadNow = (id: number): boolean => {
+    if (overrides.has(id) || listed.has(id)) {
+      return isRead(overrides, id, loadedRead)
+    }
+
+    const cached = queryClient.getQueryData(articleQuery(id).queryKey)
+
+    return (cached?.readAt ?? null) !== null
+  }
 
   return {
     overrides,

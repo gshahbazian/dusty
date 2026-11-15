@@ -22,6 +22,22 @@ import {
 
 import { RelativeTime } from '#/components/relative-time'
 import { articles } from '#/components/unread/list-state'
+import { openInNewTab } from '#/lib/open-in-new-tab'
+
+/**
+ * What a row can do, the same for every row: passed as one object, so a new
+ * row action is added in one place.
+ */
+export interface RowActions {
+  /** A write is in flight: the marking actions wait. */
+  readonly busy: boolean
+  readonly isRead: (id: number) => boolean
+  /** Open the article at this place in the list. */
+  readonly open: (index: number) => void
+  readonly markRead: (id: number) => void
+  readonly markUnread: (id: number) => void
+  readonly markAllAbove: (id: number) => void
+}
 
 /** How long "Mark N above?" waits for its second tap. */
 const CONFIRM_MS = 4000
@@ -38,41 +54,48 @@ const CONFIRM_MS = 4000
  */
 export function ArticleListItem({
   row,
-  read,
-  first,
-  open,
-  cursor,
-  position,
+  index,
   setSize,
   offset,
   measureRef,
+  open,
+  cursor,
   now,
   showFeed,
-  busy,
-  onOpen,
-  onMarkRead,
-  onMarkUnread,
-  onMarkAllAbove,
+  actions,
 }: {
   row: ArticleRow
-  read: boolean
-  first: boolean
-  open: boolean
-  cursor: boolean
-  position: number
+  /** Its place in the list, from 0. */
+  index: number
   setSize: number
   offset: number
   measureRef: (element: HTMLLIElement | null) => void
+  open: boolean
+  cursor: boolean
   now: number
   showFeed: boolean
-  busy: boolean
-  onOpen: () => void
-  onMarkRead: () => void
-  onMarkUnread: () => void
-  onMarkAllAbove: () => void
+  actions: RowActions
 }) {
   const title = row.title ?? 'Untitled'
-  const above = position - 1
+  const position = index + 1
+  const above = index
+  const first = index === 0
+  const read = actions.isRead(row.id)
+  const { busy } = actions
+  const onOpen = () => actions.open(index)
+  const onMarkAllAbove = () => actions.markAllAbove(row.id)
+
+  const toggleRead = () => {
+    if (read) {
+      actions.markUnread(row.id)
+
+      return
+    }
+
+    actions.markRead(row.id)
+  }
+
+  // The "Mark N above?" step: this row's own UI, nothing else needs it.
   const [confirming, setConfirming] = useState(false)
 
   // An unanswered "Mark N above?" goes back after a few seconds.
@@ -89,7 +112,7 @@ export function ArticleListItem({
       {/* Right-click a row for its actions (the trigger is the row itself). */}
       <ContextMenuTrigger
         render={<li ref={measureRef} />}
-        data-index={position - 1}
+        data-index={index}
         data-article-id={row.id}
         data-cursor={cursor ? 'true' : undefined}
         aria-posinset={position}
@@ -139,38 +162,20 @@ export function ArticleListItem({
         so marking a row never changes its height and moves the rows below.
       */}
         <div className="mt-1 -ml-2 flex gap-1">
-          {!read && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
-              onClick={(event) => {
-                event.currentTarget.blur()
-                onMarkRead()
-              }}
-              disabled={busy}
-              aria-label={`Mark ${title} read`}
-              title="Mark read"
-            >
-              <CheckIcon />
-            </Button>
-          )}
-          {read && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
-              onClick={(event) => {
-                event.currentTarget.blur()
-                onMarkUnread()
-              }}
-              disabled={busy}
-              aria-label={`Mark ${title} unread`}
-              title="Mark unread"
-            >
-              <CircleDotIcon />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
+            onClick={(event) => {
+              event.currentTarget.blur()
+              toggleRead()
+            }}
+            disabled={busy}
+            aria-label={read ? `Mark ${title} unread` : `Mark ${title} read`}
+            title={read ? 'Mark unread' : 'Mark read'}
+          >
+            {read ? <CircleDotIcon /> : <CheckIcon />}
+          </Button>
           {!first && !confirming && (
             <Button
               variant="ghost"
@@ -210,9 +215,7 @@ export function ArticleListItem({
         <ContextMenuItem
           disabled={row.url === null}
           onClick={() => {
-            if (row.url === null) return
-
-            window.open(row.url, '_blank', 'noopener,noreferrer')
+            if (row.url !== null) openInNewTab(row.url)
           }}
         >
           <ExternalLinkIcon />
@@ -220,20 +223,11 @@ export function ArticleListItem({
           <ContextMenuShortcut>o</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSeparator />
-        {!read && (
-          <ContextMenuItem disabled={busy} onClick={onMarkRead}>
-            <CheckIcon />
-            Mark read
-            <ContextMenuShortcut>m</ContextMenuShortcut>
-          </ContextMenuItem>
-        )}
-        {read && (
-          <ContextMenuItem disabled={busy} onClick={onMarkUnread}>
-            <CircleDotIcon />
-            Mark unread
-            <ContextMenuShortcut>m</ContextMenuShortcut>
-          </ContextMenuItem>
-        )}
+        <ContextMenuItem disabled={busy} onClick={toggleRead}>
+          {read ? <CircleDotIcon /> : <CheckIcon />}
+          {read ? 'Mark unread' : 'Mark read'}
+          <ContextMenuShortcut>m</ContextMenuShortcut>
+        </ContextMenuItem>
         {/* Chosen from a menu, so no second "are you sure?" step. */}
         <ContextMenuItem disabled={busy || first} onClick={onMarkAllAbove}>
           <CheckCheckIcon />

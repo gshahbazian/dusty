@@ -1,23 +1,18 @@
 import { cn } from 'cn'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useNavigate, useRouter } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount, ListShow } from '@dusty/db'
 
-import { articleQuery } from '#/lib/queries'
+import { openInNewTab } from '#/lib/open-in-new-tab'
 import { syncForRefresh } from '#/server/functions'
 import { useCommands } from '#/components/keyboard/keyboard-shortcuts'
-import type { Command } from '#/components/keyboard/keymap'
-import {
-  ArticleList,
-  type ArticleListHandle,
-} from '#/components/unread/article-list'
+import { ArticleList } from '#/components/unread/article-list'
 import { ArticleView } from '#/components/unread/article-view'
 import {
   cursorIndex,
   feedFromPath,
-  moveCursor,
   neighborFeed,
 } from '#/components/unread/cursor'
 import { ListHeader } from '#/components/unread/list-header'
@@ -25,6 +20,11 @@ import { adjustedCounts } from '#/components/unread/list-state'
 import { EmptyPane } from '#/components/unread/empty-pane'
 import { MobileArticleBar } from '#/components/unread/mobile-article-bar'
 import { NoticeBar } from '#/components/unread/notice-bar'
+import {
+  articleNeighbors,
+  commandsFor,
+} from '#/components/unread/unread-commands'
+import { useListNavigation } from '#/components/unread/use-list-navigation'
 import { useUnreadList } from '#/components/unread/use-unread-list'
 
 /** Whether a feed's page lists its unread or all articles, and switching. */
@@ -83,9 +83,6 @@ export function UnreadPage({
   )
 }
 
-/** How far the arrow keys scroll an open article, per press. */
-const ARTICLE_STEP_PX = 64
-
 function UnreadSnapshot({
   data,
   feedId,
@@ -106,28 +103,8 @@ function UnreadSnapshot({
   onOpenArticle: (id: number | null) => void
 }) {
   const { rows } = data
-  const list = useUnreadList(rows, data.snapshotAt)
-  const queryClient = useQueryClient()
-
-  // The open article's read state: as this list knows it, or (opened from
-  // a link, not one of these rows) as the server sent it with the article.
-  // The article view asks for the same query, so this costs no request.
-  const openArticle = useQuery({
-    ...articleQuery(articleId ?? 0),
-    enabled: articleId !== null,
-  })
-
-  const isOpenRead = (id: number): boolean => {
-    const known = list.overrides.get(id)
-
-    if (known !== undefined) return known
-
-    if (rows.some((row) => row.id === id)) return list.isRead(id)
-
-    return (openArticle.data?.readAt ?? null) !== null
-  }
-
-  const openRead = articleId !== null && isOpenRead(articleId)
+  const list = useUnreadList(rows, data.snapshotAt, articleId)
+  const openRead = articleId !== null && list.isRead(articleId)
 
   const counts = adjustedCounts(data.counts, rows, list.overrides)
   const [now] = useState(() => Date.now())
@@ -136,9 +113,6 @@ function UnreadSnapshot({
   const router = useRouter()
   const articleScroll = useRef<HTMLElement>(null)
 
-  const listRef = useRef<ArticleListHandle>(null)
-  const reveal = (index: number) => listRef.current?.reveal(index)
-
   // Every feed, caught up or not: a feed's page can show its read
   // articles too.
   const feeds = counts.byFeed
@@ -146,53 +120,15 @@ function UnreadSnapshot({
   const cursor = cursorIndex(rows, cursorId)
   const articleOpen = articleId !== null
 
-  const neighbors = articleNeighbors(rows, cursor, articleId, (index) =>
-    open(index)
-  )
+  const { listRef, announcement, moveTo, open } = useListNavigation({
+    rows,
+    cursor,
+    onCursor,
+    onOpenArticle,
+    markOpenedRead: list.markOpenedRead,
+  })
 
-  // After a refresh (or opening a link to an article), bring the cursor's
-  // row into view once.
-  useEffect(() => {
-    if (cursor > 0) reveal(cursor)
-    // Only when the snapshot first shows.
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Said by screen readers when the cursor moves by key.
-  const [announcement, setAnnouncement] = useState('')
-
-  /** Move the cursor, scrolling just enough to keep its row in view. */
-  const moveTo = (index: number) => {
-    const row = rows[index]
-
-    if (row === undefined) return
-
-    onCursor(row.id)
-    reveal(index)
-    setAnnouncement(
-      `${index + 1} of ${rows.length}: ${row.title ?? 'Untitled'}`
-    )
-  }
-
-  const open = (index: number) => {
-    const row = rows[index]
-
-    if (row === undefined) return
-
-    onCursor(row.id)
-    reveal(index)
-    onOpenArticle(row.id)
-    // Opening an article reads it.
-    list.markOpenedRead(row.id)
-
-    // The articles either side, fetched ahead of `j` / `k` (or Next /
-    // Previous on a phone), so moving to them shows them at once.
-    for (const near of [rows[index - 1], rows[index + 1]]) {
-      if (near !== undefined) {
-        void queryClient.prefetchQuery(articleQuery(near.id))
-      }
-    }
-  }
+  const neighbors = articleNeighbors(rows, cursor, articleId, open)
 
   const goToFeed = (id: number | null) => {
     if (id === null) {
@@ -210,7 +146,6 @@ function UnreadSnapshot({
       rows,
       cursor,
       openId: articleId,
-      openRead,
       list,
       moveTo,
       open,
@@ -228,6 +163,7 @@ function UnreadSnapshot({
       scrollArticle: (pixels) =>
         articleScroll.current?.scrollBy({ top: pixels }),
       articleHeight: () => articleScroll.current?.clientHeight ?? 0,
+      openUrl: openInNewTab,
       halfPage: (direction) => {
         const target = listRef.current?.halfPage(cursor, direction)
 
@@ -281,12 +217,14 @@ function UnreadSnapshot({
           openId={articleId}
           now={now}
           showFeed={feedId === null}
-          busy={list.busy}
-          isRead={list.isRead}
-          onOpen={open}
-          onMarkRead={(id) => list.markOneRead(id)}
-          onMarkUnread={(id) => list.markOneUnread(id)}
-          onMarkAllAbove={(id) => list.markAllAbove(id)}
+          actions={{
+            busy: list.busy,
+            isRead: list.isRead,
+            open,
+            markRead: list.markOneRead,
+            markUnread: list.markOneUnread,
+            markAllAbove: list.markAllAbove,
+          }}
         />
       </aside>
 
@@ -323,175 +261,6 @@ function UnreadSnapshot({
       />
     </div>
   )
-}
-
-/**
- * Previous and Next for an open article, as `k` / `j` do: the rows either
- * side of it, or, if it isn't in the list (opened from a link), the top row
- * as next and nothing as previous.
- */
-interface Neighbors {
-  readonly previous: (() => void) | null
-  readonly next: (() => void) | null
-}
-
-function articleNeighbors(
-  rows: readonly ArticleRow[],
-  cursor: number,
-  openId: number | null,
-  open: (index: number) => void
-): Neighbors {
-  if (openId === null || rows.length === 0) {
-    return { previous: null, next: null }
-  }
-
-  if (rows[cursor]?.id !== openId) {
-    return { previous: null, next: () => open(0) }
-  }
-
-  return {
-    previous: cursor > 0 ? () => open(cursor - 1) : null,
-    next: cursor < rows.length - 1 ? () => open(cursor + 1) : null,
-  }
-}
-
-type UnreadList = ReturnType<typeof useUnreadList>
-
-type Commands = Partial<Record<Command, (count: number) => void>>
-
-/** What each command does on this list, given where the cursor is. */
-function commandsFor(page: {
-  rows: readonly ArticleRow[]
-  cursor: number
-  /** The open article, if any: `m` acts on it (it may not be in the list). */
-  openId: number | null
-  /** Whether the open article is read. */
-  openRead: boolean
-  list: UnreadList
-  moveTo: (index: number) => void
-  open: (index: number) => void
-  refresh: () => void
-  close: () => void
-  goToFeed: (direction: 1 | -1) => void
-  scrollArticle: (pixels: number) => void
-  articleHeight: () => number
-  halfPage: (direction: 1 | -1) => void
-}): Commands {
-  const { rows, cursor, list } = page
-  const articleOpen = page.openId !== null
-  const row = rows[cursor]
-
-  const always: Commands = {
-    refresh: page.refresh,
-    undo: list.undoLast,
-    nextFeed: () => page.goToFeed(1),
-    previousFeed: () => page.goToFeed(-1),
-    ...(articleOpen && { close: page.close }),
-  }
-
-  if (row === undefined) return always
-
-  /** Arrow keys: scroll an open article, else move the cursor. */
-  const scroll = (delta: number) => {
-    if (articleOpen) {
-      page.scrollArticle(ARTICLE_STEP_PX * delta)
-
-      return
-    }
-
-    page.moveTo(moveCursor(cursor, delta, rows.length))
-  }
-
-  /**
-   * `j` / `k`: move the cursor; with an article open, open the next (or
-   * previous) one in its place. If the open article isn't in the list
-   * (opened from a link), `j` starts at the top and `k` has nowhere to go.
-   */
-  const step = (delta: number) => {
-    if (articleOpen && row.id !== page.openId) {
-      if (delta > 0) page.open(0)
-
-      return
-    }
-
-    const index = moveCursor(cursor, delta, rows.length)
-
-    if (articleOpen) {
-      page.open(index)
-
-      return
-    }
-
-    page.moveTo(index)
-  }
-
-  /**
-   * Marking waits for the last write to finish, as the row buttons do, so
-   * `u` can't undo an earlier action while a later one is still saving.
-   */
-  const whenIdle = (write: () => void) => () => {
-    if (!list.busy) write()
-  }
-
-  /**
-   * `Ctrl-d` / `Ctrl-u` (half a page) and Space / Shift-Space (most of a
-   * page) scroll an open article; on the list, both move half a page.
-   */
-  const pageBy = (direction: 1 | -1, share: number) => {
-    if (articleOpen) {
-      page.scrollArticle(page.articleHeight() * share * direction)
-
-      return
-    }
-
-    page.halfPage(direction)
-  }
-
-  return {
-    ...always,
-    down: (count) => step(count),
-    up: (count) => step(-count),
-    scrollDown: (count) => scroll(count),
-    scrollUp: (count) => scroll(-count),
-    first: () => page.moveTo(0),
-    last: () => page.moveTo(rows.length - 1),
-    halfPageDown: () => pageBy(1, 0.5),
-    halfPageUp: () => pageBy(-1, 0.5),
-    pageDown: () => pageBy(1, 0.9),
-    pageUp: () => pageBy(-1, 0.9),
-    open: () => page.open(cursor),
-    openOriginal: () => {
-      if (row.url === null) {
-        list.say('This article has no original page.')
-
-        return
-      }
-
-      window.open(row.url, '_blank', 'noopener,noreferrer')
-    },
-    undo: whenIdle(list.undoLast),
-    toggleRead: whenIdle(() => {
-      const id = page.openId ?? row.id
-      const read = page.openId === null ? list.isRead(id) : page.openRead
-
-      if (read) {
-        list.markOneUnread(id)
-
-        return
-      }
-
-      list.markOneRead(id)
-    }),
-    markAllAbove: whenIdle(() => {
-      if (cursor === 0) {
-        list.say('Nothing above this row.')
-
-        return
-      }
-
-      list.markAllAbove(row.id)
-    }),
-  }
 }
 
 /**

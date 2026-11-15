@@ -348,3 +348,52 @@ test('a new list starts at its top; opening an article keeps the list where it i
 
   await unsubscribe(page, feed)
 })
+
+test('an article opened from a link keeps its read state across a refresh', async ({
+  page,
+}) => {
+  const here = feedFor('read-here', 3)
+  const there = feedFor('read-there', 3)
+  const hereId = await subscribe(page, here)
+  const thereId = await subscribe(page, there)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+
+  // An article from another feed, opened by link on this feed's page: not
+  // one of this list's rows, and not marked read by opening it.
+  await page.goto(`/feeds/${thereId}`)
+
+  const articleId = await articleRow(page, 'Generated 2').getAttribute(
+    'data-article-id'
+  )
+
+  await page.goto(`/feeds/${hereId}?article=${articleId}`)
+  await expect(
+    page.getByRole('article', { name: 'Article' }).getByRole('heading')
+  ).toHaveText('Generated 2')
+
+  // `m` reads it; after a refresh `m` must know that, and unread it.
+  await page.keyboard.press('m')
+  await expect(page.getByText('Marked read.')).toBeVisible()
+  // Refresh loads a new list (its notice goes with the old one).
+  await page.getByRole('button', { name: 'Refresh' }).click()
+  await expect(page.getByText('Marked read.')).toHaveCount(0)
+
+  const written = page.waitForResponse(
+    (response) =>
+      response.url().includes('/_serverFn/') &&
+      response.request().method() === 'POST'
+  )
+
+  await page.keyboard.press('m')
+  await written
+  await expect(page.getByText('Already read; nothing to change.')).toHaveCount(
+    0
+  )
+
+  await page.goto(`/feeds/${thereId}`)
+  await expect(heading(page)).toContainText('3 unread')
+
+  await unsubscribe(page, here)
+  await unsubscribe(page, there)
+})

@@ -3,7 +3,10 @@ import { useEffect, useImperativeHandle, useRef, type Ref } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
-import { ArticleListItem } from '#/components/unread/article-list-item'
+import {
+  ArticleListItem,
+  type RowActions,
+} from '#/components/unread/article-list-item'
 
 /** A row's height before it is measured. */
 const ESTIMATED_ROW_PX = 120
@@ -41,12 +44,7 @@ export function ArticleList({
   openId,
   now,
   showFeed,
-  busy,
-  isRead,
-  onOpen,
-  onMarkRead,
-  onMarkUnread,
-  onMarkAllAbove,
+  actions,
 }: {
   ref: Ref<ArticleListHandle>
   /** Which list (feed, unread or all): another one starts at its top. */
@@ -56,12 +54,7 @@ export function ArticleList({
   openId: number | null
   now: number
   showFeed: boolean
-  busy: boolean
-  isRead: (id: number) => boolean
-  onOpen: (index: number) => void
-  onMarkRead: (id: number) => void
-  onMarkUnread: (id: number) => void
-  onMarkAllAbove: (id: number) => void
+  actions: RowActions
 }) {
   const scroller = useRef<HTMLDivElement>(null)
 
@@ -189,21 +182,15 @@ export function ArticleList({
             <ArticleListItem
               key={row.id}
               row={row}
-              read={isRead(row.id)}
-              first={item.index === 0}
-              open={openId === row.id}
-              cursor={item.index === cursor}
-              position={item.index + 1}
+              index={item.index}
               setSize={rows.length}
               offset={item.start}
               measureRef={virtualizer.measureElement}
+              open={openId === row.id}
+              cursor={item.index === cursor}
               now={now}
               showFeed={showFeed}
-              busy={busy}
-              onOpen={() => onOpen(item.index)}
-              onMarkRead={() => onMarkRead(row.id)}
-              onMarkUnread={() => onMarkUnread(row.id)}
-              onMarkAllAbove={() => onMarkAllAbove(row.id)}
+              actions={actions}
             />
           )
         })}

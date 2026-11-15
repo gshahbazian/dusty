@@ -27,12 +27,14 @@ export const Route = createRootRoute({
       // Added to a phone's home screen, it opens full screen like an app.
       {
         name: 'theme-color',
+        // The light --background in styles.css, oklch(1 0 0).
         content: '#ffffff',
         media: '(prefers-color-scheme: light)',
       },
       {
         name: 'theme-color',
-        content: '#0a0a0a',
+        // The dark --background in styles.css, oklch(0.147 0.004 49.3).
+        content: '#0c0a09',
         media: '(prefers-color-scheme: dark)',
       },
       { name: 'mobile-web-app-capable', content: 'yes' },

@@ -65,6 +65,14 @@ Read the matching `SKILL.md` before doing these:
   `<select>`, so phones get their own picker). Colours come from the
   theme in `styles.css` (`text-muted-foreground`, `bg-primary`…), and dark
   mode follows the system setting through `prefers-color-scheme`.
+- The web app has two ways to load data, on purpose. Article lists come
+  from route loaders (`getArticleList`) as snapshots: rows never move or
+  refetch until Refresh, so the cursor and "mark all above" stay exact.
+  Everything else (an article's text, the empty pane's photo, every write)
+  goes through TanStack Query (`lib/queries.ts`, `useMutation`), with
+  refetch-on-focus off. Don't move lists into Query, or articles out of
+  it. Read state lives in `useUnreadList`: ask `list.isRead(id)`; its
+  writes also update the cached article's `readAt`.
 - Imports are never relative and never end in `.ts` / `.tsx`; lint
   enforces both. Within a package, `#/…` (its `src/`, from the package's
   `package.json` `imports`; the sync tests also have `#test/…`). Another
