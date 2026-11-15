@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import { getArticleToRead } from '#/server/articles'
+import { checkForNewArticles, getArticleToRead } from '#/server/articles'
 import { getBackdrop } from '#/server/backdrop'
 
 /**
@@ -20,6 +20,26 @@ export const backdropQuery = () =>
   queryOptions({
     queryKey: ['backdrop'],
     queryFn: () => getBackdrop(),
+    staleTime: 0,
+    gcTime: 0,
+  })
+
+/** How often an open list asks whether newer articles are stored. */
+const NEW_ARTICLES_POLL_MS = 30_000
+
+/**
+ * Whether a list's snapshot has fallen behind what is stored. Asked every
+ * so often while the tab is visible, and when it comes back into view, until
+ * the answer is yes; the list itself stays put until the reader reloads it.
+ */
+export const newArticlesQuery = (feedId: number | null, snapshotAt: number) =>
+  queryOptions({
+    queryKey: ['new-articles', feedId, snapshotAt],
+    queryFn: () => checkForNewArticles({ data: { feedId, snapshotAt } }),
+    refetchInterval: (query) =>
+      query.state.data?.ready === true ? false : NEW_ARTICLES_POLL_MS,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: (query) => query.state.data?.ready !== true,
     staleTime: 0,
     gcTime: 0,
   })

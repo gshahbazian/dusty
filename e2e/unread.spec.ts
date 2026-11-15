@@ -397,3 +397,43 @@ test('an article opened from a link keeps its read state across a refresh', asyn
   await unsubscribe(page, here)
   await unsubscribe(page, there)
 })
+
+test('a sync after the page loaded offers its new articles', async ({
+  page,
+  request,
+}) => {
+  test.slow()
+
+  const feed = feedFor('ready')
+  const feedId = await subscribe(page, feed)
+
+  await page.goto(`/feeds/${feedId}`)
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+  await expect(page.getByText(/^Updated /)).toBeVisible()
+
+  await landNewArticle(page, request, feed, feedId, 'Generated 4')
+
+  // The page asks again when it comes back into view (and every 30 s).
+  // (A string: the e2e tsconfig has no DOM types.)
+  await page.evaluate(
+    "document.dispatchEvent(new Event('visibilitychange', { bubbles: true }))"
+  )
+  const ready = page.getByRole('button', { name: 'New articles ready' })
+
+  await expect(ready).toBeVisible({ timeout: 10_000 })
+
+  // The list itself stays put until asked.
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+
+  await ready.click()
+  await expect(articleList(page).getByRole('listitem')).toHaveText([
+    /Generated 4/,
+    /Generated 3/,
+    /Generated 2/,
+    /Generated 1/,
+  ])
+  await expect(ready).toHaveCount(0)
+  await expect(page.getByText(/^Updated /)).toBeVisible()
+
+  await unsubscribe(page, feed)
+})

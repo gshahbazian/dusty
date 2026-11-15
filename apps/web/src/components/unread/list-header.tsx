@@ -1,4 +1,5 @@
 import { cn } from 'cn'
+import { RefreshCwIcon } from 'lucide-react'
 
 import type { FeedCount } from '@dusty/db'
 
@@ -13,7 +14,8 @@ import type { ListShowControl } from '#/components/unread/unread-page'
 /**
  * The top of the sidebar: the feed picker (which names the list and its
  * count), on a feed's page whether to show its unread or all articles,
- * when the list was loaded, and Refresh.
+ * when the list was loaded (or, once a sync has stored more, a link that
+ * loads them), and Refresh.
  */
 export function ListHeader({
   feedId,
@@ -26,6 +28,8 @@ export function ListHeader({
   truncated,
   refreshing,
   onRefresh,
+  newArticlesReady,
+  onShowNewArticles,
   onPickFeed,
 }: {
   feedId: number | null
@@ -41,6 +45,9 @@ export function ListHeader({
   truncated: boolean
   refreshing: boolean
   onRefresh: () => void
+  /** A sync stored articles this list doesn't have yet. */
+  newArticlesReady: boolean
+  onShowNewArticles: () => void
   onPickFeed: (feedId: number | null) => void
 }) {
   return (
@@ -95,19 +102,35 @@ export function ListHeader({
             </ToggleGroupItem>
           </ToggleGroup>
         )}
-        {!refreshing && (
+        {newArticlesReady && (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={onShowNewArticles}
+            disabled={refreshing}
+            className="ml-auto px-0"
+          >
+            New articles ready
+          </Button>
+        )}
+        {!newArticlesReady && (
           <span className="ml-auto">
             Updated <RelativeTime at={snapshotAt} now={now} />
           </span>
         )}
         <Button
           variant="outline"
-          size="sm"
+          size="icon-sm"
+          aria-label="Refresh"
+          title="Refresh (r)"
           onClick={onRefresh}
           disabled={refreshing}
-          className={cn(refreshing && 'ml-auto')}
         >
-          {refreshing ? 'Refreshing…' : 'Refresh'}
+          {/* Spins while a refresh (or a reload) is under way. */}
+          <RefreshCwIcon
+            aria-hidden
+            className={cn(refreshing && 'animate-spin')}
+          />
         </Button>
       </div>
       {truncated && (

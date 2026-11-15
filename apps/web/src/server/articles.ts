@@ -3,6 +3,7 @@ import * as Schema from 'effect/Schema'
 
 import {
   getArticle,
+  hasArticlesSince,
   LIST_LIMIT,
   listArticles,
   markRead,
@@ -51,6 +52,28 @@ export const getArticleList = createServerFn({ method: 'GET' })
     // Whether the list stopped at the limit: the page says so.
     return { rows, counts, snapshotAt, truncated: rows.length >= LIST_LIMIT }
   })
+
+/**
+ * Whether reloading a list would show articles it doesn't have: any first
+ * seen after its snapshot. The page asks every so often, so a sync that
+ * lands after it loaded (the one started on load, the cron) shows up.
+ */
+export const checkForNewArticles = createServerFn({ method: 'GET' })
+  .middleware([ownerOnly])
+  .validator(
+    Schema.decodeUnknownSync(
+      Schema.Struct({
+        feedId: Schema.NullOr(Schema.Int),
+        snapshotAt: Schema.Int,
+      })
+    )
+  )
+  .handler(async ({ context, data }) => ({
+    ready: await hasArticlesSince(dbFor(context.env), {
+      feedId: data.feedId,
+      after: data.snapshotAt,
+    }),
+  }))
 
 /** One article with its HTML, for reading. */
 export const getArticleToRead = createServerFn({ method: 'GET' })

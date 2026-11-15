@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import {
   createDb,
   getArticle,
+  hasArticlesSince,
   insertFeed,
   listArticles,
   markRead,
@@ -289,6 +290,32 @@ describe('lists', () => {
       readAt: null,
     })
     expect(await getArticle(db, 9999)).toBeNull()
+  })
+})
+
+describe('new articles since a snapshot', () => {
+  test('finds articles first seen after the snapshot, in the list asked about', async () => {
+    const a = await addFeed('https://a.example/feed')
+    const b = await addFeed('https://b.example/feed')
+
+    await sync(a, [['a1', T0]], T0)
+    const snapshotAt = T0 + MINUTE
+
+    expect(
+      await hasArticlesSince(db, { feedId: null, after: snapshotAt })
+    ).toBe(false)
+
+    await sync(b, [['b1', T0]], T0 + 2 * MINUTE)
+
+    expect(
+      await hasArticlesSince(db, { feedId: null, after: snapshotAt })
+    ).toBe(true)
+    expect(await hasArticlesSince(db, { feedId: b, after: snapshotAt })).toBe(
+      true
+    )
+    expect(await hasArticlesSince(db, { feedId: a, after: snapshotAt })).toBe(
+      false
+    )
   })
 })
 

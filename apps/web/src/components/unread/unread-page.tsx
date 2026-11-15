@@ -1,11 +1,12 @@
 import { cn } from 'cn'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 
 import type { ArticleRow, FeedCount, ListShow } from '@dusty/db'
 
 import { openInNewTab } from '#/lib/open-in-new-tab'
+import { newArticlesQuery } from '#/lib/queries'
 import { syncForRefresh } from '#/server/functions'
 import { useCommands } from '#/components/keyboard/keyboard-shortcuts'
 import { ArticleList } from '#/components/unread/article-list'
@@ -108,7 +109,8 @@ function UnreadSnapshot({
 
   const counts = adjustedCounts(data.counts, rows, list.overrides)
   const [now] = useState(() => Date.now())
-  const { refreshing, refresh } = useRefresh(list.fail)
+  const { refreshing, refresh, reload } = useRefresh(list.fail)
+  const newArticles = useQuery(newArticlesQuery(feedId, data.snapshotAt))
   const navigate = useNavigate()
   const router = useRouter()
   const articleScroll = useRef<HTMLElement>(null)
@@ -200,6 +202,8 @@ function UnreadSnapshot({
           truncated={data.truncated}
           refreshing={refreshing}
           onRefresh={() => refresh()}
+          newArticlesReady={newArticles.data?.ready === true}
+          onShowNewArticles={() => reload()}
           onPickFeed={goToFeed}
         />
 
@@ -267,7 +271,8 @@ function UnreadSnapshot({
  * Run the sync, wait for it, then reload the list and counts, so what it
  * fetched shows at once. A sync that ran a few minutes ago is skipped and
  * returns at once; a running one takes at most its on-demand budget. If the
- * sync can't be reached, say so and leave the list as it is.
+ * sync can't be reached, say so and leave the list as it is. `reload` skips
+ * the sync, for when the page already knows newer articles are stored.
  */
 function useRefresh(onFailed: (text: string) => void) {
   const router = useRouter()
@@ -281,10 +286,22 @@ function useRefresh(onFailed: (text: string) => void) {
       onFailed("Couldn't check the feeds. The list is unchanged; try again."),
   })
 
+  // New articles are already stored: just load the list again.
+  const reload = useMutation({
+    mutationFn: () => router.invalidate(),
+    onError: () =>
+      onFailed("Couldn't load the new articles. The list is unchanged."),
+  })
+
+  const busy = refresh.isPending || reload.isPending
+
   return {
-    refreshing: refresh.isPending,
+    refreshing: busy,
     refresh: () => {
-      if (!refresh.isPending) refresh.mutate()
+      if (!busy) refresh.mutate()
+    },
+    reload: () => {
+      if (!busy) reload.mutate()
     },
   }
 }

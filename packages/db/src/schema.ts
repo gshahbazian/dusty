@@ -108,6 +108,8 @@ export const articles = sqliteTable(
       table.publishedAt,
       table.id
     ),
+    // The page asks often whether anything arrived after its snapshot.
+    index('articles_first_seen').on(table.firstSeenAt),
   ]
 )
 

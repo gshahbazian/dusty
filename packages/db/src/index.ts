@@ -2,6 +2,7 @@ export { createDb, schema, type Db } from '#/client'
 
 export {
   getArticle,
+  hasArticlesSince,
   LIST_LIMIT,
   listArticles,
   markRead,

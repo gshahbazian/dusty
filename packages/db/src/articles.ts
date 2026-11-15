@@ -79,6 +79,28 @@ export const listArticles = (
   `)
 }
 
+/**
+ * Whether a list would gain articles if it were loaded again: any article
+ * (in this feed, or any feed) first seen after the list's snapshot. An
+ * article first seen later is always unread, so this holds for unread and
+ * all lists alike. Indexed lookups only; the page polls it.
+ */
+export const hasArticlesSince = async (
+  db: Db,
+  options: { readonly feedId: number | null; readonly after: number }
+): Promise<boolean> => {
+  const inFeed =
+    options.feedId === null ? sql`` : sql`and feed_id = ${options.feedId}`
+
+  const rows = await db.all<{ found: number }>(sql`
+    select 1 as found from articles
+    where first_seen_at > ${options.after} ${inFeed}
+    limit 1
+  `)
+
+  return rows.length > 0
+}
+
 export interface FeedCount {
   readonly feedId: number
   readonly title: string

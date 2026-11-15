@@ -1,0 +1,1 @@
+CREATE INDEX `articles_first_seen` ON `articles` (`first_seen_at`);
