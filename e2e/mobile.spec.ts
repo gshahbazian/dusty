@@ -256,4 +256,15 @@ test('it can be added to the home screen', async ({ page, request }) => {
   await expect(
     page.locator('meta[name="apple-mobile-web-app-capable"]')
   ).toHaveAttribute('content', 'yes')
+
+  // A status bar colour for each scheme: light, and dark.
+  const themeColor = page.locator('meta[name="theme-color"]')
+
+  await expect(themeColor).toHaveCount(2)
+  await expect(
+    themeColor.and(page.locator('[media="(prefers-color-scheme: light)"]'))
+  ).toHaveAttribute('content', '#ffffff')
+  await expect(
+    themeColor.and(page.locator('[media="(prefers-color-scheme: dark)"]'))
+  ).toHaveAttribute('content', '#0c0a09')
 })
