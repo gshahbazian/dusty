@@ -30,7 +30,9 @@ Read the matching `SKILL.md` before doing these:
 ## Rules of the road
 
 - Effect is for the sync service. The web app is plain TypeScript and
-  React; it calls the sync service through `toRpcAsync`.
+  React; it calls the sync service through `toRpcAsync`. The one use of
+  Effect in the web app is `effect/Schema`, on purpose, to validate what
+  comes in (server function input, search params, Unsplash's response).
 - All shared SQL lives in `packages/db`, tested against a real local D1
   (`createTestD1`), never mocks. Module mocking is banned by lint.
 - Every server function uses the `ownerOnly` middleware.

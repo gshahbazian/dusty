@@ -38,7 +38,8 @@ point is that every feature works by touch, one-handed.
 
 ## Reading
 
-- Article text is 17 px on a phone. Images, wide tables and code already
+- Article text is larger on a phone: 18 px, Typeset's own phone size
+  (it was 17 px before Typeset replaced the hand-written styles). Images, wide tables and code already
   fit the screen or scroll inside themselves; a browser test checks that
   an article with a very wide image, table and code block never scrolls
   the page sideways.

@@ -126,10 +126,11 @@ bound.
   heights, some overscan). Thousands of rows cost a few dozen DOM nodes, so
   scrolling and key presses stay fast. Rows keep `aria-setsize` and
   `aria-posinset` so the list's length is still announced.
-- **A cap on what one list loads.** `listUnread` returns at most 5,000
-  rows; the counts still count everything. When a list is longer, the
-  page says "Showing the first 5,000 of N" and Refresh, after triaging
-  those, loads the next ones. 5,000 rows is about 2.5 MB of JSON, and
+- **A cap on what one list loads.** `listUnread` (now `listArticles`)
+  returns at most 5,000 rows; the counts still count everything. When a
+  list is longer, the page says "Showing the first 5,000. Refresh after
+  clearing these to load more.", and Refresh, after triaging those, loads
+  the next ones. 5,000 rows is about 2.5 MB of JSON, and
   "mark all above" then sends at most 4,999 ids, inside the server's
   20,000 limit.
 - Paging within one snapshot (noted in M3) isn't needed with the cap, so

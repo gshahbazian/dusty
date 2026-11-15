@@ -8,7 +8,10 @@ description: Run Dusty locally (web app, sync service and D1) with no Cloudflare
 `pnpm dev` runs `alchemy dev`: both Workers in workerd (the production
 runtime) and D1 as a local SQLite file. No Cloudflare account or login is
 needed. Login is a stand-in that treats every request to `localhost` as
-the owner (`AUTH_MODE=dev`); requests to any other host are refused.
+the owner (`AUTH_MODE=dev`); requests to any other host are refused. To
+see the app's own refusal, use another `.localhost` name (`curl -H 'Host:
+foo.localhost' localhost:5173`): Vite turns away other hosts (`Host:
+evil.example`) before the Worker sees them.
 
 ## First time
 
