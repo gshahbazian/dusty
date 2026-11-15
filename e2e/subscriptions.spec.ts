@@ -118,6 +118,7 @@ test('import from an OPML file', async ({ page }) => {
   </outline>
   <outline type="rss" text="Broken" xmlUrl="${broken.replaceAll('&', '&amp;')}"/>
   <outline type="rss" text="Atom again" xmlUrl="${atom}"/>
+  <outline type="rss" text="Old FTP feed" xmlUrl="ftp://files.example.com/feed.xml"/>
 </body></opml>`
 
   await page.goto('/settings')
@@ -127,17 +128,17 @@ test('import from an OPML file', async ({ page }) => {
     buffer: Buffer.from(opml),
   })
 
-  await expect(
-    page.getByText('3 feeds to import, 1 already subscribed or listed twice.')
-  ).toBeVisible()
-  await page.getByText('Show the 1 skipped feed').click()
+  await expect(page.getByText('3 feeds to import, 2 skipped.')).toBeVisible()
+  await page.getByText('Show the 2 skipped feeds').click()
   await expect(
     page.getByText('Atom again: listed twice in this file')
   ).toBeVisible()
+  // Not a web address: skipped, never counted or reported as added.
+  await expect(page.getByText('Old FTP feed: not a web address')).toBeVisible()
   await page.getByRole('button', { name: 'Import 3 feeds' }).click()
 
   await expect(
-    page.getByText('Import finished: 2 added, 1 skipped, 1 failed.')
+    page.getByText('Import finished: 2 added, 2 skipped, 1 failed.')
   ).toBeVisible()
   await expect(page.getByText('Broken: 404 not found')).toBeVisible()
 

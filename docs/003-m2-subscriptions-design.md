@@ -51,8 +51,10 @@ app's server functions, using SQL from `packages/db`.
   - the title from the OPML file is kept as the display title when it
     differs from the feed's own, so names chosen in the old reader carry
     over.
-- The import ends with a summary: added, skipped (already subscribed or
-  listed twice) and failed (with the reason).
+- The import ends with a summary: added, skipped (already subscribed,
+  listed twice, or not a web address, like an `ftp:` feed) and failed
+  (with the reason). Skipped entries are never sent, so they're never
+  counted as added or failed.
 - A feed that fails is still subscribed, with its failure recorded, so a
   feed that happens to be down on migration day is not lost. It shows its
   error in the health view, and is flagged failing after 2 days, like any

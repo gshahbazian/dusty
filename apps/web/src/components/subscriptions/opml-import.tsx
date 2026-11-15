@@ -232,7 +232,7 @@ function ImportStatus({
     <div className="flex flex-wrap items-center gap-3">
       <p>
         {plural(toImport.length, 'feed', 'feeds')} to import
-        {skipped > 0 && `, ${skipped} already subscribed or listed twice`}.
+        {skipped > 0 && `, ${skipped} skipped`}.
       </p>
       {toImport.length > 0 && (
         <Button onClick={() => onImport(step.entries)}>
@@ -261,5 +261,6 @@ function ImportStatus({
 
 const SKIP_REASONS = {
   subscribed: 'already subscribed',
+  'not-web': 'not a web address',
   duplicate: 'listed twice in this file',
 } as const

@@ -72,8 +72,11 @@ export const removeSubscription = createServerFn({ method: 'POST' })
   .handler(({ context, data }) => removeFeed(dbFor(context.env), data.id))
 
 export interface OpmlEntry extends ImportEntry {
-  /** Already subscribed, or listed earlier in the same file. */
-  readonly skip: 'subscribed' | 'duplicate' | null
+  /**
+   * Already subscribed, listed earlier in the same file, or not a web
+   * address (an `ftp:` feed, say): never sent, counted or reported as added.
+   */
+  readonly skip: 'subscribed' | 'duplicate' | 'not-web' | null
 }
 
 export type OpmlPreview =
@@ -135,8 +138,9 @@ export const previewOpml = createServerFn({ method: 'POST' })
     const seen = new Set<string>()
 
     const entries = listed.map((entry): OpmlEntry => {
-      const url = normalizeFeedUrl(entry.url) ?? entry.url
-      const skip = skipReason(url, known, seen)
+      const normalized = normalizeFeedUrl(entry.url)
+      const url = normalized ?? entry.url
+      const skip = skipReason(normalized, known, seen)
 
       seen.add(url)
 
@@ -154,11 +158,14 @@ const readOutlines = (opml: string): readonly Outline[] | null => {
   }
 }
 
+/** Why an entry is skipped; `url` is null when it isn't a web address. */
 const skipReason = (
-  url: string,
+  url: string | null,
   known: ReadonlySet<string>,
   seen: ReadonlySet<string>
 ): OpmlEntry['skip'] => {
+  if (url === null) return 'not-web'
+
   if (known.has(url)) return 'subscribed'
 
   if (seen.has(url)) return 'duplicate'
