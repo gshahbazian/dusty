@@ -63,6 +63,13 @@ test('add, refuse, rename and remove feeds', async ({ page }) => {
     page.getByText("Couldn't add that: no feed found at this address.")
   ).toBeVisible()
 
+  // Esc backs out of a rename, changing nothing.
+  await row(page, rss).getByRole('button', { name: 'Rename' }).click()
+  await page.keyboard.type('Never saved')
+  await page.keyboard.press('Escape')
+  await expect(row(page, rss).getByLabel(/New name for/)).toHaveCount(0)
+  await expect(row(page, rss)).not.toContainText('Never saved')
+
   // Rename, keeping the feed's own name visible.
   await row(page, rss).getByRole('button', { name: 'Rename' }).click()
   // The field takes the cursor, so you can just type.

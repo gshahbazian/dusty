@@ -193,7 +193,8 @@ function ImportStatus({
   if (step.kind === 'importing') {
     return (
       <p>
-        Importing… {step.done} of {step.total}
+        Importing… {step.done} of {step.total}. Keep this page open until it
+        finishes (closing it stops the rest; importing again skips what's done).
       </p>
     )
   }

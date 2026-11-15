@@ -47,7 +47,7 @@ export function SubscriptionRow({
       id={`feed-${subscription.id}`}
       className={cn(
         'flex flex-col gap-1 border-b py-3 transition-colors',
-        highlighted && 'bg-yellow-50 dark:bg-yellow-950/40'
+        highlighted && 'bg-primary/10'
       )}
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -208,6 +208,10 @@ function RenameForm({
         // oxlint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
         onFocus={(event) => event.currentTarget.select()}
+        // Esc backs out, like Cancel.
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') onDone(false)
+        }}
         placeholder={subscription.feedTitle ?? subscription.url}
         className="w-64"
       />
