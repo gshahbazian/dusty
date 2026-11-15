@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xml:lang="en-us" xmlns="http://www.w3.org/2005/Atom"><title>Simon Willison's Weblog</title><link href="http://simonwillison.net/" rel="alternate"/><link href="http://simonwillison.net/atom/everything/" rel="self"/><id>http://simonwillison.net/</id><updated>2026-11-14T23:59:28+00:00</updated><author><name>Simon Willison</name></author><entry><title>datasette-llm 0.1a11</title><link href="https://simonwillison.net/2026/Nov/14/datasette-llm/" rel="alternate"/><published>2026-11-14T23:59:28+00:00</published><updated>2026-11-14T23:59:28+00:00</updated><id>https://simonwillison.net/2026/Nov/14/datasette-llm/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/datasette/datasette-llm/releases/tag/0.1a11"&gt;datasette-llm 0.1a11&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;code&gt;datasette-llm&lt;/code&gt; is the intermediate plugin for Datasette that supports configuring LLMs for use with other Datasette plugins.&lt;/p&gt;
+&lt;p&gt;This release adds support for OpenAI-compatible endpoints, so you can configure Datasette to use an LLM hosted anywhere that talks the OpenAI pseudo-standard web protocol.&lt;/p&gt;
+&lt;p&gt;This means that if you're running local models with &lt;a href="https://lmstudio.ai"&gt;LM Studio&lt;/a&gt; or &lt;a href="https://ollama.com"&gt;Ollama&lt;/a&gt; or &lt;a href="https://github.com/ggml-org/llama.cpp"&gt;llama.cpp&lt;/a&gt; (which just hit &lt;a href="https://huggingface.co/blog/ggml-org/llama-cpp-v1"&gt;v1.0.0&lt;/a&gt;) you can run Datasette via &lt;code&gt;uvx&lt;/code&gt; like this:&lt;/p&gt;
+&lt;div class="highlight highlight-source-shell"&gt;&lt;pre&gt;wget https://datasette.io/content.db
+
+uvx --with datasette-agent datasette \
+  --root --secret 1 \
+  -s plugins.datasette-llm.default_model &lt;span class="pl-s"&gt;&lt;span class="pl-pds"&gt;'&lt;/span&gt;{&lt;/span&gt;
+&lt;span class="pl-s"&gt;    "model": "lmstudio-qwen",&lt;/span&gt;
+&lt;span class="pl-s"&gt;    "model_name": "qwen/qwen3.8-27b",&lt;/span&gt;
+&lt;span class="pl-s"&gt;    "api_base": "http://localhost:1234/v1"&lt;/span&gt;
+&lt;span class="pl-s"&gt;  }&lt;span class="pl-pds"&gt;'&lt;/span&gt;&lt;/span&gt; content.db&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And you'll get a local server running a Datasette Agent instance powered by your local model!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot of a chat interface. Header bar reads &amp;quot;home&amp;quot; on the left and &amp;quot;root&amp;quot; with a hamburger menu icon on the right. Below is a back arrow, the heading &amp;quot;Chat&amp;quot;, a model label &amp;quot;lmstudio-qwen&amp;quot; and an &amp;quot;EXPORT&amp;quot; button. A blue user message bubble says &amp;quot;how many repos and how many releases are there?&amp;quot; Below it is a collapsed tool call &amp;quot;list_databases_and_tables&amp;quot; and an expanded tool call &amp;quot;sql_query&amp;quot;. Its REQUEST section shows database &amp;quot;content&amp;quot;, display &amp;quot;both&amp;quot; and the SQL: SELECT (SELECT COUNT(*) FROM repos) AS repo_count, (SELECT COUNT(*) FROM releases) AS release_count. Its RESPONSE section shows columns repo_count and release_count with a single row of 200 and 1889. Below that is a table with columns repo_count and release_count and one row: 200, 1889, followed by a &amp;quot;View SQL query&amp;quot; button. The assistant reply reads &amp;quot;There are 200 repos and 1,889 releases in the content database.&amp;quot; At the bottom is a text input with placeholder &amp;quot;Type a message... (# to tag a table or query)&amp;quot; and a blue &amp;quot;Send&amp;quot; button." src="https://static.simonwillison.net/static/2026/lmstudio-datasette-agent.webp" /&gt;&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/uv"&gt;uv&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/datasette-agent"&gt;datasette-agent&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llm"&gt;llm&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/datasette"&gt;datasette&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llms"&gt;llms&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/generative-ai"&gt;generative-ai&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="uv"/><category term="datasette-agent"/><category term="llm"/><category term="datasette"/><category term="llms"/><category term="ai"/><category term="generative-ai"/></entry><entry><title>datasette-vega 0.7</title><link href="https://simonwillison.net/2026/Nov/14/datasette-vega/" rel="alternate"/><published>2026-11-14T17:09:09+00:00</published><updated>2026-11-14T17:09:09+00:00</updated><id>https://simonwillison.net/2026/Nov/14/datasette-vega/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/simonw/datasette-vega/releases/tag/0.7"&gt;datasette-vega 0.7&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;A new release of Datasette's longest untouched plugin, for rendering charts (using &lt;a href="https://vega.github.io/vega-lite/"&gt;Vega-Lite&lt;/a&gt;) against data in a table or custom query. The last release was in July 2018!&lt;/p&gt;
+&lt;p&gt;I finally bumped it for compatibility with the latest Datasette alphas, plus some cosmetic tweaks to make it work better with &lt;a href="https://lite.datasette.io/"&gt;Datasette Lite&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;(Datasette Lite just gained the ability to run JavaScript plugins like this! I'll write more about that soon.)&lt;/p&gt;
+&lt;p&gt;Since it works with Datasette Lite, the live demo in the README now &lt;a href="https://lite.datasette.io/?install=datasette-vega&amp;amp;csv=https%3A%2F%2Fraw.githubusercontent.com%2Ffivethirtyeight%2Fdata%2Fmaster%2Fairline-safety%2Fairline-safety.csv#/data/airline-safety?_size=max#g.mark=bar&amp;amp;g.x_column=airline&amp;amp;g.x_type=ordinal&amp;amp;g.y_column=fatalities_00_14&amp;amp;g.y_type=quantitative"&gt;links to this demo on Datasette Lite&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot of a charting tool. A panel headed &amp;quot;Charting options&amp;quot; has radio buttons for &amp;quot;Bar&amp;quot; (selected), &amp;quot;Line&amp;quot; and &amp;quot;Scatter&amp;quot;. Below are select menus: &amp;quot;X column&amp;quot; set to &amp;quot;airline&amp;quot; with &amp;quot;Type&amp;quot; set to &amp;quot;Label&amp;quot;, and &amp;quot;Y column&amp;quot; set to &amp;quot;fatalities_00_14&amp;quot; with &amp;quot;Type&amp;quot; set to &amp;quot;Numeric&amp;quot;. A &amp;quot;Swap X and Y&amp;quot; button sits beneath those, followed by &amp;quot;Color&amp;quot; and &amp;quot;Size&amp;quot; menus both set to &amp;quot;-- none --&amp;quot;. Underneath the panel is a blue bar chart with airline names along the X axis and fatalities_00_14 on the Y axis, running from 0 to 550 - most airlines have no bar, a handful have bars, and Malaysia Airlines is the tallest." src="https://static.simonwillison.net/static/2026/datasette-vega.webp" /&gt;&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/datasette"&gt;datasette&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/visualisation"&gt;visualisation&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/datasette-lite"&gt;datasette-lite&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="datasette"/><category term="visualisation"/><category term="datasette-lite"/></entry><entry><title>datasette-cluster-map 0.19</title><link href="https://simonwillison.net/2026/Nov/13/datasette-cluster-map/" rel="alternate"/><published>2026-11-13T23:02:45+00:00</published><updated>2026-11-13T23:02:45+00:00</updated><id>https://simonwillison.net/2026/Nov/13/datasette-cluster-map/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/simonw/datasette-cluster-map/releases/tag/0.19"&gt;datasette-cluster-map 0.19&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;One of the oldest Datasette plugins, and still one of my favorites. It now works with Datasette 1.0a42, and depends on &lt;a href="https://simonwillison.net/2026/Nov/13/datasette-leaflet/"&gt;the new datasette-leaflet&lt;/a&gt; to ensure OpenStreetMap tiles are requested with a referrer header.&lt;/p&gt;
+&lt;p&gt;Here's &lt;a href="https://datasette.io/global-power-plants/global-power-plants?owner=Pacific+Gas+%26+Electric+Co."&gt;a map of power plants owned by California's PG&amp;amp;E&lt;/a&gt;, also demonstrating Datasette's recently &lt;a href="https://github.com/simonw/datasette/pull/3032"&gt;redesigned facets&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot of a faceted map interface. Three facet panels at the top: &amp;quot;country_long 1&amp;quot; with United States of America 81 selected; &amp;quot;owner 1&amp;quot; with Pacific Gas &amp;amp; Electric Co. 81 selected; &amp;quot;primary_fuel 5&amp;quot; listing Hydro 63, Solar 10, Gas 5, Storage 2, Nuclear 1. Each primary_fuel row has a pale blue horizontal bar behind its label, sized in proportion to its count: Hydro's bar fills most of the row width, Solar's is a short sliver, Gas's is shorter still, and Storage and Nuclear have only a thin strip at the left edge. Below is a Leaflet map with + and − zoom controls showing California and Nevada, with marker clusters across northern and central California: 9 near Redding, 21 near Chico, 2 to the west of Chico, 13 northeast of Sacramento, 7 east of Stockton, 6 at Oakland, 10 at Fresno, 9 west of Visalia, 2 north of Bakersfield, plus two individual blue pin markers on the coast, one in the far north and one north of Santa Maria. Attribution: Leaflet | © OpenStreetMap contributors" src="https://static.simonwillison.net/static/2026/power-plants-pge.webp" /&gt;&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/datasette"&gt;datasette&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/geospatial"&gt;geospatial&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/openstreetmap"&gt;openstreetmap&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="datasette"/><category term="geospatial"/><category term="openstreetmap"/></entry><entry><title>datasette-leaflet 0.3</title><link href="https://simonwillison.net/2026/Nov/13/datasette-leaflet/" rel="alternate"/><published>2026-11-13T22:30:54+00:00</published><updated>2026-11-13T22:30:54+00:00</updated><id>https://simonwillison.net/2026/Nov/13/datasette-leaflet/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/simonw/datasette-leaflet/releases/tag/0.3"&gt;datasette-leaflet 0.3&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;OpenStreetMap have a very reasonable policy that hits to their hosted tile server &lt;a href="https://wiki.openstreetmap.org/wiki/Referer"&gt;should send a referrer header&lt;/a&gt;. Datasette table pages used the &lt;code&gt;Referrer-Policy: no-referrer&lt;/code&gt; HTTP header, causing plugins that loaded tiles from OpenStreetMap to violate that policy.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;datasette-leaflet&lt;/code&gt; is the plugin that loads a bundled Leaflet so other Datasette plugins can depend on it. It now sets the referrer policy on the tile requests themselves to &lt;code&gt;strict-origin-when-cross-origin&lt;/code&gt;, passing the host but not the full path to the page.&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/leaflet"&gt;leaflet&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/datasette"&gt;datasette&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/openstreetmap"&gt;openstreetmap&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="leaflet"/><category term="datasette"/><category term="openstreetmap"/></entry><entry><title>llm-gemini 0.37</title><link href="https://simonwillison.net/2026/Nov/12/llm-gemini/" rel="alternate"/><published>2026-11-12T22:55:19+00:00</published><updated>2026-11-12T22:55:19+00:00</updated><id>https://simonwillison.net/2026/Nov/12/llm-gemini/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/simonw/llm-gemini/releases/tag/0.37"&gt;llm-gemini 0.37&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;Google launched &lt;a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/"&gt;Gemini 4 Hydrogen&lt;/a&gt; today - the lowest cost member of the Gemini 4 family.&lt;/p&gt;
+&lt;p&gt;It's actually not too far off the price of its much bigger siblings, Carbon and Argon. I'm finding Gemini 4's pricing &lt;em&gt;really&lt;/em&gt; confusing. Here's the pricing scheme:&lt;/p&gt;
+&lt;center&gt;&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Model&lt;/th&gt;
+      &lt;th&gt;Dates&lt;/th&gt;
+      &lt;th&gt;Input ($/M)&lt;/th&gt;
+      &lt;th&gt;Cached input&lt;/th&gt;
+      &lt;th&gt;Output&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td rowspan="2"&gt;Gemini 4 Carbon&lt;/td&gt;
+      &lt;td&gt;Through Nov 30, 2026&lt;/td&gt;
+      &lt;td&gt;$2.00&lt;/td&gt;
+      &lt;td&gt;$0.10&lt;/td&gt;
+      &lt;td&gt;$10.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;From Dec 1, 2026&lt;/td&gt;
+      &lt;td&gt;$4.00&lt;/td&gt;
+      &lt;td&gt;$0.20&lt;/td&gt;
+      &lt;td&gt;$20.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td rowspan="2"&gt;Gemini 4 Argon&lt;/td&gt;
+      &lt;td&gt;Through Nov 30, 2026&lt;/td&gt;
+      &lt;td&gt;$2.00&lt;/td&gt;
+      &lt;td&gt;$0.10&lt;/td&gt;
+      &lt;td&gt;$10.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;From Dec 1, 2026&lt;/td&gt;
+      &lt;td&gt;$4.00&lt;/td&gt;
+      &lt;td&gt;$0.20&lt;/td&gt;
+      &lt;td&gt;$20.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Gemini 4 Hydrogen&lt;/td&gt;
+      &lt;td&gt;&amp;nbsp;&lt;/td&gt;
+      &lt;td&gt;$1.50&lt;/td&gt;
+      &lt;td&gt;$0.075&lt;/td&gt;
+      &lt;td&gt;$7.50&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;&lt;/center&gt;
+
+&lt;p&gt;Carbon and Argon are &lt;em&gt;the same price&lt;/em&gt;, and both are scheduled to double in price on December 1st. If they're the same price, why have two different models? &lt;a href="https://aistudio.google.com/docs/pricing"&gt;Google says&lt;/a&gt; that Argon "delivers Gemini 4 intelligence with faster responses and lower token spend per turn compared to Gemini 4 Carbon" - so it may be priced the same, but it will use less tokens per task.&lt;/p&gt;
+&lt;p&gt;Hydrogen, supposedly the cheap model, is currently only a 25% discount on its more capable peers. The Hydrogen price will make more sense after December 1st, when it will represent a 75% discount. It's still considerably more expensive than Claude Haiku 5.5 and GPT-6 Luna - they're both $0.10/$0.50, so Hydrogen is 15x that.&lt;/p&gt;
+&lt;p&gt;I had Hydrogen &lt;a href="https://tools.simonwillison.net/markdown-svg-renderer?url=https%3A%2F%2Fgist.github.com%2Fsimonw%2Fce357e95149cd16f65ec7e7106ed4fed"&gt;generate some pelicans&lt;/a&gt;. Here's a &lt;a href="https://static.simonwillison.net/static/2026/gemini-4-pelicans.html"&gt;full comparison grid&lt;/a&gt; showing the pelicans for all three members of the Gemini 4 family at their three supported effort levels:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Comparison grid of nine SVG-style illustrations of a pelican riding a bicycle, three models across by three thinking levels down. Column headers: Thinking, gemini-4-carbon, gemini-4-argon, gemini-4-hydrogen. Row HIGH: gemini-4-carbon draws a detailed pelican in a sailor cap riding a red cruiser bicycle with fenders and a wicker basket holding a fish, along a beach road with sea, sun, clouds and birds, captioned 40 input tokens, 20,305 output = 20.31 cents · 4m 11s; gemini-4-argon draws a pelican in a red cap and a streaming teal striped scarf on a red bicycle with a blue fish peeking out of the basket, on a seaside promenade with a pale sun, captioned 40 input tokens, 17,158 output = 17.17 cents · 2m 29s; gemini-4-hydrogen draws a much simpler plain white pelican on a basic red bicycle against a pale blue sky with two clouds, speed lines and flat green ground, captioned 40 input tokens, 5,311 output = 3.99 cents · 19s. Row MEDIUM: gemini-4-carbon draws a pelican in a sailor cap and red striped scarf on a red bicycle with cream fenders and a basket, on a sandy beach with a rope fence and sea, captioned 40 input tokens, 11,020 output = 11.03 cents · 1m 53s; gemini-4-argon draws a pelican with an enormous orange beak, sailor cap and flowing red scarf on a teal bicycle with a basket, on a boardwalk under a purple and pink sunset sky with a large pink sun, captioned 40 input tokens, 11,090 output = 11.10 cents · 1m 32s; gemini-4-hydrogen draws a simple cream pelican on a plain red bicycle with sparse spokes, two clouds and flat green ground, captioned 40 input tokens, 3,964 output = 2.98 cents · 17s. Row LOW: gemini-4-carbon draws a pelican in a sailor cap and red and white striped scarf on a red bicycle with fenders and a basket, passing a white seaside railing on a grey road, captioned 40 input tokens, 9,153 output = 9.16 cents · 1m 34s; gemini-4-argon draws a large, chubby pelican with a sailor cap and huge orange beak on a red bicycle with a basket, gripping the handlebars with a dark blue wing, in front of an orange setting sun and a grey road, captioned 40 input tokens, 10,177 output = 10.18 cents · 1m 21s; gemini-4-hydrogen draws the simplest image, a plain white pelican on a thin red bicycle over a single green line with no scenery, captioned 40 input tokens, 2,996 output = 2.25 cents · 10s. Overall, carbon and argon produce rich, accessorised seaside scenes at every thinking level, while hydrogen produces far plainer pelicans at a fraction of the cost and time, and detail decreases for all three models as thinking drops from high to low." src="https://static.simonwillison.net/static/2026/gemini-4-pelicans.webp" /&gt;&lt;/p&gt;
+&lt;p&gt;Considering how close they are in price, the difference in pelican quality for Hydrogen is quite stark.&lt;/p&gt;
+&lt;p&gt;Here's &lt;a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/"&gt;how Google describe&lt;/a&gt; Hydrogen's intended position in their mix of models:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In real-world software development, while teams rely on frontier models like Carbon and Argon for deep architectural judgment when designing systems or untangling subtle bugs, they still need a fast, disciplined execution model for writing code, running tests, and verifying changes. Hydrogen is built to stand on its own as a model for everyday work — or to pair with Carbon and Argon as the high-efficiency execution engine in multi-model workflows.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Most notably, Hydrogen is the new free tier model, and is the model that will power AI features in Google Search.&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/gemini"&gt;gemini&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llm"&gt;llm&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/google"&gt;google&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/pelican-riding-a-bicycle"&gt;pelican-riding-a-bicycle&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llm-pricing"&gt;llm-pricing&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llms"&gt;llms&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="gemini"/><category term="llm"/><category term="google"/><category term="pelican-riding-a-bicycle"/><category term="llm-pricing"/><category term="ai"/><category term="llms"/></entry><entry><title>Gemini Decisions API</title><link href="https://simonwillison.net/2026/Nov/11/gemini-decisions-api/" rel="alternate"/><published>2026-11-11T22:03:25+00:00</published><updated>2026-11-11T22:03:25+00:00</updated><id>https://simonwillison.net/2026/Nov/11/gemini-decisions-api/</id><summary type="html">
+    
+&lt;p&gt;&lt;strong&gt;&lt;a href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/"&gt;Gemini Decisions API&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+Google join &lt;a href="https://simonwillison.net/2026/Sep/21/jev/"&gt;Jev&lt;/a&gt; and &lt;a href="https://simonwillison.net/2026/Oct/6/llm-openai-decisions/"&gt;OpenAI&lt;/a&gt; in the decision model category with "Gemini Decision 1". This new model API is almost identical to Jev: it supports the same three types of questions (yes/no, choice, and rubric-scoring) and even reuses Jev's term "Noul" for a yes/no question.&lt;/p&gt;
+&lt;p&gt;It's priced the same as the GPT-6 Luna decision model: 10 cents per million input tokens, and output is free. Jev remains the cheapest of the three, at 4.2 cents per million.&lt;/p&gt;
+&lt;p&gt;Jev is text (and JSON) only. OpenAI can handle text and images. Gemini Decision 1 is fully multi-model: it covers text, images, audio, video, and PDFs.&lt;/p&gt;
+&lt;p&gt;I tested it against video by passing these questions to it along with my &lt;a href="https://simonwillison.net/2026/Nov/10/yonkers-rises/"&gt;Yonkers stomping robot&lt;/a&gt; video file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dragon: Does this video have a dragon in it?
+robot: Does this video have a robot in it?
+france: Is this video set in France?
+usa: Is this video set in the USA?
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Jev and OpenAI both return 1.0 or 0.0 for yes/no questions, but Gemini insists on being a little less confident than that:&lt;/p&gt;
+&lt;div class="highlight highlight-source-json"&gt;&lt;pre&gt;{
+  &lt;span class="pl-ent"&gt;"dragon"&lt;/span&gt;: {
+    &lt;span class="pl-ent"&gt;"type"&lt;/span&gt;: &lt;span class="pl-s"&gt;&lt;span class="pl-pds"&gt;"&lt;/span&gt;yes_no&lt;span class="pl-pds"&gt;"&lt;/span&gt;&lt;/span&gt;,
+    &lt;span class="pl-ent"&gt;"probability"&lt;/span&gt;: &lt;span class="pl-c1"&gt;0.04976021841520312&lt;/span&gt;
+  },
+  &lt;span class="pl-ent"&gt;"robot"&lt;/span&gt;: {
+    &lt;span class="pl-ent"&gt;"type"&lt;/span&gt;: &lt;span class="pl-s"&gt;&lt;span class="pl-pds"&gt;"&lt;/span&gt;yes_no&lt;span class="pl-pds"&gt;"&lt;/span&gt;&lt;/span&gt;,
+    &lt;span class="pl-ent"&gt;"probability"&lt;/span&gt;: &lt;span class="pl-c1"&gt;0.9234055387792485&lt;/span&gt;
+  },
+  &lt;span class="pl-ent"&gt;"france"&lt;/span&gt;: {
+    &lt;span class="pl-ent"&gt;"type"&lt;/span&gt;: &lt;span class="pl-s"&gt;&lt;span class="pl-pds"&gt;"&lt;/span&gt;yes_no&lt;span class="pl-pds"&gt;"&lt;/span&gt;&lt;/span&gt;,
+    &lt;span class="pl-ent"&gt;"probability"&lt;/span&gt;: &lt;span class="pl-c1"&gt;0.08329171353166241&lt;/span&gt;
+  },
+  &lt;span class="pl-ent"&gt;"usa"&lt;/span&gt;: {
+    &lt;span class="pl-ent"&gt;"type"&lt;/span&gt;: &lt;span class="pl-s"&gt;&lt;span class="pl-pds"&gt;"&lt;/span&gt;yes_no&lt;span class="pl-pds"&gt;"&lt;/span&gt;&lt;/span&gt;,
+    &lt;span class="pl-ent"&gt;"probability"&lt;/span&gt;: &lt;span class="pl-c1"&gt;0.9230459995157706&lt;/span&gt;
+  }
+}&lt;/pre&gt;&lt;/div&gt;
+
+    &lt;p&gt;&lt;small&gt;&lt;/small&gt;Via &lt;a href="https://news.ycombinator.com/item?id=50456791"&gt;Hacker News&lt;/a&gt;&lt;/small&gt;&lt;/p&gt;
+
+
+    &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/generative-ai"&gt;generative-ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/gemini"&gt;gemini&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llm-release"&gt;llm-release&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/jev"&gt;jev&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/decision-models"&gt;decision-models&lt;/a&gt;&lt;/p&gt;
+
+
+
+</summary><category term="ai"/><category term="generative-ai"/><category term="gemini"/><category term="llm-release"/><category term="jev"/><category term="decision-models"/></entry><entry><title>aws-emulator</title><link href="https://simonwillison.net/2026/Nov/11/aws-emulator/" rel="alternate"/><published>2026-11-11T21:18:30+00:00</published><updated>2026-11-11T21:18:30+00:00</updated><id>https://simonwillison.net/2026/Nov/11/aws-emulator/</id><summary type="html">
+    
+&lt;p&gt;&lt;strong&gt;&lt;a href="https://github.com/aws/aws-emulator"&gt;aws-emulator&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+Finally, an official emulator from AWS to run tests against a local clone of their many different services without having to provision a paid API key to do so.&lt;/p&gt;
+&lt;p&gt;It's written in Rust by a huge swarm of agents - 29,684 commits in the first three weeks of the project. Swaminathan (Swami) Sivasubramanian wrote about &lt;a href="https://www.allthingsdistributed.com/2026/11/aws-emulator-and-the-engineers-job-when-agents-write-the-code.html"&gt;how it came to be&lt;/a&gt; in a guest post on Werner Vogels' blog.&lt;/p&gt;
+&lt;p&gt;It currently requires Docker to run on macOS or Windows. I'm hoping they fix that in the future - it would be great if you could download a single binary and use that as part of a standard test suite in other languages and on other platforms.
+
+
+    &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/amazon"&gt;amazon&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/amazon-web-services"&gt;amazon-web-services&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/testing"&gt;testing&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/werner-vogels"&gt;werner-vogels&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/rust"&gt;rust&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/docker"&gt;docker&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/generative-ai"&gt;generative-ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llms"&gt;llms&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/agentic-engineering"&gt;agentic-engineering&lt;/a&gt;&lt;/p&gt;
+
+
+
+</summary><category term="amazon"/><category term="amazon-web-services"/><category term="testing"/><category term="werner-vogels"/><category term="ai"/><category term="rust"/><category term="docker"/><category term="generative-ai"/><category term="llms"/><category term="agentic-engineering"/></entry><entry><title>Browse tools.simonwillison.net by tag</title><link href="https://simonwillison.net/2026/Nov/11/tools-tags/" rel="alternate"/><published>2026-11-11T18:42:50+00:00</published><updated>2026-11-11T18:42:50+00:00</updated><id>https://simonwillison.net/2026/Nov/11/tools-tags/</id><summary type="html">
+    
+&lt;p&gt;&lt;strong&gt;&lt;a href="https://tools.simonwillison.net/#tags"&gt;Browse tools.simonwillison.net by tag&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+I've been wanting a better way to browse my &lt;a href=""&gt;collection of vibe-coded tools&lt;/a&gt; (244 and counting) for a while. I had a few Fable 5.2 credits left over before my weekly reset so I set it to work using &lt;a href="https://github.com/tree-sitter/py-tree-sitter"&gt;tree-sitter&lt;/a&gt; to analyze the code for JavaScript APIs, libraries, and web API hosts used by each tool.&lt;/p&gt;
+&lt;p&gt;The homepage now features tag clouds for browsing by each of those categories of tag:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://tools.simonwillison.net/#tags"&gt;&lt;img alt="Screenshot of two tag cloud sections where tags are sized by count. Browse by JavaScript libraries - Libraries loaded from a CDN by two or more tools. Select a tag to list its tools. @google/generative-ai 3, @jsquash/avif 3, @jsquash/webp 4, Babel 2, Chart.js 2, Cropper.js 2, D3 2, DOMPurify 7, js-yaml 3, JSZip 3, Leaflet 4, markdown-it 4, Marked 12, pako 2, PDF.js 3, Pyodide 11, React 3, Tesseract.js 2, three.js 3. Browse by browser APIs - Web platform features used by each tool's own code. Select a tag to list its tools. &amp;lt;dialog&amp;gt; 5, AbortController 6, Blob URLs 38, BroadcastChannel 1, Built-in AI 1, Camera / microphone 9, Canvas 2D 44, Clipboard API 69, Compression Streams 3, createImageBitmap 2, crypto random values 4, DOMParser 8, Drag and drop 30, Dynamic import() 12, ES modules 92" src="https://static.simonwillison.net/static/2026/tools-tag-cloud.webp" /&gt;&lt;/a&gt;
+
+
+    &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/javascript"&gt;javascript&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/tools"&gt;tools&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/generative-ai"&gt;generative-ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llms"&gt;llms&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/claude"&gt;claude&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/vibe-coding"&gt;vibe-coding&lt;/a&gt;&lt;/p&gt;
+
+
+
+</summary><category term="javascript"/><category term="tools"/><category term="ai"/><category term="generative-ai"/><category term="llms"/><category term="claude"/><category term="vibe-coding"/></entry><entry><title>llm 0.37.2</title><link href="https://simonwillison.net/2026/Nov/11/llm/" rel="alternate"/><published>2026-11-11T17:19:52+00:00</published><updated>2026-11-11T17:19:52+00:00</updated><id>https://simonwillison.net/2026/Nov/11/llm/</id><summary type="html">
+    
+        &lt;p&gt;&lt;strong&gt;Release:&lt;/strong&gt; &lt;a href="https://github.com/simonw/llm/releases/tag/0.37.2"&gt;llm 0.37.2&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;Fixes a security issue reported by &lt;a href="https://github.com/BluePlexus"&gt;Daniel de Araujo&lt;/a&gt; in &lt;a href="https://github.com/simonw/llm/security/advisories/GHSA-v9h7-jj4g-f862"&gt;GHSA-v9h7-jj4g-f862&lt;/a&gt; and &lt;a href="https://github.com/simonw/llm/security/advisories/GHSA-r639-rr7r-x72w"&gt;GHSA-r639-rr7r-x72w&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;LLM has a mechanism called &lt;a href="https://llm.datasette.io/en/stable/other-models.html#configure-an-openai-compatible-model"&gt;extra-openai-models.yaml&lt;/a&gt; - now managed by the new-in-0.37 &lt;a href="https://llm.datasette.io/en/stable/other-models.html#openai-endpoint-add"&gt;llm openai endpoint add&lt;/a&gt; command - for using LLM with OpenAI-compatible API endpoints from other providers.&lt;/p&gt;
+&lt;p&gt;Daniel reported two ways this could accidentally send your configured OpenAI API key to one of those providers: if the key named by &lt;code&gt;api_key_name&lt;/code&gt; had never been stored, or if a &lt;code&gt;responses: true&lt;/code&gt; model was run with &lt;code&gt;-o chat_completions 1&lt;/code&gt;.&lt;/p&gt;
+    
+    
+        &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/projects"&gt;projects&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/security"&gt;security&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llm"&gt;llm&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/releases"&gt;releases&lt;/a&gt;&lt;/p&gt;
+    
+
+</summary><category term="projects"/><category term="security"/><category term="llm"/><category term="releases"/></entry><entry><title>Anthropic's IPO roadshow video</title><link href="https://simonwillison.net/2026/Nov/11/anthropic-ipo-roadshow/" rel="alternate"/><published>2026-11-11T15:11:59+00:00</published><updated>2026-11-11T15:11:59+00:00</updated><id>https://simonwillison.net/2026/Nov/11/anthropic-ipo-roadshow/</id><summary type="html">
+    
+&lt;p&gt;&lt;strong&gt;&lt;a href="https://ipo.anthropic.com/us/#roadshow-video"&gt;Anthropic&amp;#x27;s IPO roadshow video&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+Anthropic kicked off their IPO roadshow yesterday, and their roadshow video has some previously unreleased information about how their business works.&lt;/p&gt;
+&lt;p&gt;The section on "Approach to compute" with co-founder Tom Brown is particularly interesting, describing how Anthropic train and serve Claude across AWS Trainium, Google TPUs, NVIDIA GPUs, and AMD GPUs.&lt;/p&gt;
+&lt;p&gt;I'm not sure why there's no official video transcript, but here's &lt;a href="https://gist.github.com/simonw/9806757fe8acec6221cb0a5cce4d720d"&gt;one that I extracted&lt;/a&gt; using MacWhisper. Highlights below:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We train and serve Claude now across all four major chip families. That's only possible because early on we made an unconventional bet on a multi-chip strategy. At the time, many people thought that running AI models on different chips wasn't worth the effort. Each chip needs its own tailored software stack and inference stack, which is expensive and difficult to build. We've now been doing it for years, and we've gotten incredibly good at it. [...]&lt;/p&gt;
+&lt;p&gt;As an example, this year, we started working with AMD GPUs for the first time. In the past, bringing on a new chip platform took dozens of engineers months of work &lt;strong&gt;This time, we had Mythos try it out. It got Claude running on AMD in just three days, with basically no human intervention&lt;/strong&gt;. Claude ported or wrote almost 100% of the kernels. [...]&lt;/p&gt;
+&lt;p&gt;The second driver of our compute advantage is our rate of discovery of compute multipliers. We focus on total effective compute, which is the multiplicative product of physical capacity times the compute multipliers that we discover. Each one we discover makes our pool of total effective compute bigger. For example, say you need 100 units of compute to train a model of a certain intelligence. A 4x compute multiplier means you can use 25 units of compute to train the exact same model. Or you can use those hundred physical units to train an even more intelligent model that would have previously required 400 units.&lt;/p&gt;
+&lt;p&gt;Compute multipliers create a competitive advantage for us that's hard to replicate. They build on each other. Each new multiplier we discover has a positive effect on the multipliers before it. They stack. &lt;strong&gt;We believe that this can accelerate even further as we approach recursive self-improvement. Claude will be able to discover compute multipliers entirely by itself&lt;/strong&gt;, allowing the number of compute multipliers to grow faster and faster.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We got a hint at Anthropic's multi-chip strategy last September in their &lt;a href="https://www.anthropic.com/research/a-postmortem-of-three-recent-issues"&gt;postmortem of three recent issues&lt;/a&gt;, where they described bugs that affected just their TPU deployments.
+
+
+    &lt;p&gt;Tags: &lt;a href="https://simonwillison.net/tags/ai"&gt;ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/generative-ai"&gt;generative-ai&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/llms"&gt;llms&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/anthropic"&gt;anthropic&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/gpus"&gt;gpus&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/claude-mythos-fable"&gt;claude-mythos-fable&lt;/a&gt;, &lt;a href="https://simonwillison.net/tags/recursive-self-improvement"&gt;recursive-self-improvement&lt;/a&gt;&lt;/p&gt;
+
+
+
+</summary><category term="ai"/><category term="generative-ai"/><category term="llms"/><category term="anthropic"/><category term="gpus"/><category term="claude-mythos-fable"/><category term="recursive-self-improvement"/></entry></feed>

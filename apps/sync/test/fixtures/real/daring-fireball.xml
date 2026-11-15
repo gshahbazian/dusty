@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>Daring Fireball</title>
+<subtitle>By John Gruber</subtitle>
+<link rel="alternate" type="text/html" href="https://daringfireball.net/" />
+<link rel="self" type="application/atom+xml" href="https://daringfireball.net/feeds/main" />
+<id>https://daringfireball.net/feeds/main</id>
+
+
+<updated>2026-11-14T18:15:03Z</updated><rights>Copyright © 2026, John Gruber</rights><entry>
+	<title>Joanna Stern Reviews the HomeView</title>
+	<link rel="alternate" type="text/html" href="https://www.youtube.com/watch?v=yVTcVtLn2o4" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqr" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/14/stern-homeview" />
+	<id>tag:daringfireball.net,2026:/linked//6.43731</id>
+	<published>2026-11-14T17:50:00Z</published>
+	<updated>2026-11-14T18:15:03Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>This is so goddamn good. Both informative and hilarious.</p>
+
+<p>(She made <a href="https://www.instagram.com/reels/Dfsq5nPAoUw/">a fun bonus reel</a> that’s right up my alley too — but watch <a href="https://www.youtube.com/watch?v=yVTcVtLn2o4">the main review</a> first.)</p>
+
+<div>
+<a  title="Permanent link to ‘Joanna Stern Reviews the HomeView’"  href="https://daringfireball.net/linked/2026/11/14/stern-homeview">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Jason Snell’s HomeView Review</title>
+	<link rel="alternate" type="text/html" href="https://sixcolors.com/post/2026/11/homeview-review-a-late-arrival-with-promise-but-still-showing-some-seams/" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqt" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/14/snell-homeview" />
+	<id>tag:daringfireball.net,2026:/linked//6.43733</id>
+	<published>2026-11-14T17:45:00Z</published>
+	<updated>2026-11-14T18:14:44Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Jason Snell:</p>
+
+<blockquote>
+  <p>The hardware is solid and coherent, the screen a pleasure to touch
+and tilt. In terms of software, though, the HomeView feels like a
+peculiar amalgam of numerous other Apple products. Its main
+interface makes it look a bit like an overgrown Apple Watch,
+complete with customizable “faces” that sometimes resemble actual
+Apple Watch faces and other times resemble the iPhone’s StandBy
+mode. Its apps sometimes feel like they’ve escaped from the iPhone
+or iPad, but at other times they feel more like they’re right off
+of an Apple TV. And still other “apps” resemble what you might see
+in your car, since Apple is also using CarPlay to project
+interfaces from apps running on your iPhone.</p>
+
+<p>Given the fact that this product’s tech stack feels like it
+was created in a blender, it’s remarkable that it holds
+together as well as it does — but there are still places
+where the seams show.</p>
+</blockquote>
+
+<p>I’ve been testing a review unit HomeView for a bit over a week, but haven’t had much time to devote to it. So in a lot of ways my HomeView experience thus far has been much more like that of a casual user than an expert. I plugged it in, set it up, got my wife and son to do what they needed to do to become recognized fellow-family-member users, and then we all collectively have had a week of “Well, now what?”</p>
+
+<p>What Snell writes above succinctly and sharply describes my take: the hardware is top-notch but the software is like bits of iOS, WatchOS, tvOS, and CarPlay cut up and assembled into a ransom letter. The software lacks cohesion and vision and polish. If you open a web page you can select text, with the iOS touch interface, but there is <a href="https://x.com/bzamayo/status/2121218411766206715">nothing you can do with a text selection</a>. You can’t copy it or share it. So why can you even make a selection? That’s the least of HomeView’s software problems, but perhaps most emblematic of its “created in a blender” state.</p>
+
+<div>
+<a  title="Permanent link to ‘Jason Snell’s HomeView Review’"  href="https://daringfireball.net/linked/2026/11/14/snell-homeview">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Patrick McGee on Johny Srouji and Nvidia</title>
+	<link rel="alternate" type="text/html" href="https://x.com/patrickmcgee_/status/2120799867140550999" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqu" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/14/patrick-mcgee-on-johny-srouji-and-nvidia" />
+	<id>tag:daringfireball.net,2026:/linked//6.43734</id>
+	<published>2026-11-14T17:40:39Z</published>
+	<updated>2026-11-14T17:41:30Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Patrick McGee (author of <em><a href="https://bookshop.org/a/56320/9781668053379">Apple in China</a></em>; <a href="https://daringfireball.net/thetalkshow/2025/05/29/ep-423">my guest on The Talk Show</a> last May), writing on X in response to <a href="https://www.semafor.com/article/11/11/2026/nvidia-board-preparing-to-oust-ceo-huang-wsj">Semafor’s reporting</a> that Nvidia is “considering” Johny Srouji:</p>
+
+<blockquote>
+  <p>Apple hardware chief Johny Srouji would be an incredible choice to
+lead @nvidia — and I believe he’d accept it.</p>
+
+<p>He’s hit the ceiling at Apple and won’t ever be CEO; obviously
+competent; ambitious as hell; has long wanted chip designs to
+dictate Apple product launches/timelines.</p>
+</blockquote>
+
+<p><a href="https://daringfireball.net/linked/2026/11/11/semafor-srouji">I wrote about this a few days ago</a>, that my money is on Srouji having no interest in the Nvidia job. It’s true that Srouji will almost certainly never be CEO at Apple. But it’s wrong to assume that Srouji would consider CEO of Nvidia to be an upgrade from CHO at Apple. There’s no way Eddy Cue, Craig Federighi, or Greg Joswiak would leave Apple to be CEO at another company. Most of Apple’s leadership genuinely bleeds six colors. There’s a certain approach to product that drives them, motivates them, and literally <a href="https://daringfireball.net/2014/06/only_apple">only Apple</a> does that type of work. Tim Cook surely turned down numerous CEO offers to leave Apple while he served as COO under Steve Jobs, and he’s always been clear that he hoped Jobs would stay a few steps ahead of his cancer and could remain at Apple until, well, probably around now. (Jobs would be 71.)</p>
+
+<p>I’ve never met Srouji and don’t have a read on him like I do other leaders at Apple. But I do have a read on Ternus and Cook. I’ll stick with my bet from earlier in the week:</p>
+
+<blockquote>
+  <p>Another scenario is that Srouji meant what he said, loves his job
+at Apple, and truly is John Ternus’s trusted and trustworthy
+hardware lieutenant. In this case, Nvidia’s board leaking that
+they’re considering Srouji to replace Huang is like someone in
+hell saying they’re considering ordering some ice water.</p>
+</blockquote>
+
+<p>Aside from Srouji’s loyalty to Apple (and to the Apple Silicon chip architecture that’s been his life’s work), there’s also the question of whether he’d take the gig at Nvidia in particular, even if he is open to leaving Apple. Jensen Huang has left the company with a $4 trillion market cap, yes, but it was $5 trillion just a week ago. It now seems 20 percent of Nvidia’s sales in the AI era have been in violation of U.S. national security export controls to China. The company has no internal leadership hierarchy. And Huang placed bets that have leveraged the company’s future on OpenAI and the overall data center mania <em>not</em> being a bubble. Srouji has been a senior leader at the one tech company that conspicuously avoided those bets entirely.</p>
+
+<div>
+<a  title="Permanent link to ‘Patrick McGee on Johny Srouji and Nvidia’"  href="https://daringfireball.net/linked/2026/11/14/patrick-mcgee-on-johny-srouji-and-nvidia">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Microsoft Says Cloud Outage Was ‘Not Related to Cyber or AI / Agents’</title>
+	<link rel="alternate" type="text/html" href="https://x.com/microsoft/status/2121282013600907325" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqs" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/14/microsoft-outage" />
+	<id>tag:daringfireball.net,2026:/linked//6.43732</id>
+	<published>2026-11-14T16:00:00Z</published>
+	<updated>2026-11-14T16:37:37Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Microsoft, yesterday, in a statement on X:</p>
+
+<blockquote>
+  <p>This was a technical issue not related to cyber or AI / agents.
+The incident was introduced by an issue during an earlier network
+capacity upgrade that surfaced following a recent network change.
+We have addressed the underlying issue and continue to restore
+service to remaining customers and regions.</p>
+</blockquote>
+
+<div>
+<a  title="Permanent link to ‘Microsoft Says Cloud Outage Was ‘Not Related to Cyber or AI / Agents’’"  href="https://daringfireball.net/linked/2026/11/14/microsoft-outage">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Andrew Sharp: ‘Jensen Huang Was Always Going to Lose’</title>
+	<link rel="alternate" type="text/html" href="https://sharptext.net/2026/jensen-huang-was-always-going-to-lose/" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqq" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/sharp-huang" />
+	<id>tag:daringfireball.net,2026:/linked//6.43730</id>
+	<published>2026-11-13T20:01:25Z</published>
+	<updated>2026-11-13T20:14:30Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Andrew Sharp, in an excellent column at Sharp Text:</p>
+
+<blockquote>
+  <p>I have a variety of thoughts after spending the past several days
+reading and recording podcasts about these (figurative and
+literal) affairs, but let me express one unpopular sentiment at
+the outset: what happened to Jensen Huang this week is tragic and
+depressing.</p>
+
+<p>I have a disease that makes me sympathetic to almost anyone who
+ends up on the wrong end of viral outrage and panic, and
+unfortunately it’s flaring up again. Huang is one of the greatest
+CEOs in American history. He’s still hyper competent, he’s been
+incredibly important to the growth of the AI ecosystem, and
+frankly, he’s among the most sane of the contemporary tech leaders
+we have on offer. His fall from grace has been not only stunning
+but seemingly coordinated.</p>
+</blockquote>
+
+<p><a href="https://daringfireball.net/linked/2026/11/13/huangs-final-hours-inside-nvidia">It is sad</a>. But it’s also <a href="https://daringfireball.net/linked/2026/11/12/reuters-third-woman">funny</a>. Many tragedies are also <a href="https://theonion.com/the-sinking-of-the-titanic-100-years-later-1819590664/">hilarious</a>. (That’s a key to Shakespeare’s enduring fame — his tragedies had funny scenes and his comedies had <a href="https://www.smithsonianmag.com/arts-culture/why-scholars-still-debate-whether-or-not-shakespeares-merchant-venice-anti-semitic-180958867/">painful themes</a>.)</p>
+
+<p>But I think it’s now a <em>very</em> open question whether Jensen Huang was even a vaguely responsible CEO, let alone “one of the greatest CEOs in American history”. What’s undisputed is that he’s one of the greatest technical innovators in history. Nvidia technology is world-beating in several regards. But that doesn’t make him a great CEO. If Nvidia falls apart because he — by his own admission — rejected the notion of succession planning and structured the company with no hierarchy other than himself at the center, that’s an abject failure. Ignoring the fact that he himself knew the risks he was taking with his sexual escapades, he could have been hit by a bus on any given day. The leadership structure Huang cultivated is like being the sole breadwinner in a family and not having a life insurance policy. If that breadwinner dies in an accident and leaves their family destitute, no one’s going to call them “one of the greatest parents in history”. Maybe it’ll all work out for Nvidia though. We don’t know yet. Only time will tell. But I don’t think it looks good at the moment. If I owned Nvidia stock I’d sell it all right now.</p>
+
+<p>The above doesn’t even touch upon my belief that Nvidia’s meteoric rise to the top market cap in the world was fueled — to some extent — <a href="https://finance.yahoo.com/news/nvidia-100-billion-openai-investment-110000256.html">by a circular financing racket</a>. If my side of that argument is ultimately proven correct — that the AI bubble is essentially an elaborate, complex Ponzi scheme — Huang’s plaque in the CEO Hall of Fame will go in the Infamy Wing alongside Enron’s Jeffrey Skilling, Elizabeth Holmes, and     Sam Bankman-Fried. Maybe I’m all wet about that. But I’d say it’s at least an open question at the moment.</p>
+
+<p>Sharp, nearing his conclusion:</p>
+
+<blockquote>
+  <p>Huang repeatedly belittled those people with both his rhetoric and
+his company’s behavior, and indeed, he questioned the patriotism
+of anyone who dared to object. In so doing, he was waging war with
+not only large swaths of the U.S. security apparatus, but also the
+realities of Xi Jinping’s China that would inevitably make it
+impossible to sustain his position without looking naive, selfish,
+and unforgivably reckless.</p>
+</blockquote>
+
+<p>Read the whole thing, and Sharp ends up making the case himself that Huang, ultimately, was a terrible CEO, not a great one.</p>
+
+<div>
+<a  title="Permanent link to ‘Andrew Sharp: ‘Jensen Huang Was Always Going to Lose’’"  href="https://daringfireball.net/linked/2026/11/13/sharp-huang">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Inside Jensen Huang’s Final Hours as the CEO of Nvidia</title>
+	<link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2026-11-13/inside-jensen-huang-s-final-hours-as-the-ceo-of-nvidia?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb3VyY2UiOiJTdWJzY3JpYmVyR2lmdGVkQXJ0aWNsZSIsImlhdCI6MTc5NDU0NzgxNSwiZXhwIjoxNzk1MTUyNjE1LCJhcnRpY2xlSWQiOiJUT0YxQVBOM04wOUIwMCIsImJjb25uZWN0SWQiOiI1RkQyNjU1NTA2QTI0NjM2QjM1NzBEQkQ5MTY1RkI1NCJ9.8RulazBTaUuCgwysfQ4dlu-dhQIe3yvK-2UHLcm3hWc&amp;leadSource=article-gifting" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqp" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/huangs-final-hours-inside-nvidia" />
+	<id>tag:daringfireball.net,2026:/linked//6.43729</id>
+	<published>2026-11-13T19:19:47Z</published>
+	<updated>2026-11-13T19:19:47Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Drake Bennett and Ian King, reporting for Bloomberg (gift link):</p>
+
+<blockquote>
+  <p>At the end, Jensen Huang looked broken and shattered, his
+legendary energy depleted. After weeks spent denying the
+allegations of infidelity and fighting to remain in his job as
+Nvidia Corp.’s chief executive officer, his surrender late
+Wednesday night was unconditional. Huang’s usual take-charge
+demeanor had evaporated, according to a person familiar with the
+situation, and he’d started using phrases like “whatever” and “I
+don’t care.”</p>
+
+<p>For the decades he spent building Nvidia into a
+multitrillion-dollar AI chip behemoth, Huang was famous for his
+attention to the tiniest of details, from chip architecture to
+the compensation packages of even the most junior employees at
+the company. Now, in the eyes of the people in the room, he had
+given up.</p>
+
+<p>According to people who’ve spoken with him in recent days, Huang
+has already taken a penitent turn, castigating himself as a “piece
+of shit.”</p>
+</blockquote>
+
+<p>It really is sad. No joke here. It’s sad.</p>
+
+<div>
+<a  title="Permanent link to ‘Inside Jensen Huang’s Final Hours as the CEO of Nvidia’"  href="https://daringfireball.net/linked/2026/11/13/huangs-final-hours-inside-nvidia">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Microsoft, and Its Customers, Are Suffering a Global Cloud Outage</title>
+	<link rel="alternate" type="text/html" href="https://arstechnica.com/tech-policy/2026/11/microsoft-blames-failed-server-health-checks-not-hackers-for-global-outage/" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqo" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/microsoft-cloud-outage" />
+	<id>tag:daringfireball.net,2026:/linked//6.43728</id>
+	<published>2026-11-13T17:27:56Z</published>
+	<updated>2026-11-13T17:27:56Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Ashley Belanger, Ars Technica:</p>
+
+<blockquote>
+  <p>A global outage taking down a wide range of Microsoft 365 services
+remains ongoing Friday morning.</p>
+
+<p>The outage started midday Thursday, impacting users of Microsoft
+email, cloud, and AI services. Microsoft has documented the <a href="https://status.cloud.microsoft/">full
+list of services impacted</a> by the error, while moving early Friday
+morning to protect customers around the world from losing emails
+during the extended disruptions.</p>
+
+<p>“Recovery actions are ongoing,” the Microsoft 365 Status account
+confirmed on X. “To help preserve delayed mail during this event,
+we’ve extended email timeout to 48 hours.”</p>
+</blockquote>
+
+<p>So it’s more like Microsoft 363 at this point.</p>
+
+<div>
+<a  title="Permanent link to ‘Microsoft, and Its Customers, Are Suffering a Global Cloud Outage’"  href="https://daringfireball.net/linked/2026/11/13/microsoft-cloud-outage">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>David Sacks Is Fucked Too</title>
+	<link rel="alternate" type="text/html" href="https://x.com/DavidSacks/status/2121070881258504395" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqn" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/sacks" />
+	<id>tag:daringfireball.net,2026:/linked//6.43727</id>
+	<published>2026-11-13T17:14:40Z</published>
+	<updated>2026-11-13T17:14:40Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>David Sacks, on X:</p>
+
+<blockquote>
+  <p>Bombshell story. The spy narrative is collapsing already.</p>
+
+<p>Is there clear &amp; convincing evidence that Alice Huang was a
+Chinese spy?</p>
+
+<ul>
+<li>AG says no. (“no conclusions reached”).</li>
+<li>CIA says no. (“not yet convinced”).</li>
+<li>DNI says no (“not entirely accurate and over-torqued”).</li>
+<li>Ranking Democrat on House Intelligence (incoming Chairman) says
+no. (“today, at least, I don’t know”). This was immediately
+after he was briefed.</li>
+</ul>
+
+<p>Who argues otherwise? Anonymous officials tell CNN “it strains
+credulity to believe that she was not acting as an agent of the
+Chinese government — simply by virtue of the fact that she is a
+successful Chinese businesswoman working with one of America’s
+most powerful companies.”</p>
+</blockquote>
+
+<p>First, as for “who argues otherwise?”, <a href="https://daringfireball.net/linked/2026/11/09/rubio-huang-trump">the U.S. State Department is who</a>. But more importantly, the degree to which Alice Huang worked for or with China’s MSS is almost a footnote on this scandal. It’s not central to the story at all.</p>
+
+<p>It’s bad enough that Jensen Huang was having a yearslong affair with an executive from <em>any</em> Nvidia client. But Megaspeed was apparently a shell company dedicated to circumventing U.S. export controls for AI hardware to China. Alice Huang is, apparently, a criminal smuggler working to circumvent U.S. national security policy. If she was also cooperating with or taking direction from MSS that’s just icing on the cake.</p>
+
+<p>I wrote <a href="https://daringfireball.net/linked/2026/11/13/lutnick-nyt">in a post earlier today</a> that Commerce Secretary Howard Lutnick is being teed up <a href="https://bsky.app/profile/atrupar.com/post/3n2733eq7yf2a">to be scapegoated</a> — deservedly — for the ails of the Republican Party and Trump administration. Sacks, I think, is going to be right there with him — also deservedly. This whole “Maybe she’s not a spy so the whole story is a scam” argument is drenched with flop sweat.</p>
+
+<p>Sacks originally joined Team Trump 2.0 <a href="https://www.theguardian.com/us-news/2026/sep/20/david-sacks-trump-ai-czar">as “AI czar”</a>. In that capacity he was <em>the</em> leading proponent in the Trump administration for a hands-off approach to AI regulation generally, and specifically a look-the-other-way policy regarding Nvidia’s 20-percent-of-revenue side hustle selling banned-for-sale-to-China hardware to smugglers.</p>
+
+<p>Sacks might not just get sacked. If this goes south and people wind up being convicted of crimes, Sacks will be at the front of that line too. <a href="https://www.newyorker.com/magazine/2026/05/04/donald-trumps-pardon-economy">The pardon from Trump will cost Sacks real money</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘David Sacks Is Fucked Too’"  href="https://daringfireball.net/linked/2026/11/13/sacks">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>Nvidia Employees Petition for Jensen Huang’s Return</title>
+	<link rel="alternate" type="text/html" href="https://www.wired.com/story/nvidia-employees-petition-for-jensen-huangs-return/" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xqm" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/nvidia-petition" />
+	<id>tag:daringfireball.net,2026:/linked//6.43726</id>
+	<published>2026-11-13T15:40:52Z</published>
+	<updated>2026-11-13T15:40:53Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Paresh Dave and Zoë Schiffer, reporting for Wired:</p>
+
+<blockquote>
+  <p>Some Nvidia employees are calling for Jensen Huang’s return
+even after his multiple reported extramarital affairs and
+abrupt resignation, according to internal correspondence
+reviewed by Wired.</p>
+
+<p>An internal “suggestion box” post submitted before Huang’s
+resignation by a longtime engineer at Nvidia urged the company’s
+board to take employee sentiment into consideration prior to
+taking any action. The submission has attracted more than 1,600
+comments since then, with several asking board members to find a
+way to bring back Huang.</p>
+
+<p>“If you believe in the mission, bring back THE boss,” wrote one
+anonymous commenter.</p>
+</blockquote>
+
+<p>Nvidia has over 42,000 employees (for now). The 1,600 who commented on this petition might just be the ones Huang was shtupping.</p>
+
+<div>
+<a  title="Permanent link to ‘Nvidia Employees Petition for Jensen Huang’s Return’"  href="https://daringfireball.net/linked/2026/11/13/nvidia-petition">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry><entry>
+	<title>NYT: ‘Howard Lutnick Took Softer Line on Nvidia as Calls for Tougher Controls Grew’</title>
+	<link rel="alternate" type="text/html" href="https://www.nytimes.com/2026/11/12/us/politics/lutnick-nvidia-commerce-china-chips.html?unlocked_article_code=1.QFE.hj_X.iLppRX0Ec_Jj" />
+	<link rel="shorturl" type="text/html" href="http://df4.us/xql" />
+	<link rel="related" type="text/html" href="https://daringfireball.net/linked/2026/11/13/lutnick-nyt" />
+	<id>tag:daringfireball.net,2026:/linked//6.43725</id>
+	<published>2026-11-13T15:31:22Z</published>
+	<updated>2026-11-13T16:37:48Z</updated>
+	<author>
+		<name>John Gruber</name>
+		<uri>http://daringfireball.net/</uri>
+	</author>
+	<content type="html" xml:base="https://daringfireball.net/linked/" xml:lang="en"><![CDATA[
+<p>Ana Swanson, Tripp Mickle, Maggie Haberman, and Jonathan Swan, in a long deeply-sourced profile of Commerce Secretary Howard Lutnick (gift link):</p>
+
+<blockquote>
+  <p>There is broad agreement among most senior Trump administration
+officials that the United States should more aggressively tighten
+controls on Nvidia’s advanced chips to keep China from using them
+to catch up in the race to dominate artificial intelligence.</p>
+
+<p>Then there is Howard Lutnick, who runs the Commerce
+Department. [...]</p>
+
+<p>Within the Commerce Department, Nvidia is treated differently than
+other firms, current and former officials say, with its issues
+given high priority and sent through specific channels.</p>
+
+<p>Mr. Lutnick frequently calls and messages with Mr. Huang, and the
+department prepares carefully for their private meetings together
+in Mr. Lutnick’s fifth floor office. All Nvidia matters are routed
+through Jeff Kessler, a top deputy to Mr. Lutnick, who is said to
+rarely take any significant action without the commerce
+secretary’s approval.</p>
+
+<p>Nvidia’s general counsel has also been given direct access to
+shape new rules, including leaving comments in draft regulations
+affecting the company.</p>
+</blockquote>
+
+<p>Here’s a photo from the Times story, taken this July in the Washington D.C. Cheesecake Factory, with Lutnick telling Jensen Huang, “Dude, seriously, smell my finger...”</p>
+
+<p><img
+   width = 500
+    src = "https://daringfireball.net/misc/2026/11/lutnick-huang-finger.jpeg"
+    alt = "Howard Lutnick and Jensen Huang in the Oval Office."
+/></p>
+
+<p>Republicans as a party, and the Trump administration in particular, need scapegoats for the historical disaster of their election losses last week. Huang and Nvidia are going to be one of them. Lutnick is another. <a href="https://bsky.app/profile/atrupar.com/post/3n2733eq7yf2a">He’s cooked</a>.</p>
+
+<div>
+<a  title="Permanent link to ‘NYT: ‘Howard Lutnick Took Softer Line on Nvidia as Calls for Tougher Controls Grew’’"  href="https://daringfireball.net/linked/2026/11/13/lutnick-nyt">&nbsp;★&nbsp;</a>
+</div>
+
+	]]></content>
+  </entry></feed><!-- THE END -->

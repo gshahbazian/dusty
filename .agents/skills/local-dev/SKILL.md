@@ -91,7 +91,8 @@ control ignores SIGINT, so it is hard to stop cleanly.
 | `.agents/skills/local-dev/scripts/trigger-cron.sh`                  | Fire the scheduled sync now                                  |
 | `.agents/skills/local-dev/scripts/reset.sh`                         | Delete all local state (stop `pnpm dev` first)               |
 | `node .agents/skills/local-dev/scripts/feed-server.mjs`             | Serve the fixture feeds on :5175 (`dev-start.sh` runs it for you) |
-| `.agents/skills/local-dev/scripts/seed-feeds.sh`                    | Subscribe the dev database to the fixture feeds              |
+| `.agents/skills/local-dev/scripts/seed-local-dev-feeds.sh`          | Fill the (empty) dev database: subscribe the saved real feeds and two failing URLs, then sync them in |
+| `.agents/skills/local-dev/scripts/save-real-feeds.sh`               | Re-download the saved real feeds (10 articles each); commit the result |
 
 ## Syncing real feeds locally (no internet needed)
 
@@ -99,14 +100,15 @@ The sync service fetches real HTTP, so give it something to fetch:
 
 ```sh
 .agents/skills/local-dev/scripts/dev-start.sh   # also starts the feed server on :5175
-.agents/skills/local-dev/scripts/seed-feeds.sh
-.agents/skills/local-dev/scripts/trigger-cron.sh
+.agents/skills/local-dev/scripts/seed-local-dev-feeds.sh   # subscribes and syncs
 .agents/skills/local-dev/scripts/db.sh "select id, last_outcome, last_http_status, last_error, title from feeds"
 .agents/skills/local-dev/scripts/db.sh "select feed_id, count(*) from articles group by feed_id"
 ```
 
 - The feed server serves `apps/sync/test/fixtures/` (the same files the
-  tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) with ETags,
+  tests use: RSS, Atom, RDF, JSON Feed, Latin-1, hostile HTML) and, at
+  `/real/<file>`, saved copies of seven real personal blogs
+  (`fixtures/real/`, listed in `sources.tsv`), all with ETags,
   so a second sync gets 304s. `/status/<code>`, `/slow` and `/html` give
   you an HTTP error, a timeout and a page that is not a feed.
 - `/generated.xml?run=<id>` is a feed that changes on demand: it starts
@@ -114,9 +116,17 @@ The sync service fetches real HTTP, so give it something to fetch:
   and each `curl localhost:5175/generated/add?run=<id>` adds one newer than
   the rest. Use it to land new articles mid-test (the unread browser tests
   do), then `trigger-cron.sh` to sync them in, or to make a long list.
-- `seed-feeds.sh` subscribes to six fixtures and two failing URLs. A good
-  first sync shows six feeds `ok`, one `http` (404 not found) and one
-  `invalid_feed`.
+- The dev stack starts empty: no feeds until you run
+  `seed-local-dev-feeds.sh`. It subscribes to the seven real feeds and two
+  failing URLs (no made-up articles), syncs them, and prints each feed's
+  outcome. A good first sync shows seven
+  feeds `ok` (69 articles), one `http` (404 not found) and one
+  `invalid_feed`. The synthetic fixtures stay for the tests (formats, the
+  hostile HTML); the browser tests use `/generated.xml`.
+- The real feeds are cut to their 10 newest articles (`trim-feed.mjs`).
+  `save-real-feeds.sh` refreshes them; `apps/sync/test/real-feeds.test.ts`
+  runs each through parsing and cleaning, so a new oddity in a real feed
+  shows up as a failing test.
 - To add a fixture, put the file in `apps/sync/test/fixtures/`; the server
   picks it up without a restart.
 - Want to sync again right away? The scheduled trigger ignores the 5-minute

@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Michael Tsai</title>
+	<atom:link href="https://mjtsai.com/blog/feed/" rel="self" type="application/rss+xml" />
+	<link>https://mjtsai.com/blog</link>
+	<description></description>
+	<lastBuildDate>Fri, 13 Nov 2026 19:30:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.8.3</generator>
+	<item>
+		<title>Apple Creator Studio .keyx and AI Features</title>
+		<link>https://mjtsai.com/blog/2026/11/13/apple-creator-studio-keyx-and-ai-features/</link>
+					<comments>https://mjtsai.com/blog/2026/11/13/apple-creator-studio-keyx-and-ai-features/#respond</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Fri, 13 Nov 2026 19:28:44 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[App Subscriptions]]></category>
+		<category><![CDATA[Apple Creator Studio]]></category>
+		<category><![CDATA[Apple Services]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[Final Cut Pro X]]></category>
+		<category><![CDATA[Freeform]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[iOS 27]]></category>
+		<category><![CDATA[iWork]]></category>
+		<category><![CDATA[JSON]]></category>
+		<category><![CDATA[Keynote]]></category>
+		<category><![CDATA[Liquid Glass]]></category>
+		<category><![CDATA[Logic Pro X]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Mac App]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[Model Context Protocol (MCP)]]></category>
+		<category><![CDATA[Numbers.app]]></category>
+		<category><![CDATA[Open Source]]></category>
+		<category><![CDATA[OpenAI]]></category>
+		<category><![CDATA[Pages.app]]></category>
+		<category><![CDATA[Pixelmator]]></category>
+		<category><![CDATA[Strategy Tax]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53850</guid>
+
+					<description><![CDATA[Apple (TidBITS, MacRumors): Apple today introduced transformative updates to Apple Creator Studio, the powerful collection of creative apps designed to put studio-grade tools into the hands of modern creators across Mac, iPad, and iPhone. Final Cut Pro for Mac now includes built-in MotionVFX &#8212; an expansive collection of visual effects, plug-ins, transitions, templates, and motion [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/">Apple</a> (<a href="https://tidbits.com/2026/11/04/apple-creator-studio-adds-new-creation-tools-and-intelligence-features/">TidBITS</a>, <a href="https://www.macrumors.com/2026/10/27/apple-updates-creator-studio-ai-features/">MacRumors</a>):</p>
+<blockquote cite="https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/">
+<p>Apple today introduced transformative updates to <a href="https://www.apple.com/apple-creator-studio/">Apple Creator Studio</a>, the powerful collection of creative apps designed to put studio-grade tools into the hands of modern creators across Mac, iPad, and iPhone. Final Cut Pro for Mac now includes built-in MotionVFX &mdash; an expansive collection of visual effects, plug-ins, transitions, templates, and motion graphics tools &mdash; as well as seamless editing in Pixelmator Pro. Apple&rsquo;s curated Content Hub now includes video assets and is available in Final Cut Pro. Music creators using Logic Pro for Mac gain a new intelligent assistant in beta, an enhanced Stem Splitter that now separates drums, and a redesigned Browser that incorporates all sounds, with music understanding and even a Splice library. Pixelmator Pro introduces Generate Fill, which lets creators transform selected areas of an image using natural language. Keynote, Pages, and Numbers introduce new AI features in beta, including assistants that understand document context and new Model Context Protocol (MCP) support for workflow automation. They also add stock video in the Content Hub and new premium themes and templates.</p>
+<p>[&#8230;]</p>
+<p>Keynote introduces support for Keynote Interchange Format (.keyx), an open JSON-based bundle file format designed to be readable and accessible to external tools, developer workflows, and AI agents.</p>
+</blockquote>
+
+<p><a href="https://maly.io/@danielmunoz/117514137958324273">Daniel Mu&ntilde;oz</a>:</p>
+<blockquote cite="https://maly.io/@danielmunoz/117514137958324273">
+<p>It&rsquo;s somewhat infuriating that big companies are now willing to do things for AI agents that they refused to do for years for humans with accessibility needs, or even for human developers.</p>
+</blockquote>
+
+<p><a href="https://x.com/bunchjesse/status/2115076780285739258">Jesse Bunch</a> (via <a href="https://daringfireball.net/linked/2026/10/27/apple-creator-studio-updates">John Gruber</a>):</p>
+<blockquote cite="https://x.com/bunchjesse/status/2115076780285739258">
+<p>Our new in-app assistants can help you get things done in record time. MCP allows you to bring your own agent if you want. And an open source format for Keynote (and Python library!) so you can create Keynote documents programmatically on any platform.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@stroughtonsmith/117513227427123918">Steve Troughton-Smith</a>:</p>
+<blockquote cite="https://mastodon.social/@stroughtonsmith/117513227427123918">
+<p>One of the questions we asked when Apple introduced Creator Studio was whether the update cadence would change for Apple&rsquo;s pro apps, perhaps due to the expanded budget the subscription model might bring.</p>
+<p>It certainly feels like it has! We&rsquo;ve had several significant updates this year to apps that historically tend not to receive updates for years on end.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@nicklockwood/117513503132854982">Nick Lockwood</a>:</p>
+<blockquote cite="https://mastodon.social/@nicklockwood/117513503132854982">
+<p>What bothers me about this is that it&rsquo;s a violation of the implicit agreement, namely that as Apple users we pay a premium for hardware with the understanding that it subsidises amazing first-party software.</p>
+<p>It seems like Apple has shifted to an approach where every app or service has to be profitable in its own right or it will be starved of resources and left to rot, which sucks because a focus on profit extraction is almost always incompatible with a good software experience.</p>
+</blockquote>
+
+<p><a href="https://x.com/bzamayo/status/2115120270826770599">Benjamin Mayo</a>:</p>
+<blockquote cite="https://x.com/bzamayo/status/2115120270826770599">
+<p>It&rsquo;s very odd that the Creator Studio apps now have their own concept of an &lsquo;Assistant&rsquo;. This should just be Siri AI, or at least done as a plugin architecture so a Creator Studio subscription unlocks the additional capabilities inside the Siri AI surfaces.</p>
+</blockquote>
+
+<p><a href="https://www.macstories.net/reviews/a-closer-look-at-apples-upcoming-creator-studio-update/">John Voorhees</a>:</p>
+<blockquote cite="https://www.macstories.net/reviews/a-closer-look-at-apples-upcoming-creator-studio-update/">
+<p>But even though my editing workflow hasn&rsquo;t changed much, the design of the app has. Logic Pro has been given a Liquid Glass makeover that emphasizes black and dark gray over its predecessor&rsquo;s lighter gray treatment.</p>
+<p>[&#8230;]</p>
+<p>The new Unified Browser, which now houses those loops I&rsquo;ve made, includes other enhancements, too. You can search using natural language queries, drag a loop into the search field to find similar loops, and quickly narrow results with dynamic tag filtering.</p>
+<p>[&#8230;]</p>
+<p>One of my favorite features is Logic Pro&rsquo;s new Intelligent Assistant, a new beta feature that <a href="https://www.macstories.net/news/apple-creator-studio-to-add-motionvfx-ai-assistants-and-mcp-support-in-november/">combines models from Apple and OpenAI</a> to help guide you through the music creation process.</p>
+<p>[&#8230;]</p>
+<p>In my testing, I was impressed to find a very complete set of features accessible via MCP, which runs a local server and uses a shared JavaScript API that adds a layer that&rsquo;s exclusive to each app. That means, for example, that you could set up a workflow with an agent to generate invoices in Pages, automatically populate fields in Numbers with the details, from Pages and your payment processor or bank, and then generate slides of the data to report on your revenue results periodically.</p>
+</blockquote>
+
+<p><a href="https://www.macsparky.com/blog/2026/11/creator-studio-early-automation-tests/">David Sparks</a>:</p>
+<blockquote cite="https://www.macsparky.com/blog/2026/11/creator-studio-early-automation-tests/">
+<p>There are some practical details worth knowing. The app has to be open, and if you have several windows open, the agent needs to identify the one it should work on.</p>
+<p>[&#8230;]</p>
+<p>I keep beating the drum that productivity apps need to adapt for use with agentic AI going forward, and I&rsquo;m glad to see the iWork team is getting on board.</p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/10/20/xcode-projects-for-the-command-line-and-coding-agents/">Xcode Projects for the Command Line and Coding Agents</a></li>
+<li><a href="https://mjtsai.com/blog/2026/09/17/xcodes-new-xcproj-files-are-json/">Xcode&rsquo;s New .xcproj Files Are JSON</a></li>
+<li><a href="https://mjtsai.com/blog/2026/07/21/apple-financial-statements-products-vs-services/">Apple Financial Statements: Products vs. Services</a></li>
+<li><a href="https://mjtsai.com/blog/2026/02/13/apple-creator-studio-ai-usage-limits/">Apple Creator Studio AI Usage Limits</a></li>
+<li><a href="https://mjtsai.com/blog/2026/02/10/apple-creator-studio-now-shipping/">Apple Creator Studio Now Shipping</a></li>
+<li><a href="https://mjtsai.com/blog/2026/01/13/apple-creator-studio/">Apple Creator Studio</a></li>
+<li><a href="https://mjtsai.com/blog/2013/10/26/exploring-the-new-iwork-file-formats/">Exploring the New iWork File Formats</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/13/apple-creator-studio-keyx-and-ai-features/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>DNS Resolution Failures in macOS 26 and 27</title>
+		<link>https://mjtsai.com/blog/2026/11/13/dns-resolution-failures-in-macos-26-and-27/</link>
+					<comments>https://mjtsai.com/blog/2026/11/13/dns-resolution-failures-in-macos-26-and-27/#comments</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Fri, 13 Nov 2026 19:28:34 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Bug]]></category>
+		<category><![CDATA[Domain Name System (DNS)]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[macOS Tahoe 26]]></category>
+		<category><![CDATA[Networking]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53848</guid>
+
+					<description><![CDATA[Wade Tregaskis: Sporadically (once every week or two) on macOS 26, domain name resolution will just abruptly stop working. But, it gets worse. I recently updated to macOS 27.2, and now the problem occurs multiple times an hour. That is, name resolution fails if done through Apple&#8217;s libraries &#x2013; through dig or nslookup it continues [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://wadetregaskis.com/dns-resolution-failures-in-macos-26-27/">Wade Tregaskis</a>:</p>
+<blockquote cite="https://wadetregaskis.com/dns-resolution-failures-in-macos-26-27/">
+<p>Sporadically (once every week or two) on macOS 26, domain name resolution will just abruptly stop working.  But, it gets worse.  I recently updated to macOS 27.2, and now the problem occurs multiple times an hour.</p>
+<p>That is, name resolution fails <em>if</em> done through Apple&rsquo;s libraries &#x2013; through <code>dig</code> or <code>nslookup</code> it continues to work just fine, which means things like <code>ping</code> also work just fine, but e.g. <code>curl</code> and Safari do not.</p>
+<p>[&#8230;]</p>
+<p>I&rsquo;ve been seeing this issue on multiple completely independent Macs and networks for many months now &#x2013; and now, as noted, it&rsquo;s a thousand times worse in macOS 27[&#8230;]</p>
+</blockquote>
+
+<p>He has some workarounds like killing <code>configd</code>.</p>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2015/06/30/mac-os-x-10-10-4-improves-networking-reliability/">Mac OS X 10.10.4 &ldquo;Improves Networking Reliability&rdquo;</a></li>
+<li><a href="https://mjtsai.com/blog/2015/05/27/mac-os-x-10-10-4-replaces-discoveryd-with-mdnsresponder/">Mac OS X 10.10.4 Replaces discoveryd With mDNSResponder</a></li>
+<li><a href="https://mjtsai.com/blog/2015/01/13/why-dns-in-os-x-10-10-is-broken/">Why DNS in OS X 10.10 Is Broken</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/13/dns-resolution-failures-in-macos-26-and-27/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ReadKit 4.0</title>
+		<link>https://mjtsai.com/blog/2026/11/13/readkit-4-0/</link>
+					<comments>https://mjtsai.com/blog/2026/11/13/readkit-4-0/#comments</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Fri, 13 Nov 2026 19:28:22 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[iCloud]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[iOS 27]]></category>
+		<category><![CDATA[iOS App]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Mac App]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[ReadKit]]></category>
+		<category><![CDATA[RSS]]></category>
+		<category><![CDATA[Syncing]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53846</guid>
+
+					<description><![CDATA[Balazs Varkonyi: A new iCloud-backed RSS service that syncs feed subscriptions, folders, smart folders, and article read and starred statuses. RSS feeds remain the primary source for articles, so ReadKit does not upload RSS article content to iCloud. Instead, it syncs article read and starred statuses, improving sync speed and reducing network traffic. [&#8230;] A [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://readkit.app/changelog/readkit-4.0.0/">Balazs Varkonyi</a>:</p>
+<blockquote cite="https://readkit.app/changelog/readkit-4.0.0/">
+<p>A new iCloud-backed RSS service that syncs feed subscriptions, folders, smart folders, and article read and starred statuses. RSS feeds remain the primary source for articles, so ReadKit does not upload RSS article content to iCloud. Instead, it syncs article read and starred statuses, improving sync speed and reducing network traffic.</p>
+<p>[&#8230;]</p>
+<p>A new iCloud-backed Read Later service that syncs saved articles, read and starred statuses, tags, and smart folders across your devices.</p>
+<p>[&#8230;]</p>
+<p>Export account settings together with smart folders, and import them individually when needed.</p>
+</blockquote>
+
+<p>There was also a quick <a href="https://readkit.app/changelog/readkit-4.1.0">4.1 update</a>:</p>
+<blockquote cite="https://readkit.app/changelog/readkit-4.1.0">
+<p>Monitors feed availability, server and network errors, and failed fetch counts for Built-in RSS and iCloud RSS. Synchronization uses this information to improve scheduling and reduce repeated error notifications for temporarily unavailable feeds.</p>
+<p>[&#8230;]</p>
+<p>Provides a searchable view of all subscriptions in an RSS account. From one screen, you can review feed health, add subscriptions, import OPML files, open feed settings, and manage folders.</p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2025/05/22/shutting-down-pocket/">Shutting Down Pocket</a></li>
+<li><a href="https://mjtsai.com/blog/2024/12/04/readkit-3-3/">ReadKit 3.3</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/13/readkit-4-0/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ReadAll 1.0</title>
+		<link>https://mjtsai.com/blog/2026/11/13/readall-1-0/</link>
+					<comments>https://mjtsai.com/blog/2026/11/13/readall-1-0/#respond</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Fri, 13 Nov 2026 19:28:17 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[iOS 27]]></category>
+		<category><![CDATA[iOS App]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Mac App]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[Podcasts]]></category>
+		<category><![CDATA[ReadAll]]></category>
+		<category><![CDATA[RSS]]></category>
+		<category><![CDATA[YouTube]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53844</guid>
+
+					<description><![CDATA[Loshadki: ReadAll 1.0 is on the App Store for iPhone, iPad and Mac. It is a feed reader: RSS, Atom and JSON Feed, with your subscriptions, folders and what you&#8217;ve read synced through iCloud. It is free, with no ads, no account and no tracking. [&#8230;] Enter a website&#8217;s address and ReadAll finds its feeds. [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://loshadki.app/blog/2026-11-05-readall/">Loshadki</a>:</p>
+<blockquote cite="https://loshadki.app/blog/2026-11-05-readall/">
+<p><a href="https://loshadki.app/readall/">ReadAll</a> 1.0 is on the App Store for iPhone, iPad and Mac. It is a feed reader: RSS, Atom and JSON
+Feed, with your subscriptions, folders and what you&rsquo;ve read synced through iCloud. It is free, with no ads, no
+account and no tracking.</p>
+<p>[&#8230;]</p>
+<p>Enter a website&rsquo;s address and ReadAll finds its feeds. It also follows
+YouTube channels, subreddits, and GitHub projects&rsquo; releases, tags and commits. Subscriptions come in and go
+out as OPML.</p>
+<p>[&#8230;]</p>
+<p>When a feed sends only a summary, Load Full Article brings in the rest from the page. Pick the font, a sepia or dark theme, the text size and the line width.</p>
+<p>[&#8230;]</p>
+<p>Podcasts play in the reader, and an episode can become a transcript on your device.</p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/10/06/reddit-to-remove-rss/">Reddit to Remove RSS</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/13/readall-1-0/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Tim Peters, RIP</title>
+		<link>https://mjtsai.com/blog/2026/11/12/tim-peters-rip/</link>
+					<comments>https://mjtsai.com/blog/2026/11/12/tim-peters-rip/#respond</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Thu, 12 Nov 2026 21:21:43 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Algorithm]]></category>
+		<category><![CDATA[Floating Point]]></category>
+		<category><![CDATA[Garbarge Collection]]></category>
+		<category><![CDATA[History]]></category>
+		<category><![CDATA[Language Design]]></category>
+		<category><![CDATA[Memory Management]]></category>
+		<category><![CDATA[Programming]]></category>
+		<category><![CDATA[Python]]></category>
+		<category><![CDATA[Rest in Peace]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53834</guid>
+
+					<description><![CDATA[Guido van Rossum (Hacker News): I am immensely sad to announce that Tim Peters has died earlier this year on July 15. It&#8217;s hard to overestimate Tim&#8217;s influence on Python. He&#8217;s probably best known for writing the Zen of Python (PEP 20), but to me he was a mentor and language co-designer long before that. [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028">Guido van Rossum</a> (<a href="https://news.ycombinator.com/item?id=50450488">Hacker News</a>):</p>
+<blockquote cite="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028">
+<p>I am immensely sad to announce that <a href="https://en.wikipedia.org/wiki/Tim_Peters_(software_engineer)">Tim Peters</a> has <a href="https://www.bratleyfamilyfuneralhomes.com/obituary/timothy-peters">died</a> earlier this year on July 15.</p>
+<p>It&rsquo;s hard to overestimate Tim&rsquo;s influence on Python. He&rsquo;s probably best known for writing the Zen of Python (<a href="https://peps.python.org/pep-0020/">PEP 20</a>), but to me he was a mentor and language co-designer long before that.</p>
+<p>Tim found Python not long after its initial release. His first deed was to convince me that Python should support mixed arithmetic between <code>int</code> and <code>float</code>, because most users would expect them to work that way. And he never stopped contributing.</p>
+</blockquote>
+
+<p><a href="https://blog.adafruit.com/2026/11/11/tim-peters-python-user-2-and-prolific-contributor-has-died/">Anne Barela</a> (<a href="https://developers.slashdot.org/story/26/11/11/2318211/tim-peters-python-user-2-and-prolific-contributor-dies-at-74">Slashdot</a>):</p>
+<blockquote cite="https://blog.adafruit.com/2026/11/11/tim-peters-python-user-2-and-prolific-contributor-has-died/">
+<p>He was a director of the Python Software Foundation from 2001 to 2014. Before Python, he wrote compilers at Cray Research and speech-to-text software at Dragon Systems.</p>
+</blockquote>
+
+<p><a href="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028/25">David Mertz</a>:</p>
+<blockquote cite="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028/25"><p>Brett famously commented many years ago that he <em>came for the language, but stayed for the community</em> &#8230; for me it was the reverse, I came for the community, and stayed for the language.  That community was in very large measure defined by Uncle Timmy&rsquo;s kindness and wit.</p>
+<p>[&#8230;]</p>
+<p>Python luminary and erstwhile professor of numeric computing Alex Martelli
+commented in 2001 (on &lsquo;&lt;comp.lang.python&gt;&rsquo;):</p>
+<blockquote><p>Anybody who thinks he knows what he&rsquo;s doing when floating
+point is involved IS either naive, or Tim Peters (well, it
+COULD be W. Kahan I guess, but I don&rsquo;t think he writes here).</p>
+</blockquote>
+<p>Fellow Python guru Tim Peters observed:</p>
+<blockquote><p>I find it&rsquo;s possible to be both (wink).  But <em>nothing</em> about
+fp comes easily to anyone, and even Kahan works his butt off
+to come up with the amazing things that he does.</p></blockquote>
+</blockquote>
+
+<p><a href="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028/12">Neil Schemenauer</a>:</p>
+<blockquote cite="https://discuss.python.org/t/in-memoriam-tim-peters-1952-2026/110028/12"><p>I poked around at Python 2.4, since that seems a good version to show off the things he worked on.  His contributions were all over the codebase but I&rsquo;ll point out a few that stand out to me.  <a href="https://github.com/python/cpython/blob/v2.4/Objects/obmalloc.c">pymalloc</a> was contributed by Vladimir Marangozov but it was Tim who polished it to diamond-like form.  A memory allocator is one of those things where it is impossible to have something completely optimal; you always make tradeoffs.  Tim&rsquo;s special contribution in that unit is <code>Py_ADDRESS_IN_RANGE</code>.  It is well commented, if you want to understand how it works.  Technically, it relies on undefined behavior but Tim figured it should work in practice.  It did so for many years.</p>
+<p>[&#8230;]</p>
+<p>Speaking of Knuth, the <a href="https://github.com/python/cpython/blob/v2.4/Objects/dictobject.c">dict object</a> algorithms were heavily optimized by Tim.  The C file contains lots of comments.  He also wrote <a href="https://github.com/python/cpython/blob/v2.4/Objects/dictnotes.txt">dictnotes</a>, which is a good example of his technical writing.  Another example is <a href="https://github.com/python/cpython/blob/v2.4/Modules/gc_weakref.txt">weakref.txt</a>, which I think Tim wrote after fixing a particularly difficult GC bug revealed by ZODB (while working at Zope Corp).</p>
+<p>On the topic of GC, the initial version of the cyclic garbage collector was written by me, merged before the 2.0 release.  It was Tim who polished it into robust and well-performing shape.  Likewise, I wrote the initial version of &ldquo;simple generators&rdquo; but it was Tim who put them on solid foundation, both the PEP and the implementation.</p></blockquote>
+
+<p><a href="https://www.reddit.com/r/Python/comments/1xt65ah/tim_peters_has_passed_away/">ExoticMandibles</a>:</p>
+<blockquote cite="https://www.reddit.com/r/Python/comments/1xt65ah/tim_peters_has_passed_away/">
+<p>He invented a new sorting algorithm (&ldquo;Timsort&rdquo;); a descendent of it (&ldquo;PowerSort&rdquo;) is still used in Python today, as well as in Java, and several Javascript runtimes (Chrome, Node).</p>
+</blockquote>
+
+<p><a href="https://pyfound.blogspot.com/2018/07/the-happy-medium-distinguished-service.html">Python Software Foundation</a>:</p>
+<blockquote cite="https://pyfound.blogspot.com/2018/07/the-happy-medium-distinguished-service.html">
+<p>In Guido van Rossum&rsquo;s estimation, Peters&rsquo;s biggest contribution to the community has been his years of answering questions and guiding debates on the Python mailing list, writing each message precisely and cheerfully. PSF director Thomas Wouters agrees: &ldquo;Tim is just never flustered. He always takes it in good humor and it definitely has an effect on everyone else, as well.&rdquo; Even an experienced developer like Carol Willing says that when she sees a post from Peters on a topic she knows, she&rsquo;ll take the time to read it for new insights or new ways of explaining.</p>
+</blockquote>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/12/tim-peters-rip/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Apple Closing Community Support Forum</title>
+		<link>https://mjtsai.com/blog/2026/11/11/apple-closing-community-support-forum/</link>
+					<comments>https://mjtsai.com/blog/2026/11/11/apple-closing-community-support-forum/#comments</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Wed, 11 Nov 2026 20:47:35 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Apple]]></category>
+		<category><![CDATA[Apple Software Quality]]></category>
+		<category><![CDATA[AppleCare]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[Customer Support]]></category>
+		<category><![CDATA[Datacide]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Sunset]]></category>
+		<category><![CDATA[Web]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53832</guid>
+
+					<description><![CDATA[Apple (Hacker News): The Apple Support Community will permanently close on November 20, 2026. Starting today, the site will no longer accept new posts and is available in a read-only state. It&#8217;s not totally clear, but I take this to mean that they&#8217;re deleting all the data on November 20. Joe Rossignol: Apple informed MacRumors [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://discussions.apple.com/welcome">Apple</a> (<a href="https://news.ycombinator.com/item?id=50453555">Hacker News</a>):</p>
+<blockquote cite="https://discussions.apple.com/welcome">
+<p>The Apple Support Community will permanently close on November 20, 2026. Starting today, the site will no longer accept new posts and is available in a read-only state.</p>
+</blockquote>
+
+<p>It&rsquo;s not totally clear, but I take this to mean that they&rsquo;re deleting all the data on November 20.</p>
+
+<p><a href="https://www.macrumors.com/2026/11/10/apple-support-community-closing-november-20/">Joe Rossignol</a>:</p>
+<blockquote cite="https://www.macrumors.com/2026/11/10/apple-support-community-closing-november-20/">
+<p>Apple informed <em>MacRumors</em> that it decided to sunset the Apple Support Community after a careful evaluation of strategy and customer needs.</p>
+</blockquote>
+
+<p>That&rsquo;s clear as mud. Like most forums, there was a lot of useless and even wrong information, but there were also gems not posted anywhere else. It seemed like AI had the potential to make finding them easier. The forums were often more helpful than Apple&rsquo;s own support people, who would claim to have never heard of an issue before even though there was a thread about it with hundreds of replies. They often gave me wrong information, too.</p>
+
+<blockquote cite="https://www.macrumors.com/2026/11/10/apple-support-community-closing-november-20/">
+<p>Alternatives to the Apple Support Community include the <a href="https://forums.macrumors.com/">MacRumors Forums</a> and <a href="https://www.reddit.com/r/applehelp/">Reddit</a>, and customers can continue to <a href="https://getsupport.apple.com/">contact Apple Support</a>.</p>
+</blockquote>
+
+<p><a href="https://appleinsider.com/articles/26/11/11/apple-support-community-forums-are-shutting-down">Wesley Hilliard</a>:</p>
+<blockquote cite="https://appleinsider.com/articles/26/11/11/apple-support-community-forums-are-shutting-down">
+<p>The good news is, <em>AppleInsider</em> will continue to offer detailed articles on how to solve any problem, plus you can use our forums to ask for help from our staff and many knowledgeable forum members.</p>
+</blockquote>
+
+<p>See also: <a href="https://talk.tidbits.com/t/apple-support-community-forums-will-permanently-close-on-november-20/34633">TidBITS Talk</a> and <a href="https://talk.macpowerusers.com/t/the-apple-support-community-will-permanently-close-on-november-20-2026/48091">Mac Power Users Talk</a>.</p>
+
+<p><a href="https://9to5mac.com/2026/11/10/end-of-an-era-apple-support-community-forums-will-permanently-close-on-november-20/">Marcus Mendes</a>:</p>
+<blockquote cite="https://9to5mac.com/2026/11/10/end-of-an-era-apple-support-community-forums-will-permanently-close-on-november-20/">
+<p>If you have ever had a question or ran into a problem with an Apple product, chances are you have come across the Apple Support Community, the company&rsquo;s official discussion forums where users from around the world help each other troubleshoot issues and share tips.</p>
+<p>The platform has a history dating back to at least 1998, when it was known as Apple Tech Exchange. Since then, it was renamed Apple Discussions before <a href="https://9to5mac.com/2011/04/16/apple-replaces-support-discussions-with-apple-support-communities-new-interface-question-asking-tracked-responses/">relaunching as Apple Support Communities</a> in April 2011, with a redesigned interface, personalized profiles, and a reputation system that rewarded users for helping others.</p>
+</blockquote>
+
+<p><a href="https://www.fastcompany.com/91640201/apple-support-community-shutdown-why-closing-it-makes-sense">Michael Grothaus</a>:</p>
+<blockquote cite="https://www.fastcompany.com/91640201/apple-support-community-shutdown-why-closing-it-makes-sense">
+<p>It&rsquo;s unknown how many users the forums had, but even today, the portal still <a href="https://discussions.apple.com/learn">boasts</a> that the Apple Support Community was &ldquo;the world&rsquo;s largest community of Apple fans.&rdquo;</p>
+<p>The problem with Apple Support Communities, in the <a href="https://www.reddit.com/r/apple/comments/1xt6ud0/apple_support_communities_has_closed_shuts_down/">opinion</a> of <a href="https://forums.macrumors.com/threads/apple-support-community-permanently-closing-on-november-20.2494142/">many</a> Apple users, was that the answers found on the forums were often lackluster, incomplete, or sometimes just downright wrong. </p>
+<p>Many queries also often went unanswered, or the only replies to a tech support query were along the lines of &ldquo;I&rsquo;m having the same problem.&rdquo;</p>
+<p>[&#8230;]</p>
+<p>Asking ChatGPT, Gemini, or Apple&rsquo;s new Siri AI how to resolve your Apple problem is often the quickest way to get a reliable answer now.</p>
+</blockquote>
+<p>But weren&rsquo;t those in part trained using the community forums?</p>
+
+<p><a href="https://www.macworld.com/article/3282552/apple-suddenly-shutters-its-support-community-forums-and-wont-say-why.html">David Price</a>:</p>
+<blockquote cite="https://www.macworld.com/article/3282552/apple-suddenly-shutters-its-support-community-forums-and-wont-say-why.html">
+<p>One obvious issue with the forums would be the same one encountered by every company operating such a site: The owner has responsibility for the content without having control over it. If news of a hardware problem breaks, forum users will discuss it in a way that carries consequences for Apple&rsquo;s corporate strategy, potentially widening awareness before the company is ready to release a statement or even seeding misinformation, and disgruntled device owners are unlikely to follow Apple&rsquo;s desired messaging lines when complaining about the latest thing that has gone wrong.</p>
+<p>[&#8230;]</p>
+<p>In other words, Apple probably didn&rsquo;t like the idea of owners googling a problem with their device, seeing the forums in a prominent search ranking and with official Apple branding, and then being exposed to unofficial messaging. It&rsquo;s a company which is notorious for wanting to control the narrative at all times, and forums are a terrible medium for that.</p>
+</blockquote>
+
+<p><a href="https://schwarztech.net/snippets/apple-support-community-permanently-closing-on-november-20">Eric Schwarz</a>:</p>
+<blockquote cite="https://schwarztech.net/snippets/apple-support-community-permanently-closing-on-november-20">
+<p>I&rsquo;m guessing that Apple sees this as more of a liability than an asset&mdash;when something controversial pops up (such as iPhone Duo displays failing), it&rsquo;s a bit odd to be hosting the venue that makes you look bad. On the other hand, losing a potential space that isn&rsquo;t Reddit is a little disappointing, even if it didn&rsquo;t always fulfill the promise when it was set up 28 years ago.</p>
+</blockquote>
+
+<p><a href="https://sixcolors.com/link/2026/11/ding-dong-the-apple-support-community-is-dead/">Jason Snell</a>:</p>
+<blockquote cite="https://sixcolors.com/link/2026/11/ding-dong-the-apple-support-community-is-dead/">
+<p>These message boards were an embarrassment for Apple. Not only were they very much out of step with what the web has come to be over the last couple of decades, but their presence under an apple.com domain meant that they ranked highly in search and were perceived by the general public as being official in some way.</p>
+<p>But they weren&rsquo;t, nor were they helpful. They were full of people asking questions and not getting useful answers, with many responses given by users who were more motivated to gain karma in the forum&rsquo;s user-ranking system than to help. I can&rsquo;t tell you how many times I visited these forums while trying to track down the answer to a peculiar quirk or bug, only to find the (legitimate!) question being shut down by an officious high-ranking know-it-all who didn&rsquo;t actually understand what was being asked and couldn&rsquo;t provide a useful answer.</p>
+</blockquote>
+
+<p><a href="https://pxlnv.com/linklog/apple-support-community-shut-down/">Nick Heer</a>:</p>
+<blockquote cite="https://pxlnv.com/linklog/apple-support-community-shut-down/">
+<p>I am surprised by how abrupt this is.</p>
+</blockquote>
+
+<p><a href="https://news.ycombinator.com/item?id=50454551">Jordan-117</a>:</p>
+<blockquote cite="https://news.ycombinator.com/item?id=50454551">
+<p>I feel bad for the people who dedicated significant time to helping others there. I just pulled up a random page and there are users with tens of thousands of answers and profiles professing their love of all things Apple. Suddenly going read-only with no warning and killing it shortly after just seems like such a cold and abrupt way to end what was clearly some people&rsquo;s hobby and point of pride. I hope they at least do something to privately acknowledge the most helpful users beyond the boilerplate message.</p>
+</blockquote>
+
+<p><a href="https://social.lol/@etavirp/117598682166237314">David</a>:</p>
+<blockquote cite="https://social.lol/@etavirp/117598682166237314">
+<p>I cannot believe they&rsquo;re going to nuke all that historic information. It&rsquo;s not like keeping it online costs more than a rounding error on their balance sheet.</p>
+</blockquote>
+
+<p><a href="https://appleinsider.com/articles/26/11/11/apple-support-communities-were-sound-and-fury-but-sometimes-so-useful">William Gallagher</a>:</p>
+<blockquote cite="https://appleinsider.com/articles/26/11/11/apple-support-communities-were-sound-and-fury-but-sometimes-so-useful">
+<p>One reason for that could well be that, according to <em>AppleInsider</em> sources, Apple hasn&rsquo;t even been reading those forums for at least the last five years.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@lapcatsoftware/117598714826042410">Jeff Johnson</a>:</p>
+<blockquote cite="https://mastodon.social/@lapcatsoftware/117598714826042410">
+<p>That&rsquo;s a problem. Apple should have been reading its own forums and also other online forums like Reddit.</p>
+<p>Apple sits back like fucking dummies, ignoring problems that everyone knows exist because nobody bothers to fight through the red tape of supplying Apple with the required information including sysdiagnose and TPS reports via Feedback Assistant.</p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/10/30/iphone-duo-crackgate/">iPhone Duo Crackgate</a></li>
+<li><a href="https://mjtsai.com/blog/2026/10/06/reddit-to-remove-rss/">Reddit to Remove RSS</a></li>
+<li><a href="https://mjtsai.com/blog/2026/09/30/ai-applecare/">AI AppleCare</a></li>
+<li><a href="https://mjtsai.com/blog/2026/07/03/old-reddit-now-requires-logging-in/">Old Reddit Now Requires Logging In</a></li>
+<li><a href="https://mjtsai.com/blog/2024/07/15/stack-overflow-changes-data-dump-process/">Stack Overflow Changes Data Dump Process</a></li>
+<li><a href="https://mjtsai.com/blog/2024/05/24/redesigned-apple-developer-forums/">Redesigned Apple Developer Forums</a></li>
+<li><a href="https://mjtsai.com/blog/2023/09/01/apple-to-drop-customer-support-via-social-media/">Apple to Drop Customer Support via Social Media</a></li>
+<li><a href="https://mjtsai.com/blog/2022/05/09/apple-support-community-forums/">Apple Support Community Forums</a></li>
+<li><a href="https://mjtsai.com/blog/2019/11/25/apple-store-removes-customer-reviews/">Apple Store Removes Customer Reviews</a></li>
+<li><a href="https://mjtsai.com/blog/2014/01/08/apple-shutting-down-developer-mailing-lists/">Apple Shutting Down Developer Mailing Lists</a></li>
+</ul>
+
+<p id="apple-closing-community-support-forum-update-2026-11-13">Update (<a href="#apple-closing-community-support-forum-update-2026-11-13">2026-11-13</a>): <a href="https://tidbits.com/2026/11/11/apple-support-community-closes-but-better-options-exist/">Adam Engst</a>:</p>
+<blockquote cite="https://tidbits.com/2026/11/11/apple-support-community-closes-but-better-options-exist/">
+<p>Volunteers provided nearly all the answers and earned points that raised their status in the community, but the forum&rsquo;s name and mere existence implied that Apple itself was paying attention. That may have been true in the earliest days, but I doubt it lasted. Even so, many people took the site for an official Apple support channel, perhaps because Apple paid staff to do basic moderation and post links to support articles.</p>
+<p>[&#8230;]</p>
+<p>Frankly, I don&rsquo;t think the closing of the Apple Support Community is a great loss. I do hope the full archives live on at the <a href="https://web.archive.org/">Internet Archive</a> for historical reasons, since Apple&rsquo;s notice doesn&rsquo;t say what will happen to the threads.</p>
+</blockquote>
+
+<p><a href="https://discussions-apple.com/announcements/archive-mirror/">Apple Community Archive</a>:</p>
+<blockquote cite="https://discussions-apple.com/announcements/archive-mirror/">
+<p>More than two decades of questions, answers and hard-won fixes from Apple customers are about to disappear, so we are building an archive and mirror of the community
+right here.</p>
+<p>Discussions are being restored around the clock. Every thread keeps its original URL path, so if you have an old link,
+just replace <b>discussions.apple.com</b> with <b>discussions-apple.com</b>.</p>
+</blockquote>
+
+<p>This is seemingly unaffiliated with <a href="https://wiki.archiveteam.org/index.php/Apple_Discussions">Archive Team</a>.</p>
+
+<p><a href="https://www.macrumors.com/2026/11/11/apple-support-community-deserved-a-proper-goodbye/">Joe Rossignol</a>:</p>
+<blockquote cite="https://www.macrumors.com/2026/11/11/apple-support-community-deserved-a-proper-goodbye/">
+<p>Even if you felt the Apple Support Community contained too many generic or unhelpful answers from users trying to boost their post counts and <a href="https://support.apple.com/en-us/102167">earn points</a>, the people volunteering their time to the site still deserved a proper goodbye.</p>
+<p>Below, we have highlighted some of those people and their experiences.</p>
+</blockquote>
+
+<p><a href="https://adamchandler.me/blog/2026/11/11/regarding-the-apple-support-community/">Adam Chandler</a>:</p>
+<blockquote cite="https://adamchandler.me/blog/2026/11/11/regarding-the-apple-support-community/">
+<p>Apple&rsquo;s decision is correct and long overdue but I have been thinking a lot about Dead Internet Theory and how important forums are to the open web, community and keeping the humans in charge of the Internet as we march forward into our bot-powered future.</p>
+<p>[&#8230;]</p>
+<p>The other [option] was to nuke it because the relevance is just not there and replace it with an Apple-staffed space, re-write the engine to borrow Kbase and technical documentation in addition to enabling customers to self-serve, communicate and share ideas that may not be Apple-Official but totally work. This decision would have also enabled Apple to maintain control over the community and keep the information accurate and relevant so others can also self-serve. Apple doesn&rsquo;t control the communities on Reddit, YouTube, X or HackerNews.</p>
+<p>You can say, &ldquo;well the forums were already dead&rdquo; but Apple had a hand in this. There isn&rsquo;t any link to access those forums in KBASE docs or any sort of promotion by Apple and this community has languished completely without Apple staff for many years.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@flargh/117610126885062369">Peter Cohen</a>:</p>
+<blockquote cite="https://mastodon.social/@flargh/117610126885062369">
+<p>Super impressed with the virtual assistant Apple is using for front-line AppleCare phone support. It parsed my request flawlessly and its advice worked. Can&rsquo;t say that about many of them.</p>
+</blockquote>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/11/apple-closing-community-support-forum/feed/</wfw:commentRss>
+			<slash:comments>19</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Siri AI Open to &#8220;All&#8221; Developers</title>
+		<link>https://mjtsai.com/blog/2026/11/11/siri-ai-open-to-all-developers/</link>
+					<comments>https://mjtsai.com/blog/2026/11/11/siri-ai-open-to-all-developers/#comments</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Wed, 11 Nov 2026 20:47:23 +0000</pubDate>
+				<category><![CDATA[Programming]]></category>
+		<category><![CDATA[App Intents]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[European Union]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[iOS 27]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[Markdown]]></category>
+		<category><![CDATA[Shortcuts]]></category>
+		<category><![CDATA[Siri]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53830</guid>
+
+					<description><![CDATA[Apple (MacRumors): Starting today with the iOS 27.3, iPadOS 27.3, macOS 27.3, and visionOS 27.3 betas, a new Developer Preview enables any developer to integrate their app with Siri AI, giving businesses and developers new ways to reach and serve their customers. [&#8230;] Today&#8217;s preview allows any app to bring its content and actions directly [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://developer.apple.com/news/?id=gdk2umrf">Apple</a> (<a href="https://www.macrumors.com/2026/11/03/ios-27-3-siri-ai/">MacRumors</a>):</p>
+<blockquote cite="https://developer.apple.com/news/?id=gdk2umrf">
+<p>Starting today with the iOS 27.3, iPadOS 27.3, macOS 27.3, and visionOS 27.3 betas, a new Developer Preview enables any developer to integrate their app with Siri AI, giving businesses and developers new ways to reach and serve their customers.</p>
+<p>[&#8230;]</p>
+<p>Today&rsquo;s preview allows any app to bring its content and actions directly into Siri AI by using App Intents, making it easier for all apps to tap into Siri AI&rsquo;s newest capabilities, including personal context understanding, onscreen awareness, natural language, and more. So people can just ask for help in their own words, and Siri AI carries out any custom action you&rsquo;ve built, from checking a delivery to booking a reservation to placing an order. For complex requests, we&rsquo;re also introducing skills to let you teach Siri AI how to combine several actions into a single experience. And Siri AI can now surface any entity in the Spotlight semantic index, not just the ones that fit an existing schema.</p>
+<p>[&#8230;]</p>
+<p>To learn more about the new APIs, how to use them, and how to evaluate your app&rsquo;s experience with Siri AI, read new <a href="https://developer.apple.com/documentation/appintents/siri-ai-developer-preview">documentation</a>.</p>
+</blockquote>
+
+<p><a href="https://taoofmac.com/space/links/2026/11/03/2214">Rui Carmo</a> (<a href="https://mastodon.social/@renef/117554364224943985">Ren&eacute; Fouquet</a>):</p>
+<blockquote cite="https://taoofmac.com/space/links/2026/11/03/2214">
+<p>As someone who, last time I checked, doesn&rsquo;t have any glimmer of hope of using Siri AI on iOS in the EU, I found this announcement vaguely insulting and highly disingenuous, but that&rsquo;s Apple for you when it comes to addressing developers these days&#8230;</p>
+</blockquote>
+
+<p><a href="https://9to5mac.com/2026/11/03/developers-can-now-create-advanced-app-skills-for-siri-ai/">Benjamin Mayo</a>:</p>
+<blockquote cite="https://9to5mac.com/2026/11/03/developers-can-now-create-advanced-app-skills-for-siri-ai/">
+<p><a href="https://developer.apple.com/documentation/appintents/orchestrating-complex-actions-with-app-skills">The app skills</a> sound very similar to what other LLM-driven AI models offer, enabling richer understanding of complicated tasks.</p>
+<p>[&#8230;]</p>
+<p>It&rsquo;s also going to be a lot easier to initiate Siri actions for third-party apps. With the Siri AI Developer Preview, users don&rsquo;t have to explicitly mention the app&rsquo;s name in many circumstances. For instance, if a Live Activity for a ride-sharing app is active, Siri will automatically understand that a request to &ldquo;change the ride address&rdquo; corresponds to the app driving the Live activity.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@stroughtonsmith/117555039208567317">Steve Troughton-Smith</a>:</p>
+<blockquote cite="https://mastodon.social/@stroughtonsmith/117555039208567317">
+<p>So uh Apple basically just implemented exactly what I was looking for, in iOS/macOS 27.3. You add a skills bundle to your app, full of markdown files, providing guidance to Siri. And, clearly, any agent like Claude or Codex.</p>
+</blockquote>
+
+<p><a href="https://www.macstories.net/stories/siri-ais-evolution-is-both-surprising-and-obvious/">Federico Viticci</a> (<a href="https://x.com/viticci/status/2117781974764990929">tweet</a>):</p>
+<blockquote cite="https://www.macstories.net/stories/siri-ais-evolution-is-both-surprising-and-obvious/">
+<p>The short version is that Siri AI is no longer a specialized, domain-specific assistant but can instead work with any type of app. The longer version is that this <em>also</em> means Apple had to fundamentally improve the Siri AI <a href="https://www.youtube.com/watch?v=ebILGCoN4UU">harness</a> during the iOS 27 cycle to support these new capabilities. For example, the updated Siri AI harness (called &ldquo;agentic planner&rdquo; in iOS 27&rsquo;s code) can now dynamically read skills supplied by apps at runtime when performing a complex action. That&rsquo;s right: Apple is also fully supporting the <a href="https://agentskills.io/home">Markdown Agent Skills spec</a> now with the ability for developers to supply a variety of skills in their apps to give Siri more precise instructions for longer actions and complex requests.</p>
+<p>[&#8230;]</p>
+<p>And here are the new tools included in Siri AI&rsquo;s agentic planner, as parsed from the iOS 27.3 beta firmware:</p>
+<ul><li><code>view_skill</code>: This one loads an app&rsquo;s instructions for a specific skill.</li>
+<li><code>get_skill_response</code>: Lets the system receive a skill&rsquo;s result or follow-up question.</li>
+<li><code>available_skills</code>: Metadata listing the skills Siri can choose from, with their names and descriptions (but not the full body text).</li>
+<li><code>activated_skill_instructions</code>: Metadata containing the loaded skill&rsquo;s instructions for the current turn.</li>
+</ul><p>Apple itself is already <a href="https://x.com/viticci/status/2117781974764990929?a=79UFjYK17Mg1DvIx2tU&amp;s=46">shipping</a> three skills in the first beta of iOS 27.3, including one that teaches Siri how to select and edit text in the Notes app.</p>
+</blockquote>
+
+<p><a href="https://www.swiftjectivec.com/finally-apple-frees-us-from-domains/">Jordan Morgan</a>:</p>
+<blockquote cite="https://www.swiftjectivec.com/finally-apple-frees-us-from-domains/">
+<p>Apple tried to do two things. They wanted a Siri that understood what our apps could do, and a system broad enough to include apps of every shape and size. But that was never going to happen; we still had to squeeze our apps into boxes Apple picked.</p>
+<p>[&#8230;]</p>
+<p>But lo, with a <a href="https://x.com/timsneath/status/2117705322345443811?a=7uu8RAwuhmzRfCiaTXg&amp;s=20">random post on X</a>, I saw that Apple is finally freeing us from domains. You can supply your arbitrary app intent definitions to the system, and even supply skill files in Markdown to help Siri know how, and when, to use them.</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@agiletortoise/117554110669725591">Greg Pierce</a>:</p>
+<blockquote cite="https://mastodon.social/@agiletortoise/117554110669725591">
+<p>This sounds amazing, and I didn&rsquo;t think we&rsquo;d see App Intents integration into Siri AI until next WWDC[&#8230;]</p>
+</blockquote>
+
+<p><a href="https://mastodon.social/@palmin/117586310844605650">Anders Borum</a>:</p>
+<blockquote cite="https://mastodon.social/@palmin/117586310844605650">
+<p>Like many developers, I&rsquo;m extremely happy with the iOS 27.3 changes for Siri AI, where Apple did the obvious (if hard) thing and mapped tool calling to app intents.</p>
+<p>Often one app intent works well as both a Shortcuts action and a tool, but sometimes you want one app intent for Shortcuts and another for Siri AI.</p>
+<p>It would be great to have a way to expose an intent only to Siri AI. </p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/09/23/siri-ai-ships-but-still-beta/">Siri AI Ships (But Still Beta)</a></li>
+<li><a href="https://mjtsai.com/blog/2026/06/10/no-siri-ai-in-eu/">No Siri AI in EU</a></li>
+<li><a href="https://mjtsai.com/blog/2026/06/10/siri-ai-announced/">Siri AI Announced</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/11/siri-ai-open-to-all-developers/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Siri AI Adds Languages</title>
+		<link>https://mjtsai.com/blog/2026/11/11/siri-ai-adds-languages/</link>
+					<comments>https://mjtsai.com/blog/2026/11/11/siri-ai-adds-languages/#respond</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Wed, 11 Nov 2026 20:47:16 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Apple Intelligence]]></category>
+		<category><![CDATA[European Union]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[iOS 27]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[Siri]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53828</guid>
+
+					<description><![CDATA[Apple: With the 27.2 software updates released today, Siri AI &#8212; an entirely new version of Siri that is profoundly more capable, conversational, and personal &#8212; is expanding to more people around the world, with availability now in the French, Japanese, Korean, Portuguese, and Spanish languages. [&#8230;] Language support for Siri AI will continue to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://www.apple.com/newsroom/2026/10/siri-ai-is-available-in-more-languages-starting-today/">Apple</a>:</p>
+<blockquote cite="https://www.apple.com/newsroom/2026/10/siri-ai-is-available-in-more-languages-starting-today/">
+<p>With the 27.2 software updates released today, Siri AI &mdash; an entirely new version of Siri that is profoundly more capable, conversational, and personal &mdash; is expanding to more people around the world, with availability now in the French, Japanese, Korean, Portuguese, and Spanish languages.</p>
+<p>[&#8230;]</p>
+<p>Language support for Siri AI will continue to expand, with availability in Chinese (Traditional), Norwegian, Turkish, and Vietnamese coming by the end of the year.</p>
+<p>[&#8230;]</p>
+<p>Siri AI is currently unavailable in the EU in iOS, iPadOS, and watchOS. Apple is working constructively with the EU in an attempt to find a path forward.</p>
+</blockquote>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/10/27/macos-27-2/">macOS 27.2</a></li>
+<li><a href="https://mjtsai.com/blog/2026/10/27/ios-27-2-and-ipados-27-2/">iOS 27.2 and iPadOS 27.2</a></li>
+<li><a href="https://mjtsai.com/blog/2026/09/23/siri-ai-ships-but-still-beta/">Siri AI Ships (But Still Beta)</a></li>
+<li><a href="https://mjtsai.com/blog/2026/06/10/no-siri-ai-in-eu/">No Siri AI in EU</a></li>
+<li><a href="https://mjtsai.com/blog/2026/06/10/siri-ai-announced/">Siri AI Announced</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/11/siri-ai-adds-languages/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>BBEdit 16.1</title>
+		<link>https://mjtsai.com/blog/2026/11/10/bbedit-16-1/</link>
+					<comments>https://mjtsai.com/blog/2026/11/10/bbedit-16-1/#respond</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Tue, 10 Nov 2026 16:49:06 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[BBEdit]]></category>
+		<category><![CDATA[Developer Tool]]></category>
+		<category><![CDATA[HTML5]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Mac App]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[Markdown]]></category>
+		<category><![CDATA[Parser]]></category>
+		<category><![CDATA[TaskPaper]]></category>
+		<category><![CDATA[Text Editor]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53826</guid>
+
+					<description><![CDATA[Bare Bones Software: Introducing &#8220;Language Playgrounds&#8221;, a new interface for creating language modules to add support for languages which are not included from the factory. With this comes a new language module architecture: Declarative Language Modules (DLMs), which supersede the original codeless language modules (CLMs) and provide a much richer language support experience. There are [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://www.barebones.com/support/bbedit/notes-16.1.html">Bare Bones Software</a>:</p>
+<blockquote cite="https://www.barebones.com/support/bbedit/notes-16.1.html">
+<p>Introducing &ldquo;Language Playgrounds&rdquo;, a new interface for creating language modules to add support for languages which are not included from the factory. With this comes a new language module architecture: Declarative Language Modules (DLMs), which supersede the original codeless language modules (CLMs) and provide a much richer language support experience.</p>
+</blockquote>
+
+<p>There are technotes about <a href="https://www.barebones.com/support/technotes/LanguagePlayground.html">Language Playgrounds</a> and <a href="https://www.barebones.com/support/technotes/DeclarativeLanguageModules.html">Declarative Language Modules</a> (which are now JSON instead of plists).</p>
+
+<blockquote cite="https://www.barebones.com/support/bbedit/notes-16.1.html">
+<p>A configured Highlight Pattern will match text in any open document, and highlight it using the configured color, including an alternative for Dark Mode, if desired. The pattern can be either a literal search string or a Grep pattern.</p>
+<p>[&#8230;]</p>
+<p>There is a setting in the Editing preferences which controls globally whether Highlight Patterns are shown (at all) and this can be configured per-language via the Custom Settings tab in the Languages preferences.</p>
+</blockquote>
+
+<p>I absolutely love this new feature. First it&rsquo;s incredibly useful for file types that don&rsquo;t have language modules or where a language module doesn&rsquo;t really make sense. For example, my apps generate log files, and highlight patterns let me color code them. Which parts are from the OS vs. my frameworks vs. app-specific code? I can highlight in red any especially important strings that I don&rsquo;t want to miss.</p>
+
+<p>Second, I see highlight patterns as a way to customize the built-in language modules. These are not open-source, and it&rsquo;s not worth my time to try to code my own replacements, but highlight patterns make it possible to add my own colors on top of what&rsquo;s built-in.</p>
+
+<blockquote cite="https://www.barebones.com/support/bbedit/notes-16.1.html">
+<p>Integrated the W3C HTML5 syntax checker into the application. This provides isolation against network issues, rate limits, and service misbehavior.</p>
+<p>[&#8230;]</p>
+<p>There&rsquo;s a new color setting for &ldquo;Instance variables&rdquo; in the &ldquo;Text Colors&rdquo; settings. This depends on language modules generating the appropriate run kind, and/or LSP servers returning the appropriate semantic token kind.</p>
+<p>[&#8230;]</p>
+<p>Added a language module for TaskPaper, with coloring as well as navigation via the Function menu.</p>
+<p>[&#8230;]</p>
+<p>Added a language module for coloring and navigating <code>diff</code> output.</p>
+<p>[&#8230;]</p>
+<p>Fenced code blocks in Markdown documents are now syntax-colored
+in the language named by the block&rsquo;s qualifier (<code>```python</code>, <code>```js</code>,
+<code>```diff</code>), when a matching language module is
+installed.</p>
+</blockquote>
+
+<p>See also: <a href="https://tidbits.com/watchlist/bbedit-16-1/">Agen Schmitz</a>.</p>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/06/01/bbedit-16/">BBEdit 16</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/10/bbedit-16-1/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>macOS 27.2.1</title>
+		<link>https://mjtsai.com/blog/2026/11/10/macos-27-2-1/</link>
+					<comments>https://mjtsai.com/blog/2026/11/10/macos-27-2-1/#comments</comments>
+		
+		<dc:creator><![CDATA[Michael Tsai]]></dc:creator>
+		<pubDate>Tue, 10 Nov 2026 16:47:49 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[macOS 27 Golden Gate]]></category>
+		<category><![CDATA[macOS Release]]></category>
+		<guid isPermaLink="false">https://mjtsai.com/blog/?p=53822</guid>
+
+					<description><![CDATA[Juli Clover (release notes, security, no enterprise, no developer, full installer, IPSW): macOS Golden Gate includes bug fixes and security updates, according to Apple&#8217;s release notes. The update likely includes a fix to prevent command-line tools from accepting eMudhra&#8217;s compromised web certificates. See also: Mr. Macintosh. Previously: eMudhra Intermediate CA Compromise macOS 27.2 macOS 27 [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><a href="https://www.macrumors.com/2026/11/09/apple-releases-macos-golden-gate-27-2-1/">Juli Clover</a> (<a href="https://support.apple.com/en-us/127257">release notes</a>,
+<a href="https://support.apple.com/en-us/149718">security</a>,
+no <a href="https://support.apple.com/en-us/148830">enterprise</a>,
+no <a href="https://developer.apple.com/documentation/macos-release-notes/macos-27_2-release-notes">developer</a>,
+<a href="https://swcdn.apple.com/content/downloads/57/06/142-52990-A_M5PDCSKEVA/zkg1s5t3ro2xe0lskvh7wyyc6cf37j4i4f/InstallAssistant.pkg">full installer</a>,
+<a href="https://updates.cdn-apple.com/2026FallFCS/c202a724-db7e-4d56-917b-110aa0226507/UniversalMac_27.2.1_26B131_Restore.ipsw">IPSW</a>):</p>
+<blockquote cite="https://www.macrumors.com/2026/11/09/apple-releases-macos-golden-gate-27-2-1/">
+<p>macOS Golden Gate  includes bug fixes and security updates, according to Apple&rsquo;s release notes. The update likely includes a fix to prevent command-line tools from accepting eMudhra&rsquo;s compromised web certificates.</p>
+</blockquote>
+
+<p>See also: <a href="https://mrmacintosh.com/macos-golden-gate-27-2-1-update-everything-you-need-to-know/">Mr. Macintosh</a>.</p>
+
+<p>Previously:</p>
+<ul>
+<li><a href="https://mjtsai.com/blog/2026/10/29/emudhra-intermediate-ca-compromise/">eMudhra Intermediate CA Compromise</a></li>
+<li><a href="https://mjtsai.com/blog/2026/10/27/macos-27-2/">macOS 27.2</a></li>
+<li><a href="https://mjtsai.com/blog/2026/10/09/macos-27-and-external-displays/">macOS 27 and External Displays</a></li>
+</ul>]]></content:encoded>
+					
+					<wfw:commentRss>https://mjtsai.com/blog/2026/11/10/macos-27-2-1/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -4,6 +4,7 @@
 //
 // Routes:
 //   /<fixture file>   e.g. /rss.xml, /atom.xml, /feed.json, /hostile.xml
+//   /real/<file>      a saved real feed (fixtures/real, see sources.tsv)
 //   /status/<code>    answers with that HTTP status
 //   /slow             never answers (exercises the fetch timeout)
 //   /html             an HTML page, not a feed
@@ -33,15 +34,19 @@ const contentType = (name) => {
 }
 
 const serveFixture = async (name, request, response) => {
-  const files = await readdir(root)
+  const [dir, file] = name.startsWith('real/')
+    ? [join(root, 'real'), name.slice('real/'.length)]
+    : [root, name]
 
-  if (!files.includes(name)) {
+  const files = await readdir(dir)
+
+  if (!files.includes(file)) {
     response.writeHead(404).end('no such fixture')
 
     return
   }
 
-  const body = await readFile(join(root, name))
+  const body = await readFile(join(dir, file))
   const etag = `"${createHash('sha1').update(body).digest('hex')}"`
 
   if (request.headers['if-none-match'] === etag) {

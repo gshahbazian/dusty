@@ -1,0 +1,1391 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Julia Evans]]></title>
+  <link href="https://jvns.ca/atom.xml" rel="self"/>
+  <link href="https://jvns.ca"/>
+  <updated>2026-09-27T00:00:00+00:00</updated>
+  <id>http://jvns.ca</id>
+  <author>
+      <name>Julia Evans</name>
+  </author>
+  <generator uri="http://gohugo.io/">Hugo</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing the old battery on rechargeable bike lights]]></title>
+    <link href="https://jvns.ca/blog/2026/09/27/replacing-the-old-battery-on-rechargeable-bike-lights/"/>
+    <updated>2026-09-27T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/09/27/replacing-the-old-battery-on-rechargeable-bike-lights/</id>
+    <content type="html"><![CDATA[<p>Hello! Recently I needed bike lights for my bike. And I remembered that I
+already had rechargeable bike lights that I bought ten years ago, that I hadn&rsquo;t
+tried in a long time. I tried to recharge them, but after fully charging them,
+they only worked for maybe 5 minutes before they turned off again.</p>
+<p>I don&rsquo;t know much about electronics, but I&rsquo;ve been curious about whether it&rsquo;s
+possible to fix old electronics for a long time, and this seemed like the
+perfect repair project because I might just need to replace the battery.</p>
+<p>So I went to the local queer makerspace where I&rsquo;m a member to use the soldering
+iron and try to do it! I don&rsquo;t know much about electronics and this post does
+not contain any safety advice because I don&rsquo;t know much about safety.
+I think it&rsquo;s nice to do projects in a community space where you can get help.</p>
+<h3 id="step-1-cut-it-open">step 1: cut it open</h3>
+<p>The bike light felt like it was made of silicone, so I cut open the silicone in
+a haphazard way along something that vaguely looked like a seam.</p>
+<p>I definitely ripped some silicone in the process and it was pretty messy but I
+got it open and found the circuit board.</p>
+<p>I don&rsquo;t know the model number of the bike lights but there&rsquo;s a photo of them at
+the end of the post.</p>
+<h3 id="step-2-remove-the-screws">step 2: remove the screws</h3>
+<p>There were some screws attaching things together so I removed them so I could
+get the circuit board out.</p>
+<p>Mostly I tried to remove as few screws as possible because I was worried about
+losing them or not being able to put them back after. I probably put the screws
+in a bag or something.</p>
+<h3 id="step-3-get-the-circuit-board-out">step 3: get the circuit board out</h3>
+<p>I took out the circuit board. Here&rsquo;s what it looked like:</p>
+<img src="https://jvns.ca/images/pcb.png">
+<p>You can see where the battery is attached, I think it&rsquo;s left of RI3 and above
+Q2.</p>
+<p>Here&rsquo;s what the battery looked like:</p>
+<img src="https://jvns.ca/images/battery.png">
+<h3 id="step-4-desolder-the-battery">step 4: desolder the battery</h3>
+<p>I&rsquo;d never desoldered anything before, so I found
+<a href="https://www.ifixit.com/Guide/How+To+Solder+and+Desolder+Connections/750#s4052">the iFixit guide to desoldering</a> and read it.
+Also I asked my friends Lee and Lauria for advice.</p>
+<p>Here were the steps I ended up following based on the guide &amp; the advice I got:</p>
+<ol>
+<li>Use a desoldering pump to remove most of the solder</li>
+<li>Once most of it is gone, kind of pull them apart to try to separate them</li>
+<li>Also try to avoid getting the battery too hot in the process by taking
+breaks to let it cool down. I&rsquo;m not very good with a soldering iron
+so it took a while.</li>
+<li>The battery has an attachment that is welded to the top.
+For a while I thought I needed to remove this and it seemed impossible, but
+it turned out the replacement battery comes with that part so actually I was
+supposed to leave it alone.</li>
+</ol>
+<h3 id="step-5-identify-the-battery">step 5: identify the battery</h3>
+<p>In the picture of the battery in Step 3, you can see it says something like &ldquo;3&rdquo;
+and &ldquo;LI???77&rdquo;. There&rsquo;s a piece of metal that I think is welded or something to
+the top of the battery. It seemed impossible and also maybe not smart to try to
+remove so I wasn&rsquo;t sure how to find out what an &ldquo;LI????77&rdquo; was or how to order
+another one.</p>
+<p>I&rsquo;ve been trying to avoid using LLMs (though I will not get into that because
+I am exhausted by LLM discourse and I&rsquo;m sure you are too), but I really had
+no idea how to figure out what the battery was so I asked an LLM. It gave the
+response &ldquo;LIR2477&rdquo;, which (when I looked it up) looked exactly the same as my
+battery so I figured that was plausible.</p>
+<p>I would be interested to learn non-LLM ways to figure this out though.
+There must be a way. Lauria showed me how to use
+<a href="https://www.digikey.ca/en/products">DigiKey&rsquo;s search</a> which was very cool
+though DigiKey didn&rsquo;t have that part.</p>
+<p>(edit: someone in the replies told me that this kind of coin cell battery is
+named according to its dimensions, and you can use plastic calipers to measure
+the dimensions of the battery. So I guess a non-LLM way would be to measure
+the battery with calipers and try to match it to something on the
+<a href="https://en.wikipedia.org/wiki/List_of_battery_sizes">List of battery sizes</a>
+Wikipedia page, though that page only mentions CR 2477 and not LIR 2477. It&rsquo;s
+a good example of what&rsquo;s fun for me about trying to avoid LLMs, this &ldquo;List of
+battery sizes&rdquo; page is super interesting and if I use an LLM I might never find
+it)</p>
+<h3 id="step-6-buy-the-battery">step 6: buy the battery</h3>
+<p>I went to AliExpress and ordered:</p>
+<ol>
+<li>2 batteries (I had 2 bike lights and I wanted to fix them both)</li>
+<li>some silicone glue to glue things back together</li>
+</ol>
+<p>I think the batteries were $3 each and the glue was $8.</p>
+<h3 id="step-7-solder-the-new-batteries-in-and-glue-it-back-together">step 7: solder the new batteries in and glue it back together</h3>
+<p>The parts took maybe 2 weeks to arive, and once they arrived, I went back to the
+makerspace and:</p>
+<ul>
+<li>soldered in the new batteries</li>
+<li>put the screws back in. The screws were very small and hard to hold, so at
+this point I dropped some screws on the ground and couldn&rsquo;t find them because
+they were too small. So I just used fewer screws and hoped for the best.</li>
+<li>used the glue to try to put everything back together.</li>
+<li>Make a somewhat halfhearted attempt to clamp the parts I was gluing together</li>
+</ul>
+<p>Then after waiting some amount of time for the glue to dry I took it home and
+waited 24 hours for the glue to cure.</p>
+<p>Also I took the old batteries to somewhere nearby that accepts old batteries.</p>
+<h3 id="it-works">it works!</h3>
+<p>The lights work! I have used them to bike at night! I still haven&rsquo;t needed to
+recharge them (and tragically I had to order a new Mini USB cable because I got
+rid of all my Mini USB cables, so I&rsquo;m still waiting for that), so I still don&rsquo;t
+know for sure how long the lifetime of the new battery will be.</p>
+<p>Here&rsquo;s what the light looks like after re-gluing.
+You can see that I didn&rsquo;t glue very carefully. It didn&rsquo;t really go back
+together that well but I&rsquo;m hoping it&rsquo;ll be good enough.</p>
+<img src="https://jvns.ca/images/light-after-1.png">
+<img src="https://jvns.ca/images/light-after-2.png">
+<p>I thought it was really cool that I was able to do this with extremely minimal
+electronics skills! It cost about $20 CAD to buy the parts, and (whether or not
+the repair holds up, I&rsquo;ll try to update this post in the future!), it was fun to
+try to repair something and learn something new.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Some more things about Django I've been enjoying]]></title>
+    <link href="https://jvns.ca/blog/2026/07/21/more-nice-django-things/"/>
+    <updated>2026-07-21T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/07/21/more-nice-django-things/</id>
+    <content type="html"><![CDATA[<p>Hello! I&rsquo;m on a funny journey right now where I&rsquo;m trying to learn how to make
+websites in a sort of 2010 style, where I have an SQL database and render some
+HTML on the backend.</p>
+<p>It&rsquo;s kind of an interesting journey because it doesn&rsquo;t necessarily feel &ldquo;easy&rdquo;
+to me to make websites in this way: I never learned how to do it in the 2000s or
+2010s, and there&rsquo;s a lot I need to learn.</p>
+<p>So here are some Django features that make building this kind of site feel
+more achievable than when I was trying and failing to use Go&rsquo;s standard library
+or Flask. And I&rsquo;ll talk about a couple of issues with Django I&rsquo;ve run into.</p>
+<h3 id="why-learn-to-make-websites-like-it-s-2010">why learn to make websites like it&rsquo;s 2010?</h3>
+<p>Previously the toolkit I felt confident with for making websites was:</p>
+<ul>
+<li>static site generators (like for this blog)</li>
+<li>static sites that do some fun stuff with Javascript (like this <a href="https://sql-playground.wizardzines.com/">sql playground</a>)</li>
+<li>simple Vue.js single page apps with either a Lambda as a backend or a Go backend (like <a href="https://messwithdns.net/">mess with dns</a>)</li>
+</ul>
+<p>I really liked this frontend-heavy approach for these super simple applications
+but when I started thinking about making something with a lot of different pages
+(instead of literally just one page), I didn&rsquo;t feel so excited about the options
+I saw that involved a lot of frontend code. So I figured I&rsquo;d try the backend.</p>
+<p>Writing a backend-focused site that uses as little JS as possible feels
+the same to me in a way as writing a single-page JS website that does as little
+on the backend as possible, even though they might seem like opposites. In both
+cases I&rsquo;m just trying to keep as much of the logic as possible in one place.</p>
+<p>Now for some thoughts about Django!</p>
+<h3 id="i-m-enjoying-query-builders">I&rsquo;m enjoying query builders</h3>
+<p>I learned that I can define a &ldquo;query set&rdquo; class in Django with a bunch of
+methods with different <code>WHERE</code> statements I might want to use while constructing
+a query:</p>
+<p>Here&rsquo;s how I use it in my view code once I&rsquo;ve defined what all the methods mean:</p>
+<pre><code>Events.objects.approved()
+  .for_tab(tab)
+  .with_festivals(tab_params.festival_slugs)
+  .is_free(tab_params.free)
+  .is_outdoors(tab_params.outdoors)
+</code></pre>
+<p>and here&rsquo;s how I define the methods:</p>
+<pre><code>class EventQuerySet(SearchableQuerySetMixin, models.QuerySet):
+    def approved(self):
+        return self.filter(approved_at__isnull=False)
+
+    def future(self):
+        today = timezone.localdate()
+        return self.filter(end__gt=self._midnight(today))
+
+    def with_tags(self, tags):
+        if tags:
+            return self.filter(tags__name__in=tags).distinct()
+        return self
+</code></pre>
+<p>The syntax for defining the filters isn&rsquo;t my favourite, but I spend most of my
+time just using the methods, and it feels super readable and nice to use, and
+it makes me want to look into other query builder libraries in the future. In
+the past I thought &ldquo;I know SQL, who needs a query builder?&rdquo;, but this kind of
+structure does make it really nice to read.</p>
+<p>I found an example of someone who <a href="https://github.com/lemon24/reader/blob/15121f667a6f2e388f0072a3fcd715f533883899/src/reader/_sql_utils.py">wrote their own small query builder in Python</a>
+that I want to read later to think about whether I would enjoy using a more
+minimal version of this.</p>
+<h3 id="the-template-filters-are-awesome">the template filters are awesome</h3>
+<p>There are a bunch of little quality of life
+<a href="https://docs.djangoproject.com/en/6.0/ref/templates/builtins/">filters available in Django templates</a> that are super useful for generating HTML. The ones I&rsquo;ve used so far are:</p>
+<ul>
+<li>translating plain text URLs into links, or line breaks into <code>&lt;br&gt;</code> (<code>{{ event.description|urlize|linebreaksbr }} </code>)</li>
+<li>formatting dates (<code>{{ row.date|date:&quot;M j&quot; }}</code>)</li>
+<li><code>json_script</code>, which takes a Python dictionary and automatically converts it to JSON and inserts it into the HTML as a <code>&lt;script&gt;</code> tag in a safe way</li>
+</ul>
+<p>These are all small things individually but I feel like it makes a big difference somehow to just have them available.</p>
+<h3 id="querystring-is-cool"><code>querystring</code> is cool</h3>
+<p>I think my favourite template filter is <code>querystring</code>: in this site sometimes
+we use filters like <code>?date=2026-06-01</code> to decide what&rsquo;s displayed. <code>querystring</code>
+that will make a link to the same query string with one change, like this to
+link to the previous date:</p>
+<pre><code>&lt;a href=&quot;{% querystring date=nav.prev_date%}&quot;&gt;
+</code></pre>
+<p>Or to remove the <code>outdoors</code> parameter:</p>
+<pre><code>&lt;a href=&quot;{% querystring outdoors=None %}&quot;&gt;
+</code></pre>
+<h3 id="automatic-database-migrations-are-still-great">automatic database migrations are still great</h3>
+<p>I still really love Django&rsquo;s automatic database system. It&rsquo;s amazing to be
+able to just edit a model to add a new field or whatever, and then Django
+automatically generates the migration.</p>
+<p>So far we have done 19 database migrations and I think there will probably be
+more! It makes a huge difference for me to be able to just easily change the
+database as my understanding of the problem changes.</p>
+<h3 id="i-do-not-want-to-organize-my-code-with-inheritance">I do not want to organize my code with inheritance</h3>
+<p>Django&rsquo;s documentation sometimes offers the option of using class-based views
+and inheritance to organize the code in your views. For example I have four
+views that share a lot of code, and I could use inheritance to manage that by
+defining some kind of parent class and then having my other views inherit from
+it.</p>
+<p>I tried it out and I did not enjoy the experience of using inheritance to
+share code between views. I switched to using functions instead, sort of how
+<a href="https://spookylukey.github.io/django-views-the-right-way/">this post</a> advocates, and that was a lot more straightforward.
+I&rsquo;ve never had a good experience using inheritance in Python and I don&rsquo;t think
+I&rsquo;ll try to use it again.</p>
+<p>But I don&rsquo;t mind using inheritance to use the interfaces Django itself provides: for
+example if I want to define a query set I need to write something like
+<code>class EventQuerySet(SearchableQuerySetMixin, models.QuerySet)</code>.
+I don&rsquo;t think too hard about it and it seems to work.</p>
+<p>(as a meta comment: I&rsquo;ve been working on talking about my programming opinions
+by just saying &ldquo;THING does not feel good to me, I prefer OTHER THING instead&rdquo;.
+That post I linked to says that function-based views are the &ldquo;right way&rdquo;. I&rsquo;m
+not very invested in whether it&rsquo;s &ldquo;right&rdquo;, but it&rsquo;s validating to know that
+other people feel similarly to me about inheritance)</p>
+<h3 id="i-don-t-know-how-to-think-about-django-performance">I don&rsquo;t know how to think about Django performance</h3>
+<p>At some point the LLM scrapers discovered our site, and started sending us maybe 10
+requests per second. I blocked them which is working for now, but it made me
+think about what the site&rsquo;s capacity is. I&rsquo;m used to writing Go backends where
+the performance situation is pretty straightforward (usually everything is just
+fast enough), and a Django site is very different.</p>
+<p>Some light load testing (with (<code>ab -n 1000 -c 1</code>) shows that right now we can
+serve about 2-3 requests per second (on a ~$10/month VM).</p>
+<p>It&rsquo;s tempting for me to go down a rabbit hole where I do a bunch of profiling to
+figure out what&rsquo;s slow and try to make it faster
+(there&rsquo;s <a href="https://github.com/benfred/py-spy">py-spy</a> for that, and py-spy is great and super easy to use, and profiling is fun!)
+But I really don&rsquo;t understand what I should expect in terms of performance from
+a Django site and how I should be thinking about at a higher level.</p>
+<p>Some things I haven&rsquo;t figured out yet:</p>
+<ul>
+<li>If I have a site that&rsquo;s going to be getting occasional bursts of traffic, do I want to be able to scale up?</li>
+<li>Do I want to design the site so that more things can be cached? (and do I really have to? caches are so annoying to get right!)</li>
+<li>The <a href="https://docs.djangoproject.com/en/6.0/topics/performance/">django performance docs</a> say that Jinja is faster for templating, do I want to think about switching templating systems?</li>
+<li>Those docs also say &ldquo;{% block %} is faster than using {% include %}&rdquo;, I wonder if it&rsquo;s a big difference and if so why</li>
+</ul>
+<h3 id="template-caching-might-be-important">template caching might be important</h3>
+<p>I think one thing I&rsquo;m learning about Django is that because it&rsquo;s a Framework
+(tm), it&rsquo;s easy to accidentally misconfigure it. For example, when I was
+thinking about why my site was slow just now, I read the
+<a href="https://docs.djangoproject.com/en/6.0/topics/performance/">django performance docs</a> and I noticed
+a comment saying:</p>
+<blockquote>
+<p>Enabling the cached template loader often improves performance drastically, as
+it avoids compiling each template every time it needs to be rendered.</p>
+</blockquote>
+<p>When I&rsquo;d done CPU profiling I&rsquo;d noticed that it was spending a lot of time
+rendering templates! Maybe this could help me!</p>
+<p>Clicking through the link, I saw that the cached template loader was supposed to
+be on by default, but I&rsquo;d turned it off by accident while trying to do something
+else. I think this &ldquo;I turned off the cached template loader by default&rdquo;
+things is an example of how I still find the django settings file to be pretty
+confusing and difficult. I guess I should just be careful when I go in there.</p>
+<p>After turning on template caching, it seems like the site can now pretty easily
+handle 12 requests per second or so without using all of the CPU. I have not
+carefully benchmarked the before and after but it seems like it&rsquo;s made a pretty
+big difference.</p>
+<p>One thing that&rsquo;s been surprising to me about Django performance is that I&rsquo;ve
+always heard the advice &ldquo;if you have a performance problem, check your database
+queries! Maybe add an index!&rdquo;. But I&rsquo;ve been running into a variety of
+performance issues (like this template caching thing) that are not because of
+slow queries, so instead it&rsquo;s been more useful for me so far to start by running
+a CPU profile. And since I&rsquo;m using SQLite, any slow database query problem will
+show up on the CPU profile anyway.</p>
+<p>Anyway I don&rsquo;t want to get too far into site performance. Like I said it&rsquo;s easy
+for me to get interested in profiling, but actually I know a lot about profiling
+and it&rsquo;s not the most important thing for me to learn about.</p>
+<h3 id="that-s-all-for-now">that&rsquo;s all for now!</h3>
+<p>I might say more about what I&rsquo;m enjoying (or having a hard time with!) about
+Django later. Trying to write some shorter blog posts recently.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Learning a few things about running SQLite]]></title>
+    <link href="https://jvns.ca/blog/2026/07/17/learning-about-running-sqlite/"/>
+    <updated>2026-07-17T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/07/17/learning-about-running-sqlite/</id>
+    <content type="html"><![CDATA[<p>Hello! I&rsquo;ve been working on a Django site recently, and I decided to use SQLite
+as the database.
+When I was getting started with using SQLite as database for a website I read a <a href="https://alldjango.com/articles/definitive-guide-to-using-django-sqlite-in-production">bunch</a>
+of blog posts about how it is totally fine to use SQLite in production for a
+small site and I think it <em>is</em> totally fine, but what I did not fully appreciate
+is that SQLite is still a database, databases are complicated, and I do not know
+a lot about operating databases.</p>
+<p>So here are a couple of small things I&rsquo;ve been learning about running SQLite. This
+is the 4th website I&rsquo;ve used SQLite for, and I think this one is harder because
+with the power of the Django ORM I&rsquo;ve been making the database do more work than
+I was previously without Django.</p>
+<p>I started by turning on WAL mode like all the blog posts said to do and hoping for the best.</p>
+<h3 id="analyze-is-apparently-important"><code>ANALYZE</code> is apparently important</h3>
+<p>Today I was running a query (using <a href="https://www.sqlite.org/fts5.html">SQLite&rsquo;s FTS5</a> for
+full-text search) on a table with 4000 rows and it took 5 seconds. That seemed
+wrong to me: computers are fast!</p>
+<p>It turned out that what I needed to do was to run <a href="https://sqlite.org/lang_analyze.html"><code>ANALYZE</code></a>!
+Immediately the problem query went from taking 5 seconds to like 0.05 seconds
+(or some other number small enough that I didn&rsquo;t care to investigate further).
+I still don&rsquo;t know exactly what went wrong in the query plan,
+but my best guess is that it was some sort of <a href="https://accidentallyquadratic.tumblr.com/">accidentally quadratic</a> thing.</p>
+<p><code>ANALYZE</code> generates &ldquo;statistics&rdquo; (I guess about the number of rows in each table? and presumably other things?)
+so that the query planner can make better choices.</p>
+<p>Maybe one day I&rsquo;ll learn to read a query plan.</p>
+<h3 id="cleaning-up-the-database-is-tricky">cleaning up the database is tricky</h3>
+<p>Occasionally I&rsquo;ve run into situations where I accidentally put a bunch of rows
+in my database that I don&rsquo;t want to be there (for example completed tasks from
+<a href="https://github.com/RealOrangeOne/django-tasks-db">django-tasks-db</a>), and I want to clean them up.</p>
+<p>What&rsquo;s happened to me a few times in this case is:</p>
+<ol>
+<li>I run some kind of command to clean up the rows</li>
+<li>The command takes more than 5 seconds, since there are a lot of rows (though I still have some questions about why these DELETE statements are so slow honestly, maybe there&rsquo;s a bunch of Python code running inside a transaction, I&rsquo;m not sure)</li>
+<li>One of the other workers tries to write the database while this is happening, and times out after 5 seconds (I have a timeout of 5 seconds set)</li>
+<li>The worker crashes because it couldn&rsquo;t write to the database and the VM shuts down</li>
+</ol>
+<p>My approach so far has been to just do these cleanup operations in small batches
+so that I don&rsquo;t need to do database queries that take more than 5 seconds to
+run. This whole experience has given me more of an appreciation for why someone
+might want to use a &ldquo;real&rdquo; database like Postgres which can have more than one
+writer at the same time though.</p>
+<p>Maybe in the future I&rsquo;ll just take the site down for scheduled maintenance
+instead when I need to do this kind of thing, but I haven&rsquo;t figured out a
+workflow for that yet.</p>
+<h3 id="no-notes-on-performance-of-orm-queries-yet">no notes on performance of ORM queries yet</h3>
+<p>So far I&rsquo;ve been using Django&rsquo;s ORM to make any query I want without paying any
+attention at all to query performance and it&rsquo;s mostly been going okay other
+than the <code>ANALYZE</code> thing. The database is pretty small (maybe 10000 rows?) and
+I expect it to stay pretty small forever, so I&rsquo;m hoping that that plan will
+keep working.</p>
+<h3 id="backing-up-sqlite">backing up sqlite</h3>
+<p>I&rsquo;ve done SQLite backups a couple of ways. I don&rsquo;t think I&rsquo;ve actually tested
+restoring from my backups but I do usually try to monitor them with a dead man&rsquo;s
+switch.</p>
+<p><strong>way 1: restic</strong></p>
+<pre><code>sqlite3 /data/calendar.db &quot;VACUUM INTO '/tmp/calendar.sqlite'&quot;
+gzip /tmp/calendar.sqlite
+
+# Upload backup to S3
+# Sometimes the backup gets OOM killed and so it stays locked, do an unlock
+restic -r s3://s3.amazonaws.com/some_bucket/ unlock
+# Do the backup &amp; prune old backups
+restic -r s3://s3.amazonaws.com/some_bucket/ backup /tmp/calendar.sqlite.gz
+restic -r s3://s3.amazonaws.com/some_bucket/ snapshots
+restic -r s3://s3.amazonaws.com/some_bucket/ forget -l 1 -H 6 -d 2 -w 2 -m 2 -y 2
+restic -r s3://s3.amazonaws.com/some_bucket/ prune
+</code></pre>
+<p><strong>way 2: <a href="https://litestream.io/">litestream</a></strong></p>
+<p>I started trying out Litestream recently because I felt like doing incremental backups might
+be more efficient: my restic backups were sometimes getting OOM killed, and I
+was a bit tired of it. Basically I just write a config file and run:</p>
+<pre><code>litestream replicate -config litestream.yml
+</code></pre>
+<p>I set <code>retention: 400h</code> in my config file in an attempt to
+retain some amount of history of the database but I have no idea if it works.</p>
+<p>I&rsquo;ve been backing up to AWS, which is always a pain because it&rsquo;s annoying to
+navigate the AWS console to generate credentials. Maybe one day I&rsquo;ll move away
+to some other S3-compatible alternative.</p>
+<h3 id="you-can-use-multiple-databases">you can use multiple databases</h3>
+<p>My current project only has one database, but one trick I used with
+<a href="https://messwithdns.net/">Mess with DNS</a> was to split the tables into three separate
+database files because I didn&rsquo;t actually need my tables to be in the same db. I think it was helpful.</p>
+<p>Mess with DNS has been running on SQLite for 4 years now (since 2022) and it&rsquo;s
+been great, I think the move from Postgres was a great choice for that project.</p>
+<h3 id="that-s-all">that&rsquo;s all!</h3>
+<p>It&rsquo;s always kind of fun to see how long it takes me to learn sort of basic
+things about the technologies I&rsquo;m using. I think I used SQLite for a web project
+for the first time in 2022 and I only learned that <code>ANALYZE</code> existed today!
+I imagine in a year or two I&rsquo;ll be learning about some other very basic feature.</p>
+<h3 id="some-references">some references</h3>
+<p>Some blog posts I&rsquo;ve looked at, other than the official docs:</p>
+<ul>
+<li><a href="https://alldjango.com/articles/definitive-guide-to-using-django-sqlite-in-production">The definitive guide to using Django with SQLite in production</a></li>
+<li><a href="https://gist.github.com/phiresky/978d8e204f77feaa0ab5cca08d2d5b27">a gist on sqlite performance tuning</a></li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Moving away from Tailwind, and learning to structure my CSS]]></title>
+    <link href="https://jvns.ca/blog/2026/05/15/moving-away-from-tailwind--and-learning-to-structure-my-css-/"/>
+    <updated>2026-05-15T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/05/15/moving-away-from-tailwind--and-learning-to-structure-my-css-/</id>
+    <content type="html"><![CDATA[<p>Hello! 8 years ago, I <a href="https://jvns.ca/blog/2018/11/01/tailwind--write-css-without-the-css/">wrote excitedly about discovering Tailwind</a>.</p>
+<p>At that time I really had no idea how to structure my CSS code and given the
+choice between a pile of complete chaos and Tailwind, I was really happy to choose
+Tailwind. It helped me make a lot of tiny sites!</p>
+<p>I spent the last week or so migrating a couple of sites away from Tailwind and
+towards more semantic HTML + vanilla CSS, and it was SO fun and SO interesting,
+so here are some things I learned!</p>
+<p>As usual I&rsquo;m not a full-time frontend developer and so all of my CSS learning
+has happened in fits and starts over many years.</p>
+<h3 id="it-turns-out-tailwind-taught-me-a-lot">it turns out Tailwind taught me a lot</h3>
+<p>When I started thinking about structuring CSS, I was intimidated at first: I&rsquo;m
+not very good at structuring my CSS! But then I started reading blog posts
+talking about how to structure CSS (like <a href="https://www.miriamsuzanne.com/2022/09/06/layers/">A whole cascade of layers</a> or <a href="https://jacobb.nyc/writing/how-i-write-css-in-2024">How I write CSS in 2024</a>)
+and I realized a couple of things:</p>
+<ol>
+<li>Every CSS code base has a bunch of different things going on (layouts! fonts! colours! common components!)</li>
+<li>It&rsquo;s extremely useful to have systems or guidelines to manage each of those things, otherwise things descend into chaos</li>
+<li>Tailwind has systems for some of these, and I already know those systems! Maybe I can imitate the systems I like!</li>
+</ol>
+<p>For example, Tailwind has:</p>
+<ul>
+<li>a reset stylesheet</li>
+<li>a <a href="https://jvns.ca/blog/2026/05/04/css-colour-palettes/">colour palette</a></li>
+<li>a <a href="https://v2.tailwindcss.com/docs/font-size">font scale</a></li>
+</ul>
+<h3 id="the-systems-i-m-going-to-talk-about">the systems I&rsquo;m going to talk about</h3>
+<p>I&rsquo;m going to talk about a few aspects of my CSS codebase and my thoughts so far
+what kind of rules I want to impose on the codebase for each one. Some of them
+are copied from Tailwind and some aren&rsquo;t.</p>
+<ol>
+<li>reset</li>
+<li>components</li>
+<li>colours</li>
+<li>font sizes</li>
+<li>utility classes</li>
+<li>the base</li>
+<li>spacing</li>
+<li>responsive design</li>
+<li>the build system</li>
+</ol>
+<h3 id="1-reset">1. reset</h3>
+<p>I just copied Tailwind&rsquo;s &ldquo;<a href="https://v2.tailwindcss.com/docs/preflight">preflight styles</a>&rdquo;
+by going into <code>tailwind.css</code> and copying the first 200 lines or so.</p>
+<p>I noticed that I&rsquo;ve developed a relationship with Tailwind&rsquo;s CSS reset over time,
+for example Tailwind sets <code>box-sizing: border-box</code> on every element (which means
+that an element&rsquo;s width includes its padding and border):</p>
+<pre><code>* { box-sizing: border-box; }
+</code></pre>
+<p>I think it would be a real adjustment for me to switch to writing CSS without
+these, and I&rsquo;m sure there are lots of other things in the Tailwind reset (like
+<code>html {line-height: 1.5;}</code>) that I&rsquo;m subconsciously used to and don&rsquo;t even realize are
+there.</p>
+<h3 id="2-components">2. components</h3>
+<p>This next part is the bulk of the CSS!</p>
+<p>The idea here is to organize CSS by &ldquo;components&rdquo;, in a way that&rsquo;s spiritually
+related to Vue or React components. (though there might not actually be any Javascript at all in the site)</p>
+<p>Basically the idea is that:</p>
+<ol>
+<li>Each &ldquo;component&rdquo; has a unique class</li>
+<li>The CSS for one component never overrides the CSS for any other component</li>
+<li>Each component has its own CSS file</li>
+</ol>
+<p>So editing the CSS for one component won&rsquo;t mysteriously break something in
+another component. And probably like 80% of the CSS that I would actually want
+to change is in various component files, so if I&rsquo;m editing a 100-line component,
+I just have to think about those 100 lines. It&rsquo;s way easier for me to think
+about.</p>
+<p>For example, this HTML might be the <code>.zine</code> &ldquo;component&rdquo;.</p>
+<pre><code>&lt;figure class=&quot;zine horizontal&quot;&gt;
+    &lt;img src=&quot;whatever.jpg&quot;&gt;
+&lt;/figure&gt;
+</code></pre>
+<p>And the CSS looks something like this, using nested selectors:</p>
+<pre><code>.zine {
+  ...
+  &amp;.horizontal {
+    ...
+  }
+  &amp;.vertical {
+    ...
+  }
+  &amp;:hover {
+    ...
+  }
+}
+</code></pre>
+<p>I haven&rsquo;t done anything programmatic (like web components or
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@scope">@scope</a>)
+that ensures that components won&rsquo;t interfere with each other, but just having a
+convention and trying my best already feels like a big improvement.</p>
+<p>Next: conventions to maintain some consistency across the site and keep these
+components in line with each other!</p>
+<h3 id="3-colours">3. colours</h3>
+<p><code>colours.css</code> has a bunch of variables like this which I can use as necessary.
+Colour is really hard and I didn&rsquo;t want to revisit my use of colour in this
+refactor, so I left this alone.</p>
+<p>The only guideline I&rsquo;m trying to enforce here is that all colours used in the
+site are listed in this file.</p>
+<pre><code>:root {
+  --pink: #fea0c2;
+  --pink-light: #F9B9B9;
+  --red: #f91a55;
+  --orange: rgb(222, 117, 31);
+  ...
+}
+</code></pre>
+<h3 id="4-font-sizes">4. font sizes</h3>
+<p>One thing I appreciated about Tailwind was that if I wanted to set a font
+size, I could just think &ldquo;hm, I want the text to be big&rdquo;, write <code>text-lg</code>, and
+be done with it! And maybe if it&rsquo;s not big enough I&rsquo;d use <code>xl</code> or <code>2xl</code> instead.
+No trying to remember whether I&rsquo;m using <code>em</code> or <code>px</code> or <code>rem</code>.</p>
+<p>So I defined a bunch of variables, taken from Tailwind, like this:</p>
+<pre><code>  --size-xs: 0.75rem;
+  --line-height-xs: 1rem;
+
+  --size-sm: 0.875rem;
+  --line-height-sm: 1.25rem;
+</code></pre>
+<p>Then if I want to set a font size, I can do it like this. It&rsquo;s a little more
+verbose than Tailwind but I&rsquo;m happy with it for now.</p>
+<pre><code>h3 {
+  font-size: var(--size-lg);
+  line-height: var(--line-height-lg);
+}
+</code></pre>
+<h3 id="5-utilities">5. utilities</h3>
+<p>There are some things like buttons that appear in many different components.
+I&rsquo;m calling these &ldquo;utilities&rdquo;.</p>
+<p>I copied some utility classes from Tailwind (like <code>.sr-only</code> for things that
+should only appear for screenreader users).</p>
+<p>This section is pretty small and I try to be careful about making changes here.</p>
+<h3 id="6-the-base">6. the base</h3>
+<p>&ldquo;base&rdquo; styles are styles that apply across the whole site that I chose myself. I
+have to keep this section really small because I&rsquo;m not confident enough to
+enforce a lot of styles across the whole site. These are the only two I feel
+okay about right now, and I might change the <code>&lt;section&gt;</code> one:</p>
+<pre><code>/* put a 950px column in the middle of each &lt;section&gt; */
+section {
+  --inner-width: 950px;
+  padding: 3rem max(1rem, (100% - var(--inner-width))/2);
+}
+
+a {
+  color: var(--orange);
+}
+</code></pre>
+<p>I think for the base styles it&rsquo;s going to be easiest for me to work kind of
+bottom up &ndash; first start with almost nothing in the base styles, and then move
+some styles from the components into base styles as I identify common things
+I want.</p>
+<h3 id="7-spacing">7. spacing</h3>
+<p>I haven&rsquo;t completely worked out an approach to managing padding and margins yet.
+I&rsquo;m definitely trying to be more principled than how I was doing it in Tailwind
+though, where I would just haphazardly put padding and margins everywhere until
+it looked the way I wanted.</p>
+<p>Right now I&rsquo;m working towards making the outer layout components in charge of
+spacing as much as possible. For example if I have a <code>&lt;section&gt;</code> with a bunch of
+children that I want to have space between them, I might use this to space the
+children evenly:</p>
+<pre><code>section &gt; *+* {
+  margin-top: 1rem;
+}
+</code></pre>
+<p>Some inspiration blog posts:</p>
+<ul>
+<li><a href="https://piccalil.li/blog/my-favourite-3-lines-of-css/">the owl selector</a></li>
+<li><a href="https://kyleshevlin.com/no-outer-margin/">&ldquo;no outer margin&rdquo;</a></li>
+</ul>
+<h3 id="8-responsive-design-use-more-grid">8. responsive design: use more grid!</h3>
+<p>The way I was doing responsive design in Tailwind was to use a lot of media
+queries. Tailwind has this <code>md:text-xl</code> syntax that means &ldquo;apply the <code>text-xl</code>
+style at sizes <code>md</code> or larger&rdquo;.</p>
+<p>I&rsquo;m trying something pretty different now, which is to make more flexible CSS
+grid layouts that don&rsquo;t need as many breakpoints. This is hard but it&rsquo;s really
+interesting to learn about what&rsquo;s possible with grid, and it&rsquo;s a good example of
+something that I don&rsquo;t think is possible with Tailwind.</p>
+<p>For example, I&rsquo;ve been learning about how to use <code>auto-fit</code> to automatically use
+2 columns on a big screen and 1 column on a small screen like this:</p>
+<pre><code>  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), max-content));
+  justify-content: center;
+</code></pre>
+<p>I also used <a href="https://wizardzines.com/comics/css-grid-areas/"><code>grid-template-areas</code></a> a lot which is an amazing feature that I don&rsquo;t think you can use with Tailwind.</p>
+<p>Some inspiration:</p>
+<ul>
+<li><a href="https://css-tricks.com/a-responsive-grid-layout-with-no-media-queries/">A responsive grid layout with no media queries</a> from CSS Tricks</li>
+</ul>
+<h3 id="9-the-build-system-esbuild">9. the build system: esbuild</h3>
+<p>In development, I don&rsquo;t need a build system: CSS now has both built in import statements, like this:</p>
+<pre><code>@import &quot;reset.css&quot;;
+@import &quot;typography.css&quot;;
+@import &quot;colors.css&quot;;
+</code></pre>
+<p>and built in nested selectors, like this:</p>
+<pre><code>.page {
+  h2 { ...}
+}
+</code></pre>
+<p>If I want, I can use <code>esbuild</code> to bundle the CSS file for production. That looks something like this.</p>
+<pre><code>esbuild style.css --bundle --loader:.svg=dataurl  --loader:.woff2=file --outfile=/tmp/out.css
+</code></pre>
+<p>Even though I usually avoid using CSS and JS build systems, I don&rsquo;t mind using esbuild
+(which I <a href="https://jvns.ca/blog/2021/11/15/esbuild-vue/">wrote about in 2021 here</a>)
+because it&rsquo;s based on web standards and because it&rsquo;s a static Go binary.</p>
+<h3 id="why-migrate-away-from-tailwind">why migrate away from Tailwind?</h3>
+<p>A few people asked why I was migrating away from Tailwind. A few factors that
+contributed are:</p>
+<ul>
+<li>Tailwind has become much more reliant on a build system since 2018, I think it&rsquo;s
+impossible (?) to use newer versions of Tailwind without using a build system.
+So I&rsquo;ve been using Tailwind v2 for years. (there&rsquo;s also <a href="https://litewindcss.com/">litewind</a> apparently)</li>
+<li>It&rsquo;s always been true that you&rsquo;re supposed to use Tailwind with a build
+system, but I&rsquo;ve never really done that, so I have 2.8MB <code>tailwind.min.css</code>
+files (270K gzipped) in a lot of my projects and it feels a little silly.</li>
+<li>I&rsquo;m a lot better at CSS than I was when I started using Tailwind</li>
+<li>Ultimately Tailwind is limiting: if you want to do Weird Stuff in your CSS,
+it&rsquo;s not always possible with Tailwind. Those limits can be extremely useful
+(a lot of this post is about me reimplementing some of Tailwind&rsquo;s limits!) but
+at this point I&rsquo;d like to be able to pick and choose.</li>
+<li>I ended up with sites that mixed both vanilla CSS and Tailwind in the same
+project and that was not fun to maintain</li>
+<li>I got curious about what writing more semantic HTML would feel like.</li>
+</ul>
+<h3 id="css-features-i-m-curious-about">CSS features I&rsquo;m curious about</h3>
+<p>While doing this I learned about a lot of CSS features that I didn&rsquo;t use but am
+curious about learning about one day:</p>
+<ul>
+<li><code>@layer</code> (from <a href="https://www.miriamsuzanne.com/2022/09/06/layers/">A Whole Cascade of Layers</a>)</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@scope">@scope</a>) (especially <a href="https://drafts.csswg.org/css-cascade-6/#example-463550a5">this example of how to use @scope in a &ldquo;component&rdquo; CSS design from the specification!</a>)</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries">container queries</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Subgrid">subgrid</a></li>
+</ul>
+<h3 id="one-last-reason-i-moved-away-from-tailwind">one last reason I moved away from Tailwind</h3>
+<p>I&rsquo;ve been talking a lot in this post about what I learned from using Tailwind,
+and that&rsquo;s all true.</p>
+<p>But I read this post 3 years ago called <a href="https://thoughtbot.com/blog/tailwind-and-the-femininity-of-css">Tailwind and the Femininity of CSS</a>
+that really stuck with me. I honestly probably started out with an attitude
+towards CSS a little like that post describes:</p>
+<blockquote>
+<p>They’ve heard it’s simple, so they assume it’s easy. But then when they try to
+use it, it doesn’t work. It must be the fault of the language, because they know
+that they are smart, and this is supposed to be easy.</p>
+</blockquote>
+<p>But in the last 10 years I&rsquo;ve learned to really love and respect CSS as a
+technology.</p>
+<p>So I decided years ago that I wanted to react to &ldquo;CSS is hard&rdquo; by getting
+better at CSS and taking it seriously as a technology, instead of devaluing it.
+Doing that changed everything for me: I learned that so many of my frustrations
+(&ldquo;centering is impossible&rdquo;) had been addressed in CSS a long time ago, and that
+also what &ldquo;centering&rdquo; means is not always straightforward and it makes sense
+that there are many ways to do it. CSS is hard because it&rsquo;s solving a hard
+problem!</p>
+<p>I&rsquo;ve been so impressed by the new CSS features that have been built in the last
+10-15 years (some of which I&rsquo;ve talked about in this post!) and how they make
+it easier to use CSS, and spending the time to improve my CSS skills has been a
+really cool experience.</p>
+<p>And that post made me feel like Tailwind contributes to the devaluing of CSS
+expertise, and like that&rsquo;s not something I want to be a part of, even if
+Tailwind has been a useful tool for me personally. Especially in this time of
+LLMs where it feels more important than ever to value humans&rsquo; expertise.</p>
+<p>Another blog post criticizing Tailwind that influenced me:</p>
+<ul>
+<li><a href="https://joshcollinsworth.com/blog/tailwind-is-smart-steering">Classic rock, Mario Kart, and why we can&rsquo;t agree on Tailwind</a></li>
+</ul>
+<h3 id="that-s-all-for-now">that&rsquo;s all for now!</h3>
+<p>Thanks to <a href="https://melody.dev/">Melody Starling</a> who originally designed and wrote the CSS for
+<a href="https://wizardzines.com">wizardzines.com</a>, everything cool and fun
+about the site is thanks to Melody.</p>
+<p>Also I read so many incredible blog posts about CSS while working on this (from <a href="https://css-tricks.com/">CSS Tricks</a>, <a href="https://www.smashingmagazine.com/">Smashing Magazine</a>, and more), I&rsquo;ve tried to link some of them
+throughout this post and I really appreciate how much folks in the CSS community share their practices.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Links to CSS colour palettes]]></title>
+    <link href="https://jvns.ca/blog/2026/05/04/css-colour-palettes/"/>
+    <updated>2026-05-04T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/05/04/css-colour-palettes/</id>
+    <content type="html"><![CDATA[<p>A while back I decided to stop using Tailwind for new projects and to just write
+vanilla CSS instead.</p>
+<p>But one thing I missed about Tailwind was the <a href="https://v2.tailwindcss.com/docs/customizing-colors#color-palette-reference">colour palette</a> (<a href="https://gist.github.com/jvns/9e59b2cd1fe12601084ba78dded072fe">here as CSS</a>).
+If I wanted a light blue I could just use <code>blue-100</code> and if I didn&rsquo;t like it
+maybe try <code>blue-200</code> or <code>blue-50</code>. I&rsquo;m not very good with colours so it makes
+a big difference to me to have a reasonable colour palette that somebody who is
+better at colour than me has thought about.</p>
+<p>But I&rsquo;m also a little tired of those Tailwind colours, so I asked on Mastodon
+today what other colour palettes were out there. And then a friend said they
+wanted links to those colour palettes, so here&rsquo;s a blog post so my friend can
+see them, and all the rest of you too :)</p>
+<h3 id="my-favourites">my favourites</h3>
+<p>The ones I liked the most were:</p>
+<ul>
+<li><a href="https://uchu.style/">uchū</a> (<a href="https://code.webb.page/nevercease/uchu.git/tree/dist/uchu.css">css file</a>, <a href="https://code.webb.page/nevercease/uchu.git/about/documentation/FAQ.md">FAQ</a>)</li>
+<li><a href="https://stephango.com/flexoki">flexoki</a> (<a href="https://github.com/kepano/flexoki/blob/main/css/flexoki.css">css file</a>)</li>
+<li><a href="https://www.reasonable.work/artifacts/ra005-reasonable-colors/">reasonable colours</a>, which seems to have a focus on accessibility (<a href="https://github.com/matthewhowell/reasonable-colors/blob/master/reasonable-colors.css">css file</a>)</li>
+</ul>
+<h3 id="more-colour-palettes">more colour palettes</h3>
+<ul>
+<li><a href="https://webawesome.com/docs/color-palettes">web awesome</a></li>
+<li><a href="https://www.radix-ui.com/colors/docs/palette-composition/scales">radix</a></li>
+<li><a href="https://designsystem.digital.gov/design-tokens/color/system-tokens/">US web design systems</a></li>
+<li><a href="https://m2.material.io/design/color/the-color-system.html">material design</a></li>
+</ul>
+<h3 id="colourscheme-generators">colourscheme generators</h3>
+<p>Folks also linked to a bunch of colour palette generators</p>
+<ul>
+<li><a href="https://harmonizer.evilmartians.com/">harmonizer</a></li>
+<li><a href="https://www.tints.dev/">tints.dev</a></li>
+<li><a href="https://coolors.co/">coolors</a></li>
+<li><a href="https://colorpalette.pro/">colorpalette.pro</a></li>
+</ul>
+<p>I&rsquo;ve always found these types of generators too hard to use but maybe one day I
+will get better enough at colour that I&rsquo;m able to use a colour palette generator
+successfully so I&rsquo;ll leave those links there anyway.</p>
+<p>and more colour tools:</p>
+<ul>
+<li><a href="https://www.colorhexa.com/E97339">colorhexa</a> has some info about colorblindness</li>
+</ul>
+<h1 id="oklch"><code>oklch</code></h1>
+<p><a href="https://gomakethings.com/generative-colors-with-css/">Generative colors with CSS</a> gives an example of
+how to use the <code>oklch</code> CSS function to dynamically generate colors.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Vue components in the browser]]></title>
+    <link href="https://jvns.ca/blog/2026/05/02/testing-vue-components-in-the-browser/"/>
+    <updated>2026-05-02T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/05/02/testing-vue-components-in-the-browser/</id>
+    <content type="html"><![CDATA[<p>Hello! One of my long term projects on here is
+<a href="https://jvns.ca/#javascript">figuring out how to write frontend Javascript without using Node</a>
+or any other server JS runtime.</p>
+<p>One issue I run into a lot in my frontend JS projects is that I don&rsquo;t know how
+to write tests for them. I&rsquo;ve tried to use Playwright in the past, but it felt
+slow and unwieldy to be starting these new browser processes all the time, and
+it involved some Node code to orchestrate the tests.</p>
+<p>The result is that I just don&rsquo;t test my frontend code which doesn&rsquo;t feel great.
+Usually I don&rsquo;t update my projects much either so it doesn&rsquo;t come up that much,
+but it would be nice to be able to make changes with more confidence!
+So a way to do frontend testing that I like has been on my wishlist for a long time.</p>
+<h3 id="idea-just-run-the-tests-in-the-browser-tab">idea: just run the tests in the browser tab</h3>
+<p>Alex Chan wrote a great post a while back called <a href="https://alexwlchan.net/2023/testing-javascript-without-a-framework/">Testing JavaScript without a (third-party) framework</a>
+in response to one of my previous posts in this series that explained how to
+write a tiny unit-testing framework that runs in a page in browser.</p>
+<p>I loved this post at the time, but it only talked about unit testing and I
+wanted to write end-to-end integration tests for my Vue components, and I didn&rsquo;t
+know how to do that.</p>
+<p>So when I was talking to <a href="https://bsky.app/profile/polotek.bsky.social">Marco</a>
+the other day and he said something like &ldquo;you know, you can just run tests
+for your Vue components in the browser&rdquo;, I thought &ldquo;hey, I should try that
+again!!!&rdquo;</p>
+<p>I just did all of this yesterday so certainly there&rsquo;s a lot to improve but I
+wanted to write down a few things I noticed about the process before I forget.</p>
+<p>This was a bit tricky for me because the Vue site usually assumes that you&rsquo;re
+using Node as part of your build process in some way (there&rsquo;s a lot of &ldquo;step 1:
+<code>npm install THING</code>), and I didn&rsquo;t want to use Node/Deno/etc. But it turned
+out to not be too complicated.</p>
+<p>The project I&rsquo;m going to talk about testing is this <a href="https://jvns.ca/blog/2023/03/31/zine-feedback-site/">zine feedback site I wrote in 2023</a>.</p>
+<h3 id="the-test-framework-qunit">the test framework: QUnit</h3>
+<p>I used <a href="https://qunitjs.com/">QUnit</a>. It worked great but I don&rsquo;t have anything
+interesting to say about how it works so I&rsquo;ll leave it at that. I think that
+Alex&rsquo;s &ldquo;write your own test framework&rdquo; approach would have
+worked too. I followed <a href="https://qunitjs.com/browser/">these directions</a>.</p>
+<p>I did appreciate that QUnit has a &ldquo;rerun test&rdquo; button that will only rerun 1
+test. Because there are so many network requests in my tests, having a way to
+run just 1 test makes it a lot less confusing to debug the test.</p>
+<h3 id="step-1-set-up-the-component-for-testing">step 1: set up the component for testing</h3>
+<p>The first thing I needed to do was get my Vue
+components set up in the test environment.</p>
+<p>I changed my main app to put all my components in <code>window._components</code>,
+kind of like this:</p>
+<pre><code>const components = {
+  'Feedback': FeedbackComponent,
+  ...
+}
+window._components = components;
+</code></pre>
+<p>Then I was able to write a <code>mountComponent</code> function which
+does basically exactly the same thing my normal main app does
+(render a tiny template with the component I want to use).
+The only differences are:</p>
+<ol>
+<li>I can optionally pass some some extra data to use as its props.</li>
+<li>It mounts the component to a temporary invisible div which will get removed
+from the DOM after the test is done. The div is positioned off the page
+(<code>position: absolute; top: -10000, ...</code>) so you can&rsquo;t see it.</li>
+</ol>
+<p>Here&rsquo;s what using the <code>mountComponent</code> function looks like:</p>
+<pre><code>const {div} = mountComponent(
+  '&lt;Page :feedbacks=&quot;feedbacks&quot; id=2 /&gt;',
+  {feedbacks: [testFeedback]},
+);
+</code></pre>
+<p>and here&rsquo;s the code for it:</p>
+<pre><code>function mountComponent(template, data) {
+  const app = Vue.createApp({
+    template: template,
+    data: () =&gt; data,
+  })
+  for (const [c, v] of Object.entries(window._components)) {
+    app.component(c, v);
+  }
+  const div = document.getElementById('qunit-fixture')
+             .appendChild(document.createElement('div'));
+  return div;
+}
+</code></pre>
+<p>The result is a div where I can programmatically click, fill in form data, check
+that the right content appears, etc.</p>
+<h3 id="step-2-add-some-fixture-data">step 2: add some fixture data</h3>
+<p>Because I was writing end-to-end integration tests to make sure my client JS
+worked properly with my server, I needed to have some test data in my database.
+So I wrote ~25 lines of SQL to set up some test data in my database, and added
+an endpoint to my dev server to run the SQL to reset the test data to a known
+state.</p>
+<pre><code>async function reset() {
+    return fetch('/api/reset_test_data', {method: &quot;POST&quot;})
+}
+</code></pre>
+<p>Then I just run <code>await reset()</code> at the beginning of any test that needs the
+test data.</p>
+<p>My <code>reset()</code> function actually doesn&rsquo;t always totally reset everything which is
+kind of bad, but it was workable to start with and can always be improved.</p>
+<h3 id="step-3-a-basic-test">step 3: a basic test</h3>
+<p>Here&rsquo;s what a basic test looks like! Basically we&rsquo;re rendering the div
+and make sure it contains some approximately correct data.</p>
+<pre><code>QUnit.test('renders feedback content', async function (assert) {
+  const {div} = mountComponent(
+    '&lt;Page :feedbacks=&quot;feedbacks&quot; id=2 image=2 page_hash=2 /&gt;',
+    {feedbacks: [testFeedback]},
+  );
+  assert.ok(div.textContent.includes('loved this section'));
+})
+</code></pre>
+<p>Those are all the basic pieces! Now here are a few issues I ran into along the
+way</p>
+<h3 id="waiting-for-parts-of-the-page-to-render">waiting for parts of the page to render</h3>
+<p>I have a lot of network requests in my tests, and it takes time for them to
+finish and for the Vue code to do what it has to do with the results and update
+the DOM.</p>
+<p>I think we all learned a long time ago that putting random <code>sleep()</code> calls in
+your tests and hoping that the timings are right is slow and flaky and extremely
+frustrating, so I needed a different way.</p>
+<p>As far as I can tell the normal way to deal with this is to figure out a way to
+tell from the DOM whether it&rsquo;s okay to proceed or not. Like &ldquo;if this button is
+visible, we can &ldquo;.</p>
+<p>So I wrote a little <code>waitFor()</code> function that polls every 20ms to see if a
+condition has finished yet. It times out after 2 seconds.</p>
+<p>Here&rsquo;s what using it looks like:</p>
+<pre><code>QUnit.test(&quot;click item&quot;, async function (assert) {
+  const {div} = mountComponent(
+    '&lt;Feedback zine_id=&quot;test123&quot; image_width=&quot;800px&quot; /&gt;',
+    {});
+  const item = await waitFor(() =&gt; div.querySelector('.feedback-item'));
+  item.click();
+  // rest of test goes here... 
+})
+</code></pre>
+<p>It looks like there are a lot of implementations of this concept out there and they&rsquo;re all
+better thought-through than mine. (from a quick Google: <a href="https://www.npmjs.com/package/qunit-wait-for">qunit-wait-for</a>, <a href="https://playwright.dev/docs/testing-library#replacing-waitfor">playwright expect.poll</a>)</p>
+<h3 id="figuring-out-the-right-thing-to-wait-for-is-not-straightforward">figuring out the right thing to wait for is not straightforward</h3>
+<p>In some cases I <em>thought</em> I&rsquo;d identified the right thing to wait for in the DOM
+(&ldquo;just wait for this textarea to appear!&rsquo;) but it turned out that because of
+some internal details of how my program works, actually I needed to wait for
+something else later on which was hard to pin down.</p>
+<p>I ended up changing one of my components to add some random value to the DOM
+when it was finished an important action (like <code>data-this-thing-is-ready=true</code>)
+which didn&rsquo;t feel great.</p>
+<p>My best guess is that the right way to fix this kind of test issue is a refactor
+that also makes the app more reliable for the users: if there&rsquo;s an element
+in the DOM that isn&rsquo;t actually ready for the user to interact with, maybe I
+shouldn&rsquo;t be displaying it yet!</p>
+<h3 id="adding-some-css-classes-to-identify-things-but-is-that-right">adding some CSS classes to identify things (but is that right?)</h3>
+<p>I ended up adding a few classes to HTML elements that I needed to find in the tests,
+either because I needed to click on them or wait for them to appear in the DOM.</p>
+<p>I might want to change this approach later - frontend testing frameworks seem to
+suggest avoiding using CSS classes and instead using something like
+<a href="https://playwright.dev/docs/api/class-framelocator#frame-locator-get-by-role">getByRole</a>
+or as a last resort something like a <a href="https://testing-library.com/docs/dom-testing-library/intro/">data-testid</a>.
+Feels like there&rsquo;s a way to make the app more accessible and easier to test at the same time.</p>
+<h3 id="filling-out-forms-is-tricky">filling out forms is tricky</h3>
+<p>To fill out a form, I can&rsquo;t just set the <code>value</code>, I also need to dispatch an
+event to tell Vue that the element has changed. For example, <code>checkbox</code> and
+<code>textarea</code> need different kinds of events.</p>
+<pre><code>textarea.value = 'banana banana banana';
+textarea.dispatchEvent(new Event('input'));
+</code></pre>
+<pre><code>checkbox.checked = true;
+checkbox.dispatchEvent(new Event('change'));
+</code></pre>
+<p>This is kind of annoying and it made me realize why I might want to use some
+kind of UI testing library, for example:</p>
+<ul>
+<li>Testing Library&rsquo;s <a href="https://testing-library.com/docs/example-react-formik">example of filling out a form</a> looks extremely different from what I&rsquo;m doing</li>
+<li>Vue Test Utils: their <a href="content/post/2026-05-02-testing-javascript-in-the-browser.markdown">section on form handling</a>
+looks like it simplifies this a lot.</li>
+</ul>
+<h3 id="test-coverage">test coverage</h3>
+<p>I want to have an idea of what my test coverage was, and it turns out that
+Chrome actually has a built-in <a href="https://developer.chrome.com/docs/devtools/coverage">code coverage</a> feature for JS and CSS!</p>
+<p>My JS is bundled into a file called <code>bundle.js</code> with esbuild, so I could just
+look at <code>bundle.js</code> and see which lines weren&rsquo;t covered.</p>
+<p>The process was a little finicky: I had to turn off sourcemaps in the Chrome
+devtools to get this to work, and there&rsquo;s a specific not super obvious
+series of actions I have to do in order to see the coverage data.</p>
+<h3 id="this-was-so-fun">this was so fun!</h3>
+<p>As usual with these posts I&rsquo;ve never really worked as a frontend or backend
+developer (other than for myself!) and I feel like I&rsquo;m constantly learning how
+to do super basic tasks.</p>
+<p>I really had a blast doing this. My frontend projects always feel so fragile
+because they&rsquo;re untested, and maybe one day I&rsquo;ll have a test suite I&rsquo;m confident
+in!</p>
+<p>Some things I&rsquo;m still thinking about:</p>
+<ul>
+<li>While writing this post I found this frontend testing library called
+<a href="https://testing-library.com/">Testing Library</a> that has a lot of
+guidelines for how to write tests that are very different from my initial ideas.
+I experimented with rewriting everything to use Testing Library and it felt
+pretty good, so we&rsquo;ll see how that goes. They distribute a <code>.umd.js</code> file
+that works without Node.</li>
+<li>I&rsquo;m not sure how I feel about not having a way to run these tests on the
+command line at all. Maybe there&rsquo;s a simple way to work primarily in the
+browser but have an way to run them in CI too if I want?</li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Examples for the tcpdump and dig man pages]]></title>
+    <link href="https://jvns.ca/blog/2026/03/10/examples-for-the-tcpdump-and-dig-man-pages/"/>
+    <updated>2026-03-10T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/03/10/examples-for-the-tcpdump-and-dig-man-pages/</id>
+    <content type="html"><![CDATA[<p>Hello! My big takeaway from last month&rsquo;s <a href="https://jvns.ca/blog/2026/02/18/man-pages/">musings about man pages</a>
+was that examples in man pages are really great, so I worked on adding (or
+improving) examples to two of my favourite tools&rsquo; man pages.</p>
+<p>Here they are:</p>
+<ul>
+<li>the <a href="https://bind9.readthedocs.io/en/stable/manpages.html#dig-dns-lookup-utility">dig man page (now with examples)</a></li>
+<li>the <a href="https://www.tcpdump.org/manpages/tcpdump.1.html#lbAF">tcpdump man page examples</a> (this one is an update to the previous examples)</li>
+</ul>
+<h3 id="the-goal-include-the-most-basic-examples">the goal: include the most basic examples</h3>
+<p>The goal here was really just to give the absolute most basic examples of how to
+use the tool, for people who use tcpdump or dig infrequently (or have never used
+it before!) and don&rsquo;t remember how it works.</p>
+<p>So far saying &ldquo;hey, I want to write an examples section for beginners and
+infrequent users of this tools&rdquo; has been working really well. It&rsquo;s easy to
+explain, I think it makes sense from everything I&rsquo;ve heard from users about what
+they want from a man page, and maintainers seem to find it compelling.</p>
+<p>Thanks to Denis Ovsienko, Guy Harris, Ondřej Surý, and everyone else who
+reviewed the docs changes, it was a good experience and left me motivated to do
+a little more work on man pages.</p>
+<h3 id="why-improve-the-man-pages">why improve the man pages?</h3>
+<p>I&rsquo;m interested in working on tools&rsquo; official documentation right now
+because:</p>
+<ul>
+<li>Man pages can actually have close to 100% accurate information!
+Going through a review process to make sure that the information is actually true has a lot of value.</li>
+<li>Even with basic questions &ldquo;what are the most commonly used tcpdump flags&rdquo;,
+often maintainers are aware of useful features that I&rsquo;m not! For
+example I learned by working on these tcpdump examples that if you&rsquo;re saving
+packets to a file with <code>tcpdump -w out.pcap</code>, it&rsquo;s useful to pass <code>-v</code> to print
+a live summary of how many packets have been captured so far. That&rsquo;s really
+useful, I didn&rsquo;t know it, and I don&rsquo;t think I ever would have noticed it on
+my own.</li>
+</ul>
+<p>It&rsquo;s kind of a weird place for me to be because honestly I always kind of assume
+documentation is going to be hard to read, and I usually just skip it and read
+a blog post or Stack Overflow comment or ask a friend instead. But right now
+I&rsquo;m feeling optimistic, like maybe the documentation doesn&rsquo;t have to be bad?
+Maybe it could be just as good as reading a really great blog post, but with the
+benefit of also being actually correct? I&rsquo;ve been using the Django documentation
+recently, and it&rsquo;s really good! We&rsquo;ll see.</p>
+<h3 id="on-avoiding-writing-the-man-page-language">on avoiding writing the man page language</h3>
+<p>The <code>tcpdump</code> project tool&rsquo;s man page is
+<a href="https://raw.githubusercontent.com/the-tcpdump-group/tcpdump/refs/heads/master/tcpdump.1.in">written in the roff language</a>,
+which is kind of hard to use and that I really did not feel like learning it.</p>
+<p>I handled this by writing a
+<a href="https://gist.github.com/jvns/a31036bf70f0675811b1b2a86b122aeb">very basic markdown-to-roff script</a> to
+convert Markdown to roff, using similar conventions to what the man page was
+already using. I could maybe have just used pandoc, but the output pandoc
+produced seemed pretty different, so I thought it might be better to write my
+own script instead. Who knows.</p>
+<p>I did think it was cool to be able to just use an existing Markdown library&rsquo;s
+ability to parse the Markdown AST and then implement my own code-emitting
+methods to format things in a way that seemed to make sense in this context.</p>
+<h3 id="man-pages-are-complicated">man pages are complicated</h3>
+<p>I went on a whole rabbit hole learning about the history of <code>roff</code>, how it&rsquo;s
+evolved since the 70s, and who&rsquo;s working on it today, inspired by learning about
+the <a href="https://mandoc.bsd.lv/">mandoc</a> project that BSD systems (and some Linux
+systems, and I think Mac OS) use for formatting man pages. I won&rsquo;t say more
+about that today though, maybe another time.</p>
+<p>In general it seems like there&rsquo;s a technical and cultural divide in how
+documentation works on BSD and on Linux that I still haven&rsquo;t really understood,
+but I have been feeling curious about what&rsquo;s going on in the BSD world.</p>
+<p>The <a href="https://comments.jvns.ca/post/116206906990442943">comments section is here</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Notes on clarifying man pages]]></title>
+    <link href="https://jvns.ca/blog/2026/02/18/man-pages/"/>
+    <updated>2026-02-18T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/02/18/man-pages/</id>
+    <content type="html"><![CDATA[<p>Hello! After <a href="https://jvns.ca/blog/2026/01/08/a-data-model-for-git/">spending some time working on the Git man pages</a> last year,
+I&rsquo;ve been thinking a little more about what makes a good man page.</p>
+<p>I&rsquo;ve spent a lot of time writing cheat sheets for tools (tcpdump, git, dig, etc)
+which have a man page as their primary documentation. This is because I often
+find the man pages hard to navigate to get the information I want.</p>
+<p>Lately I&rsquo;ve wondering &ndash; could the man page <em>itself</em> have an amazing cheat sheet
+in it? What might make a man page easier to use?
+I&rsquo;m still very early in thinking about this but I wanted to write down some quick notes.</p>
+<p>I <a href="https://social.jvns.ca/@b0rk/116092583707187579">asked some people on Mastodon</a> for their favourite man pages, and here
+are some examples of interesting things I saw on those man pages.</p>
+<h3 id="an-options-summary">an OPTIONS SUMMARY</h3>
+<p>If you&rsquo;ve read a lot of man pages you&rsquo;ve probably seen something like this in
+the <code>SYNOPSIS</code>: once you&rsquo;re listing almost the entire alphabet, it&rsquo;s hard</p>
+<pre><code>ls [-@ABCFGHILOPRSTUWabcdefghiklmnopqrstuvwxy1%,]
+
+grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz]
+</code></pre>
+<p>The <a href="https://download.samba.org/pub/rsync/rsync.1">rsync man page</a>
+has a solution I&rsquo;ve never seen before: it keeps its SYNOPSIS very terse, like this:</p>
+<pre><code> Local:
+     rsync [OPTION...] SRC... [DEST]
+</code></pre>
+<p>and then has an &ldquo;OPTIONS SUMMARY&rdquo; section with a 1-line summary of each option, like this:</p>
+<pre><code>--verbose, -v            increase verbosity
+--info=FLAGS             fine-grained informational verbosity
+--debug=FLAGS            fine-grained debug verbosity
+--stderr=e|a|c           change stderr output mode (default: errors)
+--quiet, -q              suppress non-error messages
+--no-motd                suppress daemon-mode MOTD
+</code></pre>
+<p>Then later there&rsquo;s the usual OPTIONS section with a full description of each option.</p>
+<h3 id="an-options-section-organized-by-category">an OPTIONS section organized by category</h3>
+<p>The <a href="https://man7.org/linux/man-pages/man1/strace.1.html">strace man page</a>
+organizes its options by category (like &ldquo;General&rdquo;, &ldquo;Startup&rdquo;, &ldquo;Tracing&rdquo;, and
+&ldquo;Filtering&rdquo;, &ldquo;Output Format&rdquo;) instead of alphabetically.</p>
+<p>As an experiment I tried to take the <code>grep</code> man page and make an
+&ldquo;OPTIONS SUMMARY&rdquo; section grouped by category, you can <a href="https://gist.github.com/jvns/9f5966633875a4758e0d947a5b4dbdcf">see the results
+here</a>. I&rsquo;m not
+sure what I think of the results but it was a fun exercise. When I was writing
+that I was thinking about how I can never remember the name of the <code>-l</code> grep
+option. It always takes me what feels like forever to find it in the man page
+and I was trying to think of what structure would make it easier for me to find.
+Maybe categories?</p>
+<h3 id="a-cheat-sheet">a cheat sheet</h3>
+<p>A couple of people pointed me to the suite of Perl man pages (<code>perlfunc</code>, <code>perlre</code>, etc), and one thing I
+noticed was <a href="https://linux.die.net/man/1/perlcheat">man perlcheat</a>, which has
+cheat sheet sections like this:</p>
+<pre><code> SYNTAX
+ foreach (LIST) { }     for (a;b;c) { }
+ while   (e) { }        until (e)   { }
+ if      (e) { } elsif (e) { } else { }
+ unless  (e) { } elsif (e) { } else { }
+ given   (e) { when (e) {} default {} }
+</code></pre>
+<p>I think this is so cool and it makes me wonder if there are other ways to
+write condensed ASCII 80-character-wide cheat sheets for use in man pages.</p>
+<h3 id="examples-are-very-popular">examples are very popular</h3>
+<p>A common comment was something to the effect of &ldquo;I like any man page that has
+examples&rdquo;. Someone mentioned the OpenBSD man pages, and the <a href="https://man.openbsd.org/tail">openbsd tail</a> man page has examples of
+the exact 2 ways I use tail at the end.</p>
+<p>I think I&rsquo;ve most often seen the EXAMPLES section at the
+end of the man page, but some man pages (like the <a href="https://download.samba.org/pub/rsync/rsync.1">rsync man page</a> from earlier) start with
+the examples. When I was working on the <a href="https://git-scm.com/docs/git-add">git-add</a> and <a href="https://git-scm.com/docs/git-rebase">git rebase</a>
+man pages I put a short example at the beginning.</p>
+<h3 id="a-table-of-contents-and-links-between-sections">a table of contents, and links between sections</h3>
+<p>This isn&rsquo;t a property of the man page itself, but one issue with man pages in
+the terminal is it&rsquo;s hard to know what sections the man page has.</p>
+<p>When working on the Git man pages, one thing Marie and I did was to
+<a href="https://git-scm.com/docs/git-rebase">add a table of contents</a> to the sidebar of
+the HTML versions of the man pages hosted on the Git site.</p>
+<p>I&rsquo;d also like to add more hyperlinks to the HTML versions of the Git man pages
+at some point, so that you can click on &ldquo;INCOMPATIBLE OPTIONS&rdquo; to get to that
+section. It&rsquo;s very easy to add links like this in the Git project since Git&rsquo;s
+man pages are generated with AsciiDoc.</p>
+<p>I think adding a table of contents and adding internal hyperlinks is kind of a
+nice middle ground where we can make some improvements to the man page format
+(in the HTML version of the man page at least) without maintaining a totally
+different form of documentation. Though for this to work you do need to set up a
+toolchain like Git&rsquo;s AsciiDoc system.</p>
+<p>It would be amazing if there were some kind of universal system to make it easy
+to look up a specific option in a man page (&ldquo;what does -a do?&rdquo;).
+The best trick I know is use the man pager to search for something like <code>^ *-a</code>
+but I never remember to do it and instead just end up going through
+every instance of <code>-a</code> in the man page until I find what I&rsquo;m looking for.</p>
+<h3 id="examples-for-every-option">examples for every option</h3>
+<p>The <a href="https://curl.se/docs/manpage.html">curl man page</a> has examples for every
+option, and there&rsquo;s also a table of contents on the HTML version so you can more
+easily jump to the option you&rsquo;re interested in.</p>
+<p>For instance the example for <code>--cert</code> makes it easy to see that you likely also want to pass the <code>--key</code> option, like this:</p>
+<pre><code>  curl --cert certfile --key keyfile https://example.com
+</code></pre>
+<p>The way they implement this is that there&rsquo;s [one file for each option](<a href="https://github.com/curl/curl/blob/dc08922a61efe546b318daf964514ffbf41583">https://github.com/curl/curl/blob/dc08922a61efe546b318daf964514ffbf41583</a> 25/docs/cmdline-opts/append.md) and there&rsquo;s an &ldquo;Example&rdquo; field in that file.</p>
+<h3 id="formatting-data-in-a-table">formatting data in a table</h3>
+<p>Quite a few people said that <a href="https://www.man7.org/linux/man-pages/man7/ascii.7.html">man ascii</a> was their
+favourite man page, which looks like this:</p>
+<pre><code> Oct   Dec   Hex   Char                     
+ ───────────────────────────────────────────
+ 000   0     00    NUL '\0' (null character)
+ 001   1     01    SOH (start of heading)   
+ 002   2     02    STX (start of text)      
+ 003   3     03    ETX (end of text)        
+ 004   4     04    EOT (end of transmission)
+ 005   5     05    ENQ (enquiry)            
+ 006   6     06    ACK (acknowledge)        
+ 007   7     07    BEL '\a' (bell)          
+ 010   8     08    BS  '\b' (backspace)     
+ 011   9     09    HT  '\t' (horizontal tab)
+ 012   10    0A    LF  '\n' (new line)      
+</code></pre>
+<p>Obviously <code>man ascii</code> is an unusual man page but I think what&rsquo;s cool about this man page (other than the fact that it&rsquo;s always
+useful to have an ASCII reference) is it&rsquo;s very easy to scan to find the
+information you need because of the table format. It makes me wonder if there
+are more opportunities to display information in a &ldquo;table&rdquo; in a man page to make
+it easier to scan.</p>
+<h3 id="the-gnu-approach">the GNU approach</h3>
+<p>When I talk about man
+pages it often comes up that the GNU coreutils man pages
+(for example <a href="https://man7.org/linux/man-pages/man1/tail.1.html">man tail</a>)
+don&rsquo;t have examples, unlike the OpenBSD man pages, which <a href="https://man.openbsd.org/tail">do have examples</a>.</p>
+<p>I&rsquo;m not going to get into this too much because it seems like a fairly political
+topic and I definitely can&rsquo;t do it justice here, but here are some things I
+believe to be true:</p>
+<ul>
+<li>The GNU project prefers to maintain documentation in &ldquo;info&rdquo; manuals instead of man pages. <a href="https://www.gnu.org/software/coreutils/manual/coreutils.html">This page</a> says &ldquo;the man pages are no longer being maintained&rdquo;.</li>
+<li>There are 3 ways to read &ldquo;info&rdquo; manuals: their HTML version, in Emacs, or with a standalone <code>info</code> tool. I&rsquo;ve heard from some Emacs users that they like the Emacs info browser. I don&rsquo;t think I&rsquo;ve ever talked to anyone who uses the standalone <code>info</code> tool.</li>
+<li>The <a href="https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html">info manual entry for tail</a> is linked at the bottom of the man page, and it does have examples</li>
+<li>The FSF used to <a href="https://www.fsf.org/gnu-press">sell print books</a> of the GNU software manuals (and maybe they <a href="https://shop.fsf.org/">still do</a> sometimes?)</li>
+</ul>
+<p>After a certain level of complexity a man page gets really hard to navigate: while I&rsquo;ve never used the coreutils info manual and probably won&rsquo;t, I would almost certainly prefer to use the
+<a href="https://www.gnu.org/software/bash/manual/bash.html">GNU Bash reference manual</a> or the <a href="https://sourceware.org/glibc/manual/latest/html_mono/libc.html">The GNU C Library Reference Manual</a> via their HTML documentation rather than through a man page.</p>
+<h3 id="a-few-more-man-page-adjacent-things">a few more man-page-adjacent things</h3>
+<p>Here are some tools I think are interesting:</p>
+<ul>
+<li><a href="https://fishshell.com/">The fish shell</a> comes with a <a href="https://github.com/fish-shell/fish-shell/blob/master/share/tools/create_manpage_completions.py">Python script</a> to automatically generate tab  completions from man pages</li>
+<li><a href="https://tldr.sh">tldr.sh</a> is a community maintained database of examples, for example you can run it as <code>tldr grep</code>. Lots of people have told me they find it useful.</li>
+<li>the <a href="https://kapeli.com/dash">Dash</a> Mac docs browser has a nice man page viewer in it. I still use the terminal man page viewer but I like that it includes a table of contents, it looks like this:</li>
+</ul>
+<img src="https://jvns.ca/images/dash.webp">
+<h3 id="it-s-interesting-to-think-about-a-constrained-format">it&rsquo;s interesting to think about a constrained format</h3>
+<p>Man pages are such a constrained format and it&rsquo;s fun to think about what you can
+do with such limited formatting options.</p>
+<p>Even though I&rsquo;m very into writing I&rsquo;ve always had a bad habit of never reading
+documentation and so it&rsquo;s a little bit hard for me to think about what I
+actually find useful in man pages, I&rsquo;m not sure whether I think most of the
+things in this post would improve my experience or not. (Except for examples, I
+LOVE examples)</p>
+<p>So I&rsquo;d be interested to hear about other man pages that you think are well
+designed and what you like about them,
+the <a href="https://comments.jvns.ca/post/116093529820975727">comments section is here</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Some notes on starting to use Django]]></title>
+    <link href="https://jvns.ca/blog/2026/01/27/some-notes-on-starting-to-use-django/"/>
+    <updated>2026-01-27T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/01/27/some-notes-on-starting-to-use-django/</id>
+    <content type="html"><![CDATA[<p>Hello! One of my favourite things is starting to learn an
+Old Boring Technology that I&rsquo;ve never tried before but that has been around for
+20+ years. It feels really good when every problem I&rsquo;m ever going to have has
+been solved already 1000 times and I can just get stuff done easily.</p>
+<p>I&rsquo;ve thought it would be cool to learn a popular web framework like
+Rails or Django or Laravel for a long time, but I&rsquo;d never really managed to
+make it happen. But I started learning Django to make a website a few months
+back, I&rsquo;ve been liking it so far, and here are a few quick notes!</p>
+<h3 id="less-magic-than-rails">less magic than Rails</h3>
+<p>I spent some time <a href="https://jvns.ca/blog/2020/11/09/day-1--a-little-rails-/">trying to learn Rails</a> in 2020,
+and while it was cool and I really wanted to like Rails (the Ruby community is great!),
+I found that if I left my Rails project alone for months, when I came
+back to it it was hard for me to remember how to get anything done because
+(for example) if it says <code>resources :topics</code> in your <code>routes.rb</code>, on its own
+that doesn&rsquo;t tell you where the <code>topics</code> routes are configured, you need to
+remember or look up the convention.</p>
+<p>Being able to abandon a project for months or years and then come back to it is
+really important to me (that&rsquo;s how all my projects work!), and Django feels easier
+to me because things are more explicit.</p>
+<p>In my small Django project it feels like I just have 5 main files (other
+than the settings files): <code>urls.py</code>, <code>models.py</code>, <code>views.py</code>, <code>admin.py</code>, and
+<code>tests.py</code>, and if I want to know where something else is (like an HTML template)
+is then it&rsquo;s usually explicitly referenced from one of those files.</p>
+<h3 id="a-built-in-admin">a built-in admin</h3>
+<p>For this project I wanted to have an admin interface to manually edit or view
+some of the data in the database. Django has a really nice built-in admin
+interface, and I can customize it with just a little bit of code.</p>
+<p>For example, here&rsquo;s part of one of my admin classes, which sets up which fields
+to display in the &ldquo;list&rdquo; view,  which field to search on, and how to order them
+by default.</p>
+<pre><code>@admin.register(Zine)
+class ZineAdmin(admin.ModelAdmin):
+    list_display = [&quot;name&quot;, &quot;publication_date&quot;, &quot;free&quot;, &quot;slug&quot;, &quot;image_preview&quot;]
+    search_fields = [&quot;name&quot;, &quot;slug&quot;]
+    readonly_fields = [&quot;image_preview&quot;]
+    ordering = [&quot;-publication_date&quot;]
+</code></pre>
+<h3 id="it-s-fun-to-have-an-orm">it&rsquo;s fun to have an ORM</h3>
+<p>In the past my attitude has been &ldquo;ORMs? Who needs them? I can just write my own SQL queries!&rdquo;.
+I&rsquo;ve been enjoying Django&rsquo;s ORM so far though, and I think it&rsquo;s cool how Django
+uses <code>__</code> to represent a <code>JOIN</code>, like this:</p>
+<pre><code>Zine.objects
+    .exclude(product__order__email_hash=email_hash)
+</code></pre>
+<p>This query involves 5 tables: <code>zines</code>, <code>zine_products</code>, <code>products</code>, <code>order_products</code>, and <code>orders</code>.
+To make this work I just had to tell Django that there&rsquo;s a <code>ManyToManyField</code>
+relating &ldquo;orders&rdquo; and &ldquo;products&rdquo;, and another <code>ManyToManyField</code> relating
+&ldquo;zines&rdquo;, and &ldquo;products&rdquo;, so that it knows how to connect <code>zines</code>, <code>orders</code>, <code>products</code>.</p>
+<p>I definitely <em>could</em> write that query, but writing <code>product__order__email_hash</code> is
+a lot less typing, it feels a lot easier to read, and honestly I think it would
+take me a little while to figure out how to construct the query
+(which needs to do a few other things than just those joins).</p>
+<p>I have zero concern about the performance of my ORM-generated queries so I&rsquo;m
+pretty excited about ORMs for now, though I&rsquo;m sure I&rsquo;ll find things to be
+frustrated with eventually.</p>
+<h3 id="automatic-migrations">automatic migrations!</h3>
+<p>The other great thing about the ORM is migrations!</p>
+<p>If I add, delete, or change a field in <code>models.py</code>, Django will automatically
+generate a migration script like <code>migrations/0006_delete_imageblob.py</code>.</p>
+<p>I assume that I could edit those scripts if I wanted, but so far I&rsquo;ve just
+been running the generated scripts with no change and it&rsquo;s been going great. It
+really feels like magic.</p>
+<p>I&rsquo;m realizing that being able to do migrations easily is important for me right
+now because I&rsquo;m changing my data model fairly often as I figure out how I want
+it to work.</p>
+<h3 id="i-like-the-docs">I like the docs</h3>
+<p>I had a bad habit of <a href="https://www.youtube.com/watch?v=krMw1QTP2no">never reading the documentation</a>
+but I&rsquo;ve been really enjoying the parts of Django&rsquo;s docs that I&rsquo;ve read so far.
+This isn&rsquo;t by accident: Jacob Kaplan-Moss has a
+<a href="https://pyvideo.org/pycon-us-2011/pycon-2011--writing-great-documentation.html">talk from PyCon 2011</a>
+on Django&rsquo;s documentation culture.</p>
+<p>For example the <a href="https://docs.djangoproject.com/en/6.0/topics/db/models/">intro to models</a>
+lists the most important common fields you might want to set when using the ORM.</p>
+<h3 id="using-sqlite">using sqlite</h3>
+<p>After having a bad experience trying to operate Postgres and not being able to
+understand what was going on, I decided to run all of my small websites with
+SQLite instead. It&rsquo;s been going way better, and I love being able to backup by
+just doing a <code>VACUUM INTO</code> and then copying the resulting single file.</p>
+<p>I&rsquo;ve been following <a href="https://alldjango.com/articles/definitive-guide-to-using-django-sqlite-in-production">these instructions</a>
+for using SQLite with Django in production.</p>
+<p>I think it should be fine because I&rsquo;m expecting the site to have a few hundred
+writes per day at most, much less than <a href="https://messwithdns.net/">Mess with DNS</a>
+which has a lot more of writes and has been working well (though the writes are
+split across 3 different SQLite databases).</p>
+<h3 id="built-in-email-and-more">built in email (and more)</h3>
+<p>Django seems to be very &ldquo;batteries-included&rdquo;, which I love &ndash; if I want CSRF
+protection, or a <code>Content-Security-Policy</code>, or I want to send email, it&rsquo;s all
+in there!</p>
+<p>For example, I wanted to save the emails Django sends to a file in dev mode (so
+that it didn&rsquo;t send real email to real people), which was just a little bit
+of configuration.</p>
+<p>I just put this <code>settings/dev.py</code>:</p>
+<pre><code>EMAIL_BACKEND = &quot;django.core.mail.backends.filebased.EmailBackend&quot;
+EMAIL_FILE_PATH = BASE_DIR / &quot;emails&quot;
+</code></pre>
+<p>and then set up the production email like this in <code>settings/production.py</code></p>
+<pre><code>EMAIL_BACKEND = &quot;django.core.mail.backends.smtp.EmailBackend&quot;
+EMAIL_HOST = &quot;smtp.whatever.com&quot;
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = &quot;xxxx&quot;
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_API_KEY')
+</code></pre>
+<p>That made me feel like if I want some other basic website feature, there&rsquo;s
+likely to be an easy way to do it built into Django already.</p>
+<h3 id="the-settings-file-still-feels-like-a-lot">the settings file still feels like a lot</h3>
+<p>I&rsquo;m still a bit intimidated by the <code>settings.py</code> file: Django&rsquo;s settings system
+works by setting a bunch of global variables in a file, and I feel a bit
+stressed about&hellip; what if I make a typo in the name of one of those variables?
+How will I know? What if I type <code>WSGI_APPLICATOIN = &quot;config.wsgi.application&quot;</code>
+instead of <code>WSGI_APPLICATION</code>?</p>
+<p>I guess I&rsquo;ve gotten used to having a Python language server tell me when I&rsquo;ve
+made a typo and so now it feels a bit disorienting when I can&rsquo;t rely on the
+language server support.</p>
+<h3 id="that-s-all-for-now">that&rsquo;s all for now!</h3>
+<p>I haven&rsquo;t really successfully used an actual web framework for a project before
+(right now almost all of my websites are either a single Go binary or static
+sites), so I&rsquo;m interested in seeing how it goes!</p>
+<p>There&rsquo;s still lots for me to learn about, I still haven&rsquo;t really gotten into
+Django&rsquo;s form validation tooling or authentication systems.</p>
+<p>Thanks to Marco Rogers for convincing me to give ORMs a chance.</p>
+<p>(we&rsquo;re still experimenting with the comments-on-Mastodon system! <a href="https://comments.jvns.ca/post/115969229107460589">Here are the comments on Mastodon</a>! tell me your favourite Django feature!)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A data model for Git (and other docs updates)]]></title>
+    <link href="https://jvns.ca/blog/2026/01/08/a-data-model-for-git/"/>
+    <updated>2026-01-08T00:00:00+00:00</updated>
+    <id>https://jvns.ca/blog/2026/01/08/a-data-model-for-git/</id>
+    <content type="html"><![CDATA[<p>Hello! This past fall, I decided to take some time to work on Git&rsquo;s
+documentation. I&rsquo;ve been thinking about working on open source docs for a long
+time &ndash; usually if I think the documentation for something could be improved,
+I&rsquo;ll write a blog post or a zine or something. But this time I wondered: could I
+instead make a few improvements to the official documentation?</p>
+<p>So <a href="https://marieflanagan.com/">Marie</a> and I made a few changes to the Git
+documentation!</p>
+<h3 id="a-data-model-for-git">a data model for Git</h3>
+<p>After a while working on the documentation, we noticed that Git uses the terms
+&ldquo;object&rdquo;, &ldquo;reference&rdquo;, or &ldquo;index&rdquo; in its documentation a lot, but that it didn&rsquo;t
+have a great explanation of what those terms mean or how they relate to other
+core concepts like &ldquo;commit&rdquo; and &ldquo;branch&rdquo;. So we wrote a new &ldquo;data model&rdquo; document!</p>
+<p>You can <a href="https://github.com/git/git/blob/master/Documentation/gitdatamodel.adoc">read the data model here for now</a>.
+I assume at some point (after the next release?) it&rsquo;ll also be on the <a href="https://git-scm.com">Git website</a>.</p>
+<p>I&rsquo;m excited about this because understanding how Git organizes its commit and
+branch data has really helped me reason about how Git works over the years,
+and I think it&rsquo;s important to have a short (1600 words!) version of the data
+model that&rsquo;s accurate.</p>
+<p>The &ldquo;accurate&rdquo; part turned out to not be that easy: I knew the basics of how
+Git&rsquo;s data model worked, but during the review process I learned some new
+details and had to make quite a few changes (for example how merge conflicts are
+stored in the staging area).</p>
+<h3 id="updates-to-git-push-git-pull-and-more">updates to <code>git push</code>, <code>git pull</code>, and more</h3>
+<p>I also worked on updating the introduction to some of Git&rsquo;s core man pages.
+I quickly realized that &ldquo;just try to improve it according to my best judgement&rdquo;
+was not going to work: why should the maintainers believe me that my version is
+better?</p>
+<p>I&rsquo;ve seen a problem a lot when discussing open source documentation changes
+where 2 expert users of the software argue about whether an explanation
+is clear or not (&ldquo;I think X would be a good way to explain it! Well, I think Y
+would be better!&rdquo;)</p>
+<p>I don&rsquo;t think this is very productive (expert users of a piece of software
+are notoriously bad at being able to tell if an explanation will be clear to
+non-experts), so I needed to find a way to identify problems with the man
+pages that was a little more evidence-based.</p>
+<h3 id="getting-test-readers-to-identify-problems">getting test readers to identify problems</h3>
+<p>I asked for test readers on Mastodon to read the current version of
+documentation and tell me what they find confusing or what questions they have.
+About 80 test readers left comments, and I learned so much!</p>
+<p>People left a huge amount of great feedback, for example:</p>
+<ul>
+<li>terminology they didn&rsquo;t understand (what&rsquo;s a pathspec? what does &ldquo;reference&rdquo; mean? does &ldquo;upstream&rdquo; have a specific meaning in Git?)</li>
+<li>specific confusing sentences</li>
+<li>suggestions of things things to add (&ldquo;I do X all the time, I think it should be included here&rdquo;)</li>
+<li>inconsistencies (&ldquo;here it implies X is the default, but elsewhere it implies Y is the default&rdquo;)</li>
+</ul>
+<p>Most of the test readers had been using Git for at least 5-10 years, which
+I think worked well &ndash; if a group of test readers who have been using Git
+regularly for 5+ years find a sentence or term impossible to understand, it
+makes it easy to argue that the documentation should be updated to make it
+clearer.</p>
+<p>I thought this &ldquo;get users of the software to comment on the existing
+documentation and then fix the problems they find&rdquo; pattern worked really
+well and I&rsquo;m excited about potentially trying it again in the future.</p>
+<h3 id="the-man-page-changes">the man page changes</h3>
+<p>We ended updating these 4 man pages:</p>
+<ul>
+<li><code>git add</code> (<a href="https://github.com/git/git/blob/2b3ae040/Documentation/git-add.adoc">before</a>, <a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/git-add.adoc">after</a>)</li>
+<li><code>git checkout</code> (<a href="https://github.com/git/git/blob/2b3ae040/Documentation/git-checkout.adoc">before</a>, <a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/git-checkout.adoc">after</a>)</li>
+<li><code>git push</code> (<a href="https://github.com/git/git/blob/2b3ae040/Documentation/git-push.adoc">before</a>, <a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/git-push.adoc">after</a>)</li>
+<li><code>git pull</code> (<a href="https://github.com/git/git/blob/2b3ae040/Documentation/git-pull.adoc">before</a>, <a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/git-pull.adoc">after</a>)</li>
+</ul>
+<p>The <code>git push</code> and <code>git pull</code> changes were the most interesting to me: in
+addition to updating the intro to those pages, we also ended up writing:</p>
+<ul>
+<li><a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/urls-remotes.adoc#upstream-branches">a section describing what the term &ldquo;upstream branch&rdquo; means</a> (which previously wasn&rsquo;t really explained)</li>
+<li><a href="https://github.com/git/git/blob/e0bfec3dfc356f7d808eb5ee546a54116b794397/Documentation/git-push.adoc#options">a cleaned-up description of what a &ldquo;push refspec&rdquo; is</a></li>
+</ul>
+<p>Making those changes really gave me an appreciation for how much work it is
+to maintain open source documentation: it&rsquo;s not easy to write things that are
+both clear and true, and sometimes we had to make compromises, for example the sentence
+&ldquo;<code>git push</code> may fail if you haven’t set an upstream for the current branch,
+depending on what <code>push.default</code> is set to.&rdquo; is a little vague, but the exact
+details of what &ldquo;depending&rdquo; means are really complicated and untangling that is
+a big project.</p>
+<h3 id="on-the-process-for-contributing-to-git">on the process for contributing to Git</h3>
+<p>It took me a while to understand Git&rsquo;s development process.
+I&rsquo;m not going to try to describe it here (that could be a whole other post!), but a few quick notes:</p>
+<ul>
+<li>Git has a <a href="https://git-scm.com/community#discord">Discord server</a>
+with a &ldquo;my first contribution&rdquo; channel for help with getting started contributing.
+I found people to be very welcoming on the Discord.</li>
+<li>I used <a href="https://gitgitgadget.github.io/">GitGitGadget</a> to make all of my contributions.
+This meant that I could make a GitHub pull request (a workflow I&rsquo;m comfortable
+with) and GitGitGadget would convert my PRs into the system the Git developers
+use (emails with patches attached). GitGitGadget worked great and I was very
+grateful to not have to learn how to send patches by email with Git.</li>
+<li>Otherwise I used my normal email client (Fastmail&rsquo;s web interface) to reply
+to emails, wrapping my text to 80 character lines since that&rsquo;s the mailing
+list norm.</li>
+</ul>
+<p>I also found the mailing list archives on <a href="https://lore.kernel.org/git/">lore.kernel.org</a>
+hard to navigate, so I hacked together <a href="https://github.com/jvns/git-list-viewer">my own git list viewer</a>
+to make it easier to read the long mailing list threads.</p>
+<p>Many people helped me navigate the contribution process and review the changes:
+thanks to Emily Shaffer, Johannes Schindelin (the author of GitGitGadget),
+Patrick Steinhardt, Ben Knoble, Junio Hamano, and more.</p>
+<p>(I&rsquo;m experimenting with <a href="https://comments.jvns.ca/post/115861337435768520">comments on Mastodon, you can see the comments here</a>)</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	xmlns:media="http://search.yahoo.com/mrss/"
+>
+
+<channel>
+	<title>Rands in Repose</title>
+	<atom:link href="https://randsinrepose.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://randsinrepose.com</link>
+	<description>Stories about the humans who build software</description>
+	<lastBuildDate>Wed, 11 Nov 2026 23:46:15 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=7.1.4</generator>
+
+<image>
+	<url>https://randsinrepose.com/wp-content/uploads/2025/08/cropped-rands-favicon-1-32x32.png</url>
+	<title>Rands in Repose</title>
+	<link>https://randsinrepose.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+<atom:link rel="hub" href="https://pubsubhubbub.appspot.com"/>
+<atom:link rel="hub" href="https://pubsubhubbub.superfeedr.com"/>
+<atom:link rel="hub" href="https://websubhub.com/hub"/>
+<atom:link rel="self" href="https://randsinrepose.com/feed/"/>
+<site xmlns="com-wordpress:feed-additions:1">124014575</site>	<item>
+		<title>Rands Fall Housecleaning</title>
+		<link>https://randsinrepose.com/archives/rands-fall-housecleaning/</link>
+					<comments>https://randsinrepose.com/archives/rands-fall-housecleaning/#respond</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Wed, 11 Nov 2026 23:13:05 +0000</pubDate>
+				<category><![CDATA[Rands]]></category>
+		<category><![CDATA[ai]]></category>
+		<category><![CDATA[blogging]]></category>
+		<category><![CDATA[grumbles]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=6056</guid>
+
+					<description><![CDATA[Riffing on the work started with Ask Rands, I&#8217;ve been spending the days before the holiday seasons polishing existing features while also building some new ones for the blog. Briefs If you&#8217;ve been watching the RSS feed for the past week, you&#8217;ve seen an increase in the number of posts. During the last major redesign&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/rands-fall-housecleaning/">more</a>]]></description>
+										<content:encoded><![CDATA[<p><img src="https://randsinrepose.com/wp-content/uploads/2026/11/rands-fall-1024x535.png" width="1024" height="535" class="webfeedsFeaturedVisual" alt="Rands Fall Housecleaning" /></p>
+<p class="wp-block-paragraph">Riffing on the work started with <a href="https://randsinrepose.com/ask/">Ask Rands</a>, I&#8217;ve been spending the days before the holiday seasons polishing existing features while also building some new ones for the blog. </p>
+
+
+
+<h2 class="wp-block-heading">Briefs</h2>
+
+
+
+<p class="wp-block-paragraph">If you&#8217;ve been watching the RSS feed for the past week, you&#8217;ve seen an increase in the number of posts. During the last major redesign of the site, <a href="https://alexking.org/">Alex</a> and I created a post type called Excerpts — the idea was a new post type for links and small bits of content. I posted <a href="https://randsinrepose.com/archives/category/excerpt/">many</a> of these, but then stopped&#8230; I don&#8217;t know why. Essay-length pieces seemed to be more my jam?</p>
+
+
+
+<p class="wp-block-paragraph">With my robot-friends, I&#8217;ve built a new post type called Briefs, which include photos, text, songs, and links. Yes, I know&#8230; hello 2005&#8230; but I wanted a path to post more frequently on smaller topics, so now we have Briefs.</p>
+
+
+
+<h2 class="wp-block-heading">Tags</h2>
+
+
+
+<p class="wp-block-paragraph">Building Briefs revealed another feature that was popular, I don&#8217;t know, two decades ago? Tags. Yeah, Web 2.0.</p>
+
+
+
+<p class="wp-block-paragraph">In my head at redesign time, WordPress Categories were tags, but over the years Categories became more defined themes (Management, Product, Tech Life, etc.) than tags. Thanks again to the robots, I&#8217;ve added tags to Briefs, as well as all existing posts. There&#8217;s a very tight vocabulary to prevent tag-bloat, and you can find a very well-organized list of tags <a href="https://randsinrepose.com/tags/">here</a>.</p>
+
+
+
+<p class="wp-block-paragraph">Tags now appear at the bottom of posts. I&#8217;ve done some behind-the-scenes wizardry to map Categories to Tags such that I hope you never notice. Holler if you do, and it&#8217;s annoying.</p>
+
+
+
+<h2 class="wp-block-heading">How Ask Rands Works</h2>
+
+
+
+<p class="wp-block-paragraph">One of the unexpected benefits of the <a href="https://randsinrepose.com/ask/">Ask Rands</a> feature is the questions Grumbles has no idea how to answer. He logs these questions and tells me. Every morning. Thanks, Grumbles.</p>
+
+
+
+<p class="wp-block-paragraph">Many readers have asked Grumbles how Ask Rands works. There are two parts:</p>
+
+
+
+<p class="wp-block-paragraph">On <a href="https://wpengine.com/">WP Engine</a>:</p>
+
+
+
+<ul class="wp-block-list">
+<li>On randsinrepose.com, the /ask/ page and the Ask button are part of the site&#8217;s theme.</li>
+
+
+
+<li>A search runs in your browser. Yes, you are downloading a snapshot of every article, then searching. This costs nothing and requires no server. I&#8217;m hoping you have not noticed this.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">On <a href="https://railway.com/">Railway</a>:</p>
+
+
+
+<ul class="wp-block-list">
+<li>A small answer server lives here. This is Grumbles. You send a question to this server, which calls Claude and streams the answer back. Many of you have asked about the Grumbles &#8220;voice&#8221;. This is the prompt that I provide to Claude as a template for Grumbles&#8217; personality<sup><a href="https://randsinrepose.com/archives/rands-fall-housecleaning/#footnote_1_6056" id="identifier_1_6056" class="footnote-link footnote-identifier-link" title="Here&rsquo;s an example of that prompt: At most one joke per answer about being a robot, and skip the worn ones: nobody thanking you or asking you, never being invited, unpaid, the Mac Studio, rebooting. Most asides should come from the reader&rsquo;s situation, not yours.">1</a></sup>.</li>
+
+
+
+<li>Repeated questions are stored and echoed back to reduce cost.</li>
+
+
+
+<li>All questions, anonymized, are sitting in a small database along with answers which I review daily.</li>
+
+
+
+<li>The server also enforces spending caps, per-reader limits, and timeouts.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Finally, <a href="https://www.cloudflare.com">Cloudflare</a> throws up those &#8220;are you a person&#8221; checks and does rate limiting.</p>
+
+
+
+<p class="wp-block-paragraph">Since launch, I&#8217;ve added the following features to Ask Rands:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Contextually aware follow-ups.</li>
+
+
+
+<li>A smarter &#8220;I don&#8217;t know&#8221; — Grumbles was claiming I covered topics that I didn&#8217;t.</li>
+
+
+
+<li>Reversal detection. If I changed my mind about something, you see both sides of the argument.</li>
+
+
+
+<li>A bunch of better matches for specific questions.</li>
+
+
+
+<li>Made it clear that Grumbles doesn&#8217;t search my books — just the blog posts where most of the books started.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">I&#8217;ve been fascinated by the questions being asked. Grumbles highlights gaps in my current writing on preventing gaslighting, dealing with underperformers, absent leadership, and other specific bad cases.</p>
+
+
+
+<p class="wp-block-paragraph">And finally&#8230;</p>
+
+
+
+<h2 class="wp-block-heading">Search 2.0</h2>
+
+
+
+<p class="wp-block-paragraph">At the top of the least-visited top-level page lives a search box. This is a Web 1.0 dumb as dirt keyword search that I have confirmed you never use. This page has been untouched for years, primarily because I believe most folks look for Rands stuff on Google.</p>
+
+
+
+<p class="wp-block-paragraph">Google AI Overviews decimate traffic — <a href="https://ahrefs.com/blog/ai-overviews-reduce-clicks-update/">a 50%+ decrease in clicks to the first link</a>. That&#8217;s good for Google, but bad for content producers. Here&#8217;s the thing: thanks to the robots, you are no longer as dependent on Google for search. Ask Rands and Tags are both features that have been vastly easier to build with the help of the robots, but I don&#8217;t think that&#8217;s what is going to drive humans to human-produced content.</p>
+
+
+
+<p class="wp-block-paragraph">The voice of Google AI Overviews is the same soulless sound as many of the default robots. You have the same reaction to AI-generated art: <em>this is slop, and I want heart.</em></p>
+
+
+
+<p class="wp-block-paragraph">My hope is that, because many of the services and tools have been democratized with the help of the robots, content producers can provide you, dear reader, a more compelling experience and more reasons to hang out.</p>
+
+
+
+<p class="wp-block-paragraph">We&#8217;ll see.</p>
+<ol class="footnotes"><li id="footnote_1_6056" class="footnote">Here&#8217;s an example of that prompt: <em>At most one joke per answer about being a robot, and skip the worn ones: nobody thanking you or asking you, never being invited, unpaid, the Mac Studio, rebooting. Most asides should come from the reader&#8217;s situation, not yours.</em></li></ol>]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/rands-fall-housecleaning/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">6056</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/rands-fall-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+		<item>
+		<title>Prepare to be depressed</title>
+		<link>https://open.spotify.com/track/1aQUGQ7AcRxk96SX69gd4S</link>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Wed, 11 Nov 2026 16:51:49 +0000</pubDate>
+				<category><![CDATA[Briefs]]></category>
+		<category><![CDATA[movies and tv]]></category>
+		<category><![CDATA[music]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=6046</guid>
+
+					<description><![CDATA[If you&#8217;ve read the books and/or seen the trailer, you know Dune 3 is going to be a&#8230; bummer. But Timothée Chalamet belting out this chant has got me fired up to be depressed.]]></description>
+										<content:encoded><![CDATA[
+<p class="wp-block-paragraph">If you&#8217;ve read the books and/or seen <a href="https://www.youtube.com/watch?v=NdvqHc56lE0">the trailer</a>, you know Dune 3 is going to be a&#8230; bummer. But Timothée Chalamet belting out this chant has got me fired up to be depressed.</p>
+
+
+<p><a href="https://open.spotify.com/track/1aQUGQ7AcRxk96SX69gd4S"><img fetchpriority="high" decoding="async" src="https://randsinrepose.com/wp-content/uploads/2026/11/link-card-desert-chant-from-dune-part-three.jpg" width="640" height="640" alt="Desert Chant - from &quot;Dune: Part Three&quot;" /></a></p>
+<p><a href="https://open.spotify.com/track/1aQUGQ7AcRxk96SX69gd4S"><strong>Desert Chant &#8211; from &quot;Dune: Part Three&quot;</strong></a> &middot; open.spotify.com<br />Timothée Chalamet, Hans Zimmer · Desert Chant (from &quot;Dune: Part Three&quot;) · Song · 2026</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">6046</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/link-card-desert-chant-from-dune-part-three.jpg" type="image/jpeg" medium="image" width="640" height="640" />
+	</item>
+		<item>
+		<title>The Walled Garden Escape</title>
+		<link>https://randsinrepose.com/archives/the-walled-garden-escape/</link>
+					<comments>https://randsinrepose.com/archives/the-walled-garden-escape/#respond</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Tue, 10 Nov 2026 00:42:20 +0000</pubDate>
+				<category><![CDATA[The Important Thing]]></category>
+		<category><![CDATA[calendars]]></category>
+		<category><![CDATA[email]]></category>
+		<category><![CDATA[google]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5924</guid>
+
+					<description><![CDATA[In our 102nd episode, Lyle moves his mail, contacts, and calendar off Google and finds madness on the other side of the walled garden &#8212; Fastmail, two contact lists, a calendar his wife can&#8217;t see, Rands&#8217;s robot discovering royalties he was never paid, and why none of these services play nicely together (it&#8217;s triage, not&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/the-walled-garden-escape/">more</a>]]></description>
+										<content:encoded><![CDATA[<a href="https://randsinrepose.com/wp-content/uploads/2026/11/walled-garden-escape-800.png"><img decoding="async" class="alignleft" src="https://randsinrepose.com/wp-content/uploads/2026/11/walled-garden-escape-800.png" alt="The Walled Garden Escape"></a>
+
+
+<p class="wp-block-paragraph">In our 102nd episode, Lyle moves his mail, contacts, and calendar off Google and finds madness on the other side of the walled garden &#8212; Fastmail, two contact lists, a calendar his wife can&#8217;t see, Rands&#8217;s robot discovering royalties he was never paid, and why none of these services play nicely together (it&#8217;s triage, not malice).</p>
+
+
+
+<p class="wp-block-paragraph"><strong>We talked about:</strong></p>
+
+
+
+<ul class="wp-block-list">
+
+<li><a href="https://www.fastmail.com/">Fastmail</a>, where Lyle landed</li>
+
+
+<li><a href="https://en.wikipedia.org/wiki/CalDAV">CalDAV</a> and <a href="https://en.wikipedia.org/wiki/CardDAV">CardDAV</a>, the open protocols that should just work</li>
+
+
+<li><a href="https://superhuman.com/">Superhuman</a>, the mail client sitting on top of my Gmail</li>
+
+
+<li><a href="https://randsinrepose.com/archives/i-hate-fish/">I Hate Fish</a>, the inbox zero post I published a week after we recorded this</li>
+
+
+<li><a href="https://www.anthropic.com/claude-code">Claude Code</a> and the <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (not the Master Control Program)</li>
+
+
+<li><a href="https://en.wikipedia.org/wiki/Etherpad">Etherpad</a>, the real-time editor Google bought</li>
+
+
+<li><a href="https://www.home-assistant.io/">Home Assistant</a> and <a href="https://en.wikipedia.org/wiki/Matter_%28standard%29">Matter</a>, home automation&#8217;s latest promise</li>
+
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Related Important Things episodes:</strong></p>
+
+
+
+<ul class="wp-block-list">
+
+<li><a href="https://randsinrepose.com/archives/the-one-about-the-joy-of-bots/">EP 98: The One About The Joy of Bots</a></li>
+
+
+<li><a href="https://randsinrepose.com/archives/the-one-about-your-ai-tools/">EP 83: The One About Your AI Tools</a></li>
+
+
+<li><a href="https://randsinrepose.com/archives/the-one-about-privacy/">EP 61: The One About Privacy</a></li>
+
+</ul>
+
+
+
+<p class="wp-block-paragraph">Enjoy it now, or <a href="https://traffic.libsyn.com/rands/theimportantthing0102.mp3">download</a> for later. Here&#8217;s a handy <a href="https://rands.libsyn.com/feed">feed</a> or subscribe via <a href="https://overcast.fm/itunes1195704939/the-important-thing">Overcast</a> or <a href="https://podcasts.apple.com/us/podcast/the-important-thing/id1195704939">iTunes</a>.</p>
+
+
+<audio class="wp-audio-shortcode" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="https://traffic.libsyn.com/rands/theimportantthing0102.mp3?_=2" /></audio>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/the-walled-garden-escape/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		<enclosure url="https://traffic.libsyn.com/rands/theimportantthing0102.mp3" length="0" type="audio/mpeg" />
+<enclosure url="https://traffic.libsyn.com/rands/theimportantthing0102.mp3?_=2" length="0" type="audio/mpeg" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">5924</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/walled-garden-escape-800.png" type="image/png" medium="image" width="800" height="800" />
+	</item>
+		<item>
+		<title>Ultima and Wing Commander Remasters</title>
+		<link>https://arstechnica.com/gaming/2026/11/ea-producer-tells-the-inside-story-behind-new-wing-commander-remasters/</link>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Sat, 07 Nov 2026 15:53:01 +0000</pubDate>
+				<category><![CDATA[Briefs]]></category>
+		<category><![CDATA[video games]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=6032</guid>
+
+					<description><![CDATA[In the garage, there is a box that contains a great many boxed copies of these games. This includes all the documentation, media, and random toys they used to include when they released these games. I will not likely play any of these, but I am glad they exist. (p.s. I can&#8217;t imagine these would&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/wing-commander-remasters/">more</a>]]></description>
+										<content:encoded><![CDATA[
+<p class="wp-block-paragraph">In the garage, there is a box that contains a great many boxed copies of these games. This includes all the documentation, media, and random toys they used to include when they released these games. I will not likely play any of these, but I am glad they exist. (p.s. I can&#8217;t imagine these would exist without the help of the robots) </p>
+
+
+<p><a href="https://arstechnica.com/gaming/2026/11/ea-producer-tells-the-inside-story-behind-new-wing-commander-remasters/"><img decoding="async" src="https://randsinrepose.com/wp-content/uploads/2026/11/link-card-re-releases-of-wing-commander-ultima-titles-hit-steam-and-gog-1024x576.jpg" width="1024" height="576" alt="Re-releases of Wing Commander, Ultima titles hit Steam and GOG" /></a></p>
+<p><a href="https://arstechnica.com/gaming/2026/11/ea-producer-tells-the-inside-story-behind-new-wing-commander-remasters/"><strong>Re-releases of Wing Commander, Ultima titles hit Steam and GOG</strong></a> &middot; arstechnica.com<br />It&#039;s mostly bad news from EA lately, but preservation efforts are nice to see.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">6032</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/link-card-re-releases-of-wing-commander-ultima-titles-hit-steam-and-gog-1024x576.jpg" type="image/avif" medium="image" width="1024" height="576" />
+	</item>
+		<item>
+		<title>Christopher Ward C63 Sealander Extreme GMT, black dial and ceramic bezel, on an orange Cordura strap</title>
+		<link>https://randsinrepose.com/archives/christopher-ward-c63-sealander-extreme-gmt-black-dial-and-ceramic-bezel-on-an-orange-cordura-strap/</link>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Fri, 06 Nov 2026 22:26:00 +0000</pubDate>
+				<category><![CDATA[Briefs]]></category>
+		<category><![CDATA[watches]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5975</guid>
+
+					<description><![CDATA[I was watching a snarky YouTube video where a watch influencer was ranking all watch brands. He labeled Christopher Ward his favorite emerging indie brand. So here we go. It&#8217;s got Tudor-esque chonk on both the markers and the hands. The ceramic bezel is a work of art &#8212; one of those you have to&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/christopher-ward-c63-sealander-extreme-gmt-black-dial-and-ceramic-bezel-on-an-orange-cordura-strap/">more</a>]]></description>
+										<content:encoded><![CDATA[
+<figure class="wp-block-image size-large"><img decoding="async" width="768" height="1024" src="https://randsinrepose.com/wp-content/uploads/2026/11/christopher-ward-c63-gmt-768x1024.jpg" alt="Christopher Ward C63 Sealander Extreme GMT, black dial and ceramic bezel, on an orange Cordura strap" class="wp-image-5974"/></figure>
+
+
+
+<p class="wp-block-paragraph">I was watching a snarky YouTube video where a watch influencer was ranking all watch brands. He labeled <a href="https://www.christopherward.com/">Christopher Ward</a> his favorite emerging indie brand. So here we go.</p>
+
+
+
+<p class="wp-block-paragraph">It&#8217;s got <a href="https://www.tudorwatch.com/">Tudor</a>-esque chonk on both the markers and the hands. The ceramic bezel is a work of art &#8212; one of those you have to feel with your hands. The face, the asphalt vibes of a <a href="https://www.patek.com/en/collection/calatrava/5226g-001">Patek</a>, is compelling. I am a known sucker for a splash of orange, and there are multiple splashes to love. V-strap? Possible mistake. Jury is out.</p>
+
+
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5975</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/christopher-ward-c63-gmt-768x1024.jpg" type="image/jpeg" medium="image" width="768" height="1024" />
+	</item>
+		<item>
+		<title>Apple Charging Guide Updated</title>
+		<link>https://randsinrepose.com/guides/apple-charging/apple-charging-guide.html</link>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Fri, 06 Nov 2026 16:32:45 +0000</pubDate>
+				<category><![CDATA[Apple]]></category>
+		<category><![CDATA[Briefs]]></category>
+		<category><![CDATA[charging]]></category>
+		<category><![CDATA[hardware]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5956</guid>
+
+					<description><![CDATA[Apple charging guide updated with the Fall Updates: latest Duo data, the new iPad mini fast charging, and the fancy M6 MacBook Pro with that 70W charger.]]></description>
+										<content:encoded><![CDATA[
+<p class="wp-block-paragraph">Apple charging guide updated with the Fall Updates: latest Duo data, the new iPad mini fast charging, and the fancy M6 MacBook Pro with that 70W charger.</p>
+
+
+<p><a href="https://randsinrepose.com/guides/apple-charging/apple-charging-guide.html"><img loading="lazy" decoding="async" src="https://randsinrepose.com/wp-content/uploads/2026/09/apple-charging-guide-2-1024x535.png" width="1024" height="535" alt="The Apple Charging Situation" /></a></p>
+<p><a href="https://randsinrepose.com/guides/apple-charging/apple-charging-guide.html"><strong>The Apple Charging Situation</strong></a> &middot; randsinrepose.com</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5956</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/09/apple-charging-guide-2-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+		<item>
+		<title>Ask Rands</title>
+		<link>https://randsinrepose.com/archives/ask-rands/</link>
+					<comments>https://randsinrepose.com/archives/ask-rands/#respond</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Tue, 03 Nov 2026 16:10:23 +0000</pubDate>
+				<category><![CDATA[Rands]]></category>
+		<category><![CDATA[ai]]></category>
+		<category><![CDATA[email]]></category>
+		<category><![CDATA[grumbles]]></category>
+		<category><![CDATA[rls]]></category>
+		<category><![CDATA[travel]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5907</guid>
+
+					<description><![CDATA[I continue to avidly build with the robots on a daily basis. One of the more continually helpful use cases is summarization. Plop in the long, useless marketing email from United Airlines and figure out if there&#8217;s something useful in my endless quest for airline status. The answer: it usually finds something worth my time.&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/ask-rands/">more</a>]]></description>
+										<content:encoded><![CDATA[<p><img src="https://randsinrepose.com/wp-content/uploads/2026/11/ask-rands-1024x535.png" width="1024" height="535" class="webfeedsFeaturedVisual" alt="Ask Rands" /></p>
+<p class="wp-block-paragraph">I continue to avidly build with the robots on a daily basis. One of the more continually helpful use cases is summarization. Plop in the long, useless marketing email from United Airlines and figure out if there&#8217;s something useful in my endless quest for airline status. The answer: it usually finds something worth my time. More importantly, I don&#8217;t have to read a long, useless email.</p>
+
+
+
+<p class="wp-block-paragraph">Over on the <a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/">Rands Leadership Slack</a>, I get a lot of questions about &#8220;Did you write about <a href="https://randsinrepose.com/archives/the-wolf/">wolves</a> at some point?&#8221; Which I did, and I&#8217;m happy to share that link, but through the gift of the robots, I&#8217;ve now built a <a href="https://randsinrepose.com/ask/">tool</a> that will answer these questions and more.</p>
+
+
+<div id="block-106a5ac8565e64a2b1abe92629253212" class="acf-block block-ask-rands ask-rands-embed">
+	<form class="ask-box" role="search" action="https://randsinrepose.com/ask/" method="get" data-questions="[&quot;What are the best tips for 1:1s?&quot;,&quot;How do I manage a micromanager?&quot;,&quot;Should I go back to writing code?&quot;,&quot;How do I give hard feedback?&quot;,&quot;When is it time to quit?&quot;]">
+		<label class="screen-reader-text" for="block-106a5ac8565e64a2b1abe92629253212-q">Ask Rands a question</label>
+		<input id="block-106a5ac8565e64a2b1abe92629253212-q" name="q" type="text" autocomplete="off" enterkeyhint="search" placeholder="What are the best tips for 1:1s?">
+		<input type="hidden" name="from" value="embed">
+		<button type="submit" aria-label="Ask"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+	</form>
+</div>
+
+
+
+<p class="wp-block-paragraph"><a href="https://randsinrepose.com/archives/how-grumbles-helps/">Grumbles</a> is the anthropomorphized robot that lives on my Mac Studio, and he&#8217;s sassy. I like that he has a backstory. I asked him to answer your questions, and he does&#8230; reluctantly.</p>
+
+
+
+<p class="wp-block-paragraph">More importantly, Grumbles o<strong>nly synthesizes from what he&#8217;s handed from the Rands writing corpus</strong>. He does not use general knowledge except to understand how to read what words mean — the thoughts, strategy, and content are all mine. The snark is his, and I love it.</p>
+
+
+
+<p class="wp-block-paragraph">I&#8217;d like to thank the humans at <a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/">RLS</a> who tested the alpha of this tool and the readers of the <a href="https://news.randsinrepose.com/ask-rands/">newsletter</a> for testing the beta. All of those folks greatly improved the service.</p>
+
+
+
+<p class="wp-block-paragraph"><a href="https://randsinrepose.com/ask/">Ask away</a>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Update:</strong> Grumbles will now allow you to ask follow-up questions. Thanks, community!</p>
+
+
+]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/ask-rands/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5907</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/ask-rands-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+		<item>
+		<title>Three Dots</title>
+		<link>https://randsinrepose.com/archives/three-dots/</link>
+					<comments>https://randsinrepose.com/archives/three-dots/#respond</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Mon, 02 Nov 2026 15:13:36 +0000</pubDate>
+				<category><![CDATA[Rands]]></category>
+		<category><![CDATA[ai]]></category>
+		<category><![CDATA[google]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5908</guid>
+
+					<description><![CDATA[Last Friday, Reddit had its worst day since its IPO, with a drop of almost 30%1. It didn&#8217;t matter that they beat their third-quarter estimates; what mattered most was a weak Q4 forecast and the quote from Reddit CEO Steve Huffman, &#8220;Our search referral traffic was down meaningfully in Q3, with the decline accelerating later&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/three-dots/">more</a>]]></description>
+										<content:encoded><![CDATA[<p><img src="https://randsinrepose.com/wp-content/uploads/2026/11/three-dots-1024x535.png" width="1024" height="535" class="webfeedsFeaturedVisual" alt="Three Dots" /></p>
+<p class="wp-block-paragraph">Last Friday, Reddit had its worst day since its IPO, with a <a href="https://www.cnbc.com/2026/10/30/reddit-stock-q3-earnings.html">drop of almost 30%</a><sup><a href="https://randsinrepose.com/archives/three-dots/#footnote_1_5908" id="identifier_1_5908" class="footnote-link footnote-identifier-link" title="This drop was certainly amplified by a broad AI bubble sell-off that isn&rsquo;t close to over.">1</a></sup>. It didn&#8217;t matter that they beat their third-quarter estimates; what mattered most was a weak Q4 forecast and <a href="https://www.sec.gov/Archives/edgar/data/1713445/000171344526000114/exhibit992q326.htm">the quote</a> from Reddit CEO Steve Huffman, &#8220;Our search referral traffic was down meaningfully in Q3, with the decline accelerating later in the quarter.&#8221; He also wrote, &#8220;During October, we have seen that search traffic has dropped by more than 1 million referrals on average per week.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">There&#8217;s no baseline to understand whether 1 million referrals is a lot or a little, but there is no doubt a stock dropping 30% in a day is a lot.</p>
+
+
+
+<p class="wp-block-paragraph">Reddit, which I am certain looks at the data daily, has seen this coming for years; hence their other announcements that shape a larger strategy:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Testing a logged-in-only experience outside the U.S.</li>
+
+
+
+<li><a href="https://techcrunch.com/2026/09/30/reddit-is-killing-rss-feeds-ending-public-api-access-because-of-ai-bots/">Shutting down RSS feeds</a></li>
+
+
+
+<li>Shutting down the public API</li>
+
+
+
+<li>Moving data access to its Developer Platform, which <a href="https://www.socialmediatoday.com/news/reddit-ends-support-for-rss-feeds/831844/">makes all Reddit data access paid only</a>.</li>
+</ul>
+
+
+
+<h2 class="wp-block-heading">The Three Dots Are Pretty Easy to Connect</h2>
+
+
+
+<p class="wp-block-paragraph"><strong>Dot #1</strong>: Traditional Google search: you search for X, Google searches for X and provides a list of high-quality X links, which — if the links are high quality — means you click on X, which is a Reddit post about X.</p>
+
+
+
+<p class="wp-block-paragraph">Google would greatly prefer if you didn&#8217;t click on X because the moment you do, you&#8217;ve left Google and they&#8217;ve mostly lost their ability to present you with advertising. You read that right: <strong>the reason you go to Google is to find other high-quality stuff that they don&#8217;t want you to actually see</strong>. My favorite attempt was AMP, Accelerated Mobile Pages, where publishers built lightweight copies of their content, and Google served them <strong>from their own servers</strong>. Yes, you were promised a traffic advantage, but you lose control over design, ads, and analytics.</p>
+
+
+
+<p class="wp-block-paragraph">Google <a href="https://developers.google.com/search/blog/2021/04/more-details-page-experience">dropped AMP&#8217;s search perks in 2021</a> in the face of continued criticism, but all they really had to do was wait a few years because a vastly better solution would present itself.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Dot #2</strong>: I&#8217;m guessing sometime in 2022, all the AI players started sucking down all the data in order to train ever-improving models. The more data? The better the models. It&#8217;s vastly more complicated than that, but alarms at Reddit apparently started going off in April of 2023, when they <a href="https://fortune.com/2023/04/19/reddit-charge-api-access-ceo-steve-huffman-artificial-intelligence-chatgpt/">moved to charge for API access</a>. The CEO quote: &#8220;&#8230; [w]e don&#8217;t need to give all of that value to some of the largest companies in the world for free.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">While content producers perhaps saw a massive theft of intellectual property, content consumers did not. What they eventually saw was the eerily accurate answer to the dumb throwaway question they typed into their first chatbot. They thought, &#8220;Golly, that&#8217;s cool.&#8221;<sup><a href="https://randsinrepose.com/archives/three-dots/#footnote_2_5908" id="identifier_2_5908" class="footnote-link footnote-identifier-link" title="No one except me thought those exact words.">2</a></sup> Sub-dot thought: Like Google, AI players have paradoxical motivations: the goal is to get you to use the services so they can help, but helping doesn&#8217;t pay the bills. Using more tokens is the business, which means that, like Google, the gig is to keep helping whether you want the help or not.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Dot #3</strong>: Present day. Google has a feature called AI Overviews, which you&#8217;ve already seen. It&#8217;s a human-sounding summary that attempts to answer your questions. There is no way to turn it off &#8212; it exists to keep you on Google. <a href="https://ahrefs.com/blog/ai-overviews-reduce-clicks-update">The research shows</a> that when an AI Overview shows, clicks on the first result drop 58%. More than half the folks who would have clicked that top result are no longer leaving, which means more sweet, sweet ad revenue.</p>
+
+
+
+<h2 class="wp-block-heading">That&#8217;s Not the Dot</h2>
+
+
+
+<p class="wp-block-paragraph">I&#8217;ve spent the past decade watching the blogging community vanish. There are the stalwarts, but the vast majority of bloggers either stopped or left for lighter-weight walled gardens. Sure, blogging was a fad. Writing, however, is not. I get it — it&#8217;s easier to write a pithy one-line Reddit post than a fully fleshed-out thought. Guilty as charged.</p>
+
+
+
+<p class="wp-block-paragraph">I giggle when folks mention Google is in trouble because of declining search usage. First, decades of search habits will take time to disassemble and reassemble. Second, if you are using Google Search less, I&#8217;m guessing you&#8217;re still using Gmail and similar Google services. If you&#8217;re like me and have wired the robots into Gmail, you&#8217;re using Gmail significantly more. Yes, I&#8217;ve turned off every switch that says &#8220;don&#8217;t train on me,&#8221; but go throw those switches yourself and report on how confident you are that you flipped them all successfully.</p>
+
+
+
+<p class="wp-block-paragraph">I started this piece with Reddit because the company provides a service that creates tremendous value, and I&#8217;m not talking about the monetary value; I&#8217;m talking about the social value. Early on in my robot journeys, I asked Claude to source any fact it shared with me. I skimmed the sources and was surprised to see how often a random Reddit post was the source of the robot&#8217;s thoughts.</p>
+
+
+
+<p class="wp-block-paragraph">Yes, the robot sucked down all the books (including all of mine). Yes, they did the same with countless images, as well. I feel we haven&#8217;t yet seen the full set of legal consequences, but that&#8217;s not the dot: it&#8217;s the value of humans talking with other humans, building things for each other — often simple, frequently hilarious, and doing the work to document why they did what they did&#8230; because they want to help.</p>
+
+
+
+<p class="wp-block-paragraph">This was supposed to be a brief introduction to a new feature I&#8217;m launching on Rands on Tuesday, but it turned into a whole bunch of dots explaining the disproportionate value of what happens when humans hang with other humans.</p>
+
+
+
+<p class="wp-block-paragraph">See you Tuesday.</p>
+
+
+<ol class="footnotes"><li id="footnote_1_5908" class="footnote">This drop was certainly amplified by a broad AI bubble sell-off that isn&#8217;t close to over.</li><li id="footnote_2_5908" class="footnote">No one except me thought those exact words.</li></ol>]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/three-dots/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5908</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/11/three-dots-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+		<item>
+		<title>The Insider</title>
+		<link>https://randsinrepose.com/archives/the-insider/</link>
+					<comments>https://randsinrepose.com/archives/the-insider/#comments</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Tue, 20 Oct 2026 15:55:49 +0000</pubDate>
+				<category><![CDATA[Management]]></category>
+		<category><![CDATA[ai]]></category>
+		<category><![CDATA[process]]></category>
+		<category><![CDATA[travel]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5882</guid>
+
+					<description><![CDATA[My observation of air travel is that if there is one significant impact on a flight, there are guaranteed two additional impacts. An example: if my gate changes at the last moment, it is quite likely that departure from the gate will be delayed, followed by a further delay on the tarmac. Unexpected changes in&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/the-insider/">more</a>]]></description>
+										<content:encoded><![CDATA[<p><img src="https://randsinrepose.com/wp-content/uploads/2026/10/the-insider-1024x535.png" width="1024" height="535" class="webfeedsFeaturedVisual" alt="The Insider" /></p>
+<p class="wp-block-paragraph">My observation of air travel is that if there is one significant impact on a flight, there are guaranteed two additional impacts. An example: if my gate changes at the last moment, it is quite likely that departure from the gate will be delayed, followed by a further delay on the tarmac. Unexpected changes in complex systems create further unexpected changes downstream because complex systems are, well, very complex.</p>
+
+
+
+<p class="wp-block-paragraph">A simpler and more personal way to look at this is that when you are traversing complex systems (airports, credit card websites&#8230; really any large bureaucracy), there are two paths:</p>
+
+
+
+<p class="wp-block-paragraph"><strong>The happy path.</strong> Whatever you are attempting to do (fly home, change your auto-pay settings, paying a bill) is a well-known and on-the-rails process. You can sense this happiness because as you complete each action, you receive feedback: &#8220;Yes, we know what you are trying to do. Yes, we can help. Yes, we know what to do next. Don&#8217;t worry. We got you.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">Divergence from the happy path leads to one specific path: <strong>the sad path</strong>. All that positive feedback vanishes. I&#8217;m not talking about the dark patterns of corporations trying to trick you into not canceling your account; I&#8217;m talking about a truly one-off request that is reasonable, but so infrequent that no one built a happy path around it.</p>
+
+
+
+<p class="wp-block-paragraph">Once on the sad path, you are desperately looking for one specific human: The Insider.</p>
+
+
+
+<h2 class="wp-block-heading">In Defense of Process</h2>
+
+
+
+<p class="wp-block-paragraph">Hey, I know you&#8217;re mad. I&#8217;ve been there, too. You missed the connection, your airline rebooked you onto a partner flight, and now no one can see your checked bag. You started on one website, then the other, and now you&#8217;re on the phone with what sounds like a human; you are getting the runaround.</p>
+
+
+
+<p class="wp-block-paragraph">Deep breath.</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;Process is documented culture&#8221; is what I like to say. Long ago, this company you currently hate was smaller, hungrier, and more nimble. This was working out for them, as evidenced by rapid growth. The problem during rapid growth is that there are so many new humans showing up that it becomes more and more expensive to train these new humans in how this company works, so someone raises their hand and volunteers, &#8220;I will write down how we work, and I will share this with the new folks.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">This is a noble person trying to help. Remember that. This person gets the OK, and they (and others) start the arduous task of documenting how the company works and quickly discover two things:</p>
+
+
+
+<ol class="wp-block-list">
+<li>Doing this thoroughly is an impossible task. There are too many people, processes, and products, so they&#8230;</li>
+
+
+
+<li>Focus on the most important processes that need documenting. They document the visible, exciting, and profitable happy paths. They likely uncovered and discovered sad paths as they did their work, but their prioritization at the time was, &#8220;This doesn&#8217;t happen a lot, so&#8230; who cares?&#8221;</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">These clearly defined happy paths are fortified, refined, and built into the pillars of &#8220;How We Work.&#8221; The core business revolves around these many happy paths, but as anyone who has worked in this large business knows, reality is a mess.</p>
+
+
+
+<h2 class="wp-block-heading">The Power is Off</h2>
+
+
+
+<p class="wp-block-paragraph">PG&amp;E — Pacific Gas and Electric. For reasons unknown, the power was off at the house. No text, no email. Bills were paid. Visiting the website revealed nothing helpful. A call pointed me to a robot who gleefully told me, &#8220;Everything looks good.&#8221; When I finally reached a human, they reported, &#8220;Everything looks good.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;The power is off.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;We&#8217;re not seeing that here.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;The power is off.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;Hmmmmm. Wait. This is interesting. Can I put you on hold?&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">I wait ten minutes before the call is dropped.</p>
+
+
+
+<p class="wp-block-paragraph">So what happened? I diverged from the happy path. The human on the other end of the phone probably knew something was up, but didn&#8217;t know what to do next because they&#8217;d never seen this situation before. Combine that confusion with their incentive — they are measured on how quickly they can resolve calls, so my situation represents a threat: <em>I don&#8217;t know what to do here, and the longer it takes for me to figure it out, the worse my review. So, put him on hold. And hang up. Victory!</em></p>
+
+
+
+<p class="wp-block-paragraph">Having spent many days of my life on the sad path, I know two things:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Keep pushing</li>
+
+
+
+<li>Seek The Insider</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">I call back. Same robot hoops, then the robot reluctantly points me at another happy path human, and I do the only move I know at this point: I get mad. Yes, you catch more flies with honey than vinegar, but honey is not working at this point. I get mad.</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;The power is off. It&#8217;s been off all day. This is my second time talking to a human, and it takes twenty minutes to actually get to a human. How can you help?&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">Moment of truth: I either get hold-dropped again, or they hear the frustration, and they escalate.</p>
+
+
+
+<p class="wp-block-paragraph">Each time I am interacting with a new human — shoulder-to-shoulder — looking to complete a task, I quickly look to answer one question: &#8220;Do they get it?&#8221; The Insider gets it&#8230; immediately.</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;How can I help you, sir?&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;The power is off at the house. It&#8217;s been 12 hours. Everyone says it&#8217;s fine, but the power is off.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;Hmmmmm. I see. Did it go off at 8:30 am this morning?&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">THERE. THERE IT IS. THIS COULD BE THE INSIDER.</p>
+
+
+
+<p class="wp-block-paragraph">Calmly, biting my tongue, slowly, &#8220;Yes, 8:30 am on the nose.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;Got it. Let me&#8230; wait. Ooooooh. A 2319 — I haven&#8217;t seen this in a long time.&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">IT&#8217;S THE INSIDER. IT&#8217;S THE INSIDER OH MY GOD OH MY GOD ALL MY PROBLEMS ARE SOLVED.</p>
+
+
+
+<p class="wp-block-paragraph">I say nothing. It&#8217;s such a rare occurrence to find The Insider. My mind is racing. How can I get their contact info? How do I send them a cake? Their favorite cake. You bet I want to ask what a 2319 is, but I must not interrupt their flow. This is The Insider doing their best work.</p>
+
+
+
+<p class="wp-block-paragraph">&#8220;Ok, so I see what happened&#8230;&#8221; And they explain, at length, completely, confidently. Yes, it&#8217;s an initial dumb error on PG&amp;E&#8217;s part, but that&#8217;s not the point. I am on the phone with a human who deeply understands the complicated, messy, and essential systems around them. They haven&#8217;t given up and aren&#8217;t just reading the workflows on the screens in front of them; they care&#8230; they are curious.</p>
+
+
+
+<div class="wp-block-group is-style-deco-frame is-layout-flow wp-block-group-is-layout-flow">
+<p class="wp-block-paragraph">If The Insider seems familiar, dear reader, you are probably thinking of <a href="https://randsinrepose.com/archives/the-wolf/">The Wolf</a>. There are similarities to these archetypes.</p>
+
+
+
+<p class="wp-block-paragraph">Like The Wolf, The Insider looks like they work outside of the regular system that runs the business. Incorrect: The Wolf works outside of the system because they despise process; The Insider is an expert on the system. Both understand how the system works, but while The Wolf avoids the system because of its onerous impact on agility and velocity, The Insider knows where the system came from and why it exists. The Wolf thinks the system is a joke to be ignored, but to The Insider, it&#8217;s home.</p>
+
+
+
+<p class="wp-block-paragraph">The Insider jumps in when it&#8217;s time to help. They jump in on the saddest of paths. They arrive when the situation is foreign to everyone involved and deep system knowledge is required.</p>
+
+
+
+<p class="wp-block-paragraph">Wondering why you aren&#8217;t talking to The Insider yet? It&#8217;s because your path isn&#8217;t sad enough, yet.</p>
+</div>
+
+
+
+<h2 class="wp-block-heading">The Process Inflection Point</h2>
+
+
+
+<p class="wp-block-paragraph">Remember that human who raised their hand and said they&#8217;d write it down. It didn&#8217;t feel like a big deal in the moment. <em>Yes, yes. That seems like a good idea.</em> You zoomed right past a major inflection point of your company. See, until that point, much of what is important about your company existed in the heads of the folks who are running the company. They don&#8217;t need an artifact; they know.</p>
+
+
+
+<p class="wp-block-paragraph">The creation of this artifact allows for the creation of a set of employee variants that heretofore have not existed. Broadly, these are <strong><a href="https://randsinrepose.com/archives/entropy-crushers/">enforcers of the process</a></strong>, and their creation, as discussed <a href="https://randsinrepose.com/archives/the-process-myth/">endlessly</a>, also creates consternation in your company because of the <a href="https://randsinrepose.com/archives/the-old-guard/">perceived assault on freedom</a>. The argument: <em>Why does anyone need to write it down? We already know.</em></p>
+
+
+
+<p class="wp-block-paragraph">They do. They do now. In five years, when you&#8217;ve grown 10x, they will have forgotten because they&#8217;ve moved on&#8230; either to harder problems or another company.</p>
+
+
+
+<p class="wp-block-paragraph">You know who doesn&#8217;t forget? The Insider. They&#8217;ve been here since the beginning, or they were minted during the process inflection point. In either case, they know some or all of the system. They didn&#8217;t build it, but they desire to understand it.</p>
+
+
+
+<p class="wp-block-paragraph">And they want to help.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/the-insider/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5882</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/10/the-insider-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+		<item>
+		<title>Four Writing Humans. No, Wait, Five.</title>
+		<link>https://randsinrepose.com/archives/four-writing-humans-no-wait-five/</link>
+					<comments>https://randsinrepose.com/archives/four-writing-humans-no-wait-five/#comments</comments>
+		
+		<dc:creator><![CDATA[rands]]></dc:creator>
+		<pubDate>Mon, 05 Oct 2026 15:53:12 +0000</pubDate>
+				<category><![CDATA[Writing]]></category>
+		<category><![CDATA[blogging]]></category>
+		<category><![CDATA[books]]></category>
+		<category><![CDATA[gossip and rumors]]></category>
+		<category><![CDATA[storytelling]]></category>
+		<guid isPermaLink="false">https://randsinrepose.com/?p=5864</guid>
+
+					<description><![CDATA[There is one. Wait, two. No, three. Ok, four humans who directly inspired my writing. (Ok, five.) The list is not in order of importance, but by time: Robert Fulghum, All I Really Need to Know I Learned in Kindergarten (Fall 1988) Think what a better world it would be if we all—the whole world—had&#8230; <a class="excerpt-more" href="https://randsinrepose.com/archives/four-writing-humans-no-wait-five/">more</a>]]></description>
+										<content:encoded><![CDATA[<p><img src="https://randsinrepose.com/wp-content/uploads/2026/10/four-writing-humans-2-1024x535.png" width="1024" height="535" class="webfeedsFeaturedVisual" alt="Four Writing Humans. No, Wait, Five." /></p>
+<p class="wp-block-paragraph">There is one. Wait, two. No, three. Ok, four humans who directly inspired my writing. (Ok, five.)</p>
+
+
+
+<p class="wp-block-paragraph">The list is not in order of importance, but by time:</p>
+
+
+
+<h2 class="wp-block-heading">Robert Fulghum, All I Really Need to Know I Learned in Kindergarten (Fall 1988)</h2>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Think what a better world it would be if we all—the whole world—had cookies and milk about three o&#8217;clock every afternoon and then lay down with our blankies for a nap. Or if all governments had as a basic policy to always put things back where they found them and to clean up their own mess. And it is still true, no matter how old you are—when you go out into the world, it is best to hold hands and stick together.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><a href="https://en.wikipedia.org/wiki/Robert_Fulghum">Fulghum</a> wrote a whole series of front-porch wisdom books, but the one that most people know is <a href="https://link.amazon/B0bA9uUmu">All I Really Need to Know I Learned in Kindergarten</a>, published in 1988. I was working at Waldenbooks in the Vallco Mall, and this book literally flew off the shelves. Fulghum was a Unitarian minister, and he wrote &#8220;Kindergarten&#8221; for his church bulletin. The essay was passed around (pre-Internet) and eventually landed with a literary agent.</p>
+
+
+
+<p class="wp-block-paragraph">The essays were brief, dense, and heartfelt. He effortlessly gives names to all parts of the human condition&#8230; ideas and feelings you have all the time, but have not named.</p>
+
+
+
+<p class="wp-block-paragraph">Fulghum is hopeful.</p>
+
+
+
+<h2 class="wp-block-heading">Robert B. Parker, Looking for Rachel Wallace (Fall 1991)</h2>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">I waited. I knew he was trying to size me up. That was okay, I was used to that. People didn&#8217;t know anything about hiring someone like me, and they almost always vamped around for a bit.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><a href="https://link.amazon/B0c2Sxn5W">Looking for Rachel Wallace</a> was published in 1980. Fall 1991, unlike other entries on this list, is when I read the book as part of a <a href="https://www.ucsc.edu/">UCSC</a> class called &#8220;The American Detective.&#8221; It&#8217;s how you know a new author or book is novel — you start reading, hours pass, you are hungry and have a headache, but you read the whole god damned book.</p>
+
+
+
+<p class="wp-block-paragraph"><a href="https://en.wikipedia.org/wiki/Robert_B._Parker">Parker</a> comes from the Dashiell Hammett School of detectives. Spenser, the detective who never has a first name, is an ex-boxer from Boston, but geography is not important to these books. It&#8217;s dialogue. 80% of Parker books are gritty, intelligent dialogue. His characters are talking all the time, and it&#8217;s delicious. They are clever, funny, moral, and respectful. You sniff out the villains because they can&#8217;t keep up the banter with Parker&#8217;s main recurring characters.</p>
+
+
+
+<p class="wp-block-paragraph">Parker was conversational.</p>
+
+
+
+<h2 class="wp-block-heading">Robert X. Cringely, Accidental Empires (February 1992)</h2>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Here&#8217;s the important part: they are <em>our</em> nerds. And having, by their conspicuous success, helped create this mess we&#8217;re in, they had better have a lot to teach us about how to recreate the business spirit we seem to have lost.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">I first discovered <a href="https://en.wikipedia.org/wiki/Robert_X._Cringely">Cringely</a> as he wrote a gossip column for <a href="https://www.infoworld.com/">InfoWorld</a>. This was on the last page of the magazine and, again pre-Internet, was full of the latest gossip and news about the relatively nascent technology landscape. <a href="https://link.amazon/B011kGOZE">Accidental Empires</a> read like a historical record of the early days of tech companies like Microsoft, but it later became clear that many of the more entertaining stories were unsubstantiated. Cringely explained this by claiming he was not a historian, but an explainer.</p>
+
+
+
+<p class="wp-block-paragraph">Like <a href="https://en.wikipedia.org/wiki/EWeek">PC Week</a>&#8217;s Spencer F. Katt, Cringely&#8217;s column was the first thing I flipped to when InfoWorld showed up. Sure, it was gossip and mostly not true, but&#8230;</p>
+
+
+
+<p class="wp-block-paragraph">Cringely was entertaining.</p>
+
+
+
+<h2 class="wp-block-heading">Douglas Coupland, Microserfs (June 1995)</h2>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Bill (Bill!) sent Michael this totally wicked flame-mail from hell on the e-mail system — and he just whaled on a chunk of code Michael had written. Using the <em>Bloom County</em>-cartoons-taped-on-the-door index, Michael is certainly the most sensitive coder in Building Seven — not the type to take criticism easily. Exactly why Bill would choose Michael of all people to whale on is confusing.</p>
+
+
+
+<p class="wp-block-paragraph">We figured it must have been a random quality check to keep the troops in line. Bill&#8217;s so smart.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Accidental Empires was still echoing through Silicon Valley when <a href="https://en.wikipedia.org/wiki/Douglas_Coupland">Coupland</a>&#8217;s article that became <a href="https://link.amazon/B0eJKc9u7">Microserfs</a> was published in the then-fledgling print magazine <a href="https://www.wired.com/">Wired</a>. Like Rachel Wallace, I vividly remember starting the piece, realizing I was reading something revolutionary, and finishing it.</p>
+
+
+
+<p class="wp-block-paragraph">And reading it again.</p>
+
+
+
+<p class="wp-block-paragraph">While clearly fiction, the book read like nonfiction to me because it so clearly reflected my life working in technology in the early 90s. This was pre-<a href="https://en.wikipedia.org/wiki/The_Big_Bang_Theory">Big Bang Theory</a>, where we nerds were not remotely mainstream. Seeing my work and personal life so clearly reflected hilariously in writing made me feel like less of an outsider.</p>
+
+
+
+<p class="wp-block-paragraph">Coupland is hilarious.</p>
+
+
+
+<h2 class="wp-block-heading">Michael Sippey, Stating the Obvious (August 1995)</h2>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Basically, what it comes down to is that there is no place in the Pointcast world for anything resembling a point of view. And that is what you should be surfing for. Now that you can have all the pre-digested information you can handle spewed to you in real time &#8212; in a nice, animated screensaver, nonetheless &#8212; you should spend your time surfing for someone that actually has something to say.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Finally. Michael Sippey started the blog <a href="https://sippey.com/">Stating the Obvious</a> in August of 1995. You know the feeling. You know you can write, but you haven&#8217;t really gotten around to that first piece, and then you read something so good, so relevant, and so important that you realize&#8230; yeah, I would never be able to write like that.</p>
+
+
+
+<p class="wp-block-paragraph">Fortunately for me, I ignored that instinct and, like everyone else in the mid-to-late 90s, I started a blog before we called it a blog in 1996 called <a href="https://randsinrepose.com/bitsifter/">The Bitsifter Digest</a>. Like my early journals, I can&#8217;t read any of those early writings without nauseating disgust. <a href="https://randsinrepose.com/archives/just-awful-writing/">Horrible, horrible writing</a>. I stopped in 1999 probably because I knew the writing was&#8230; bad.</p>
+
+
+
+<p class="wp-block-paragraph">Sippey did not. Some version of Stating the Obvious has been published every year since 1995 and, thankfully, quite a bit more starting in October of 2003. If you&#8217;ve ever read one of my pieces and thought, &#8220;Duh, that&#8217;s obvious,&#8221; my first question is, &#8220;It is. Are you already following that advice?&#8221; Probably not.</p>
+
+
+
+<p class="wp-block-paragraph">Sippey states the obvious.</p>
+
+
+
+<h2 class="wp-block-heading">Rands, Rands in Repose (April 2002)</h2>
+
+
+
+<p class="wp-block-paragraph">With the Bitsifter Digest purged from the system, I started this place on a whim when someone irrelevant said, &#8220;You should blog.&#8221; So I did.</p>
+
+
+
+<p class="wp-block-paragraph">The <a href="https://randsinrepose.com/archives/conversational-characters/">conversational tone and snark</a> come from Parker. Fulghum reminded me to <a href="https://randsinrepose.com/archives/the-makers-of-things/">stay hopeful</a>. Coupland showed me how <a href="https://randsinrepose.com/archives/nadd/">stories can entertain</a>. Sippey allowed me to <a href="https://randsinrepose.com/archives/meetings-are-not-for-you/">state the obvious</a>, which sounds easy, but requires discipline. And, finally, Cringely — <a href="https://news.ycombinator.com/item?id=49949438">who sadly allegedly passed away recently</a> — showed me how stories (<a href="https://randsinrepose.com/archives/crazy-charlies-window/">real or not</a>) can both educate and become legend.</p>
+
+]]></content:encoded>
+					
+					<wfw:commentRss>https://randsinrepose.com/archives/four-writing-humans-no-wait-five/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">5864</post-id><media:content url="https://randsinrepose.com/wp-content/uploads/2026/10/four-writing-humans-2-1024x535.png" type="image/png" medium="image" width="1024" height="535" />
+	</item>
+	</channel>
+</rss>
