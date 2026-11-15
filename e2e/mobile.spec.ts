@@ -140,6 +140,23 @@ test('mark all above takes two taps, and says how many', async ({ page }) => {
   await expect(confirm).toHaveCount(0, { timeout: 6000 })
   await expect(heading(page)).toContainText('4 unread')
 
+  // Only one row asks at a time, and another row's action takes it back.
+  const askAbove = (title: string) =>
+    articleRow(page, title)
+      .getByRole('button', { name: `Mark all above ${title} as read` })
+      .tap()
+
+  const asking = articleList(page).getByRole('button', { name: /^Confirm/ })
+
+  await askAbove('Generated 2')
+  await askAbove('Generated 1')
+  await expect(asking).toHaveText(['Mark 3 above?'])
+  await articleRow(page, 'Generated 4')
+    .getByRole('button', { name: 'Mark Generated 4 read' })
+    .tap()
+  await expect(heading(page)).toContainText('3 unread')
+  await expect(asking).toHaveCount(0)
+
   await unsubscribe(page, feed)
 })
 

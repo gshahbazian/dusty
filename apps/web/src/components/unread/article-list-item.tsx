@@ -6,7 +6,6 @@ import {
   CircleDotIcon,
   ExternalLinkIcon,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
@@ -39,9 +38,6 @@ export interface RowActions {
   readonly markAllAbove: (id: number) => void
 }
 
-/** How long "Mark N above?" waits for its second tap. */
-const CONFIRM_MS = 4000
-
 /**
  * One row of an unread list. A read row stays where it is (dimmed) until
  * the list is refreshed, so nothing moves under the cursor. The list is
@@ -50,7 +46,8 @@ const CONFIRM_MS = 4000
  * Its buttons let go of focus once used, so a later Enter opens the
  * cursor's row rather than pressing one of them again. "Mark all above"
  * takes two taps, the first saying how many rows it will mark, so it is
- * never done by accident on a touch screen.
+ * never done by accident on a touch screen. Which row is asking is kept by
+ * the list: one at a time.
  */
 export function ArticleListItem({
   row,
@@ -62,6 +59,8 @@ export function ArticleListItem({
   cursor,
   now,
   showFeed,
+  confirming,
+  onAskAbove,
   actions,
 }: {
   row: ArticleRow
@@ -74,6 +73,10 @@ export function ArticleListItem({
   cursor: boolean
   now: number
   showFeed: boolean
+  /** Asking "Mark N above?" (the list keeps which row, one at a time). */
+  confirming: boolean
+  /** The first tap of "mark all above": start asking. */
+  onAskAbove: () => void
   actions: RowActions
 }) {
   const title = row.title ?? 'Untitled'
@@ -94,18 +97,6 @@ export function ArticleListItem({
 
     actions.markRead(row.id)
   }
-
-  // The "Mark N above?" step: this row's own UI, nothing else needs it.
-  const [confirming, setConfirming] = useState(false)
-
-  // An unanswered "Mark N above?" goes back after a few seconds.
-  useEffect(() => {
-    if (!confirming) return
-
-    const reset = setTimeout(() => setConfirming(false), CONFIRM_MS)
-
-    return () => clearTimeout(reset)
-  }, [confirming])
 
   return (
     <ContextMenu>
@@ -181,7 +172,7 @@ export function ArticleListItem({
               variant="ghost"
               size="icon-sm"
               className="text-muted-foreground relative z-10 pointer-coarse:min-w-11"
-              onClick={() => setConfirming(true)}
+              onClick={onAskAbove}
               disabled={busy}
               aria-label={`Mark all above ${title} as read`}
               title="Mark all above as read"
@@ -195,7 +186,6 @@ export function ArticleListItem({
               className="relative z-10"
               onClick={(event) => {
                 event.currentTarget.blur()
-                setConfirming(false)
                 onMarkAllAbove()
               }}
               disabled={busy}

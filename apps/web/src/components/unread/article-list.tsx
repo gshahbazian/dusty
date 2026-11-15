@@ -1,5 +1,11 @@
 import { measureElement, useVirtualizer } from '@tanstack/react-virtual'
-import { useEffect, useImperativeHandle, useRef, type Ref } from 'react'
+import {
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type Ref,
+} from 'react'
 
 import type { ArticleRow } from '@dusty/db'
 
@@ -13,6 +19,9 @@ const ESTIMATED_ROW_PX = 120
 
 /** Where the list sits beside the article; below it, the article replaces it. */
 const WIDE_SCREEN = '(min-width: 64rem)'
+
+/** How long "Mark N above?" waits for its second tap. */
+const CONFIRM_MS = 4000
 
 /** Room kept above and below the cursor's row (the toast sits below). */
 const REVEAL_TOP_PX = 8
@@ -57,6 +66,39 @@ export function ArticleList({
   actions: RowActions
 }) {
   const scroller = useRef<HTMLDivElement>(null)
+
+  // The row asking "Mark N above?", if any: one at a time. It stops asking
+  // after a few seconds, or when any row's action is used.
+  const [askingId, setAskingId] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (askingId === null) return
+
+    const reset = setTimeout(() => setAskingId(null), CONFIRM_MS)
+
+    return () => clearTimeout(reset)
+  }, [askingId])
+
+  /** Every row action answers (or drops) an open "Mark N above?". */
+  const rowActions: RowActions = {
+    ...actions,
+    open: (index) => {
+      setAskingId(null)
+      actions.open(index)
+    },
+    markRead: (id) => {
+      setAskingId(null)
+      actions.markRead(id)
+    },
+    markUnread: (id) => {
+      setAskingId(null)
+      actions.markUnread(id)
+    },
+    markAllAbove: (id) => {
+      setAskingId(null)
+      actions.markAllAbove(id)
+    },
+  }
 
   // TanStack Virtual hands back functions the React Compiler can't memoize;
   // the compiler skips this hook, which is what it needs.
@@ -190,7 +232,9 @@ export function ArticleList({
               cursor={item.index === cursor}
               now={now}
               showFeed={showFeed}
-              actions={actions}
+              confirming={askingId === row.id}
+              onAskAbove={() => setAskingId(row.id)}
+              actions={rowActions}
             />
           )
         })}
