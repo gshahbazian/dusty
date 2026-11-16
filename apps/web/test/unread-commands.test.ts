@@ -53,6 +53,7 @@ const setup = (state: {
     moveTo: record('moveTo'),
     open: record('open'),
     refresh: called('refresh'),
+    showNewArticles: called('showNewArticles'),
     close: called('close'),
     goToFeed: record('goToFeed'),
     scrollArticle: record('scrollArticle'),
@@ -200,13 +201,19 @@ describe('everything else', () => {
     ])
   })
 
-  test('r, ] and [ work on an empty list; row commands do not', () => {
+  test('r, R, ] and [ work on an empty list; row commands do not', () => {
     const { commands, calls } = setup({ rows: [], cursor: -1 })
 
     commands.refresh?.(1)
+    commands.showNewArticles?.(1)
     commands.nextFeed?.(1)
     commands.previousFeed?.(1)
-    expect(calls).toEqual(['refresh', 'goToFeed(1)', 'goToFeed(-1)'])
+    expect(calls).toEqual([
+      'refresh',
+      'showNewArticles',
+      'goToFeed(1)',
+      'goToFeed(-1)',
+    ])
     expect(commands.down).toBeUndefined()
     expect(commands.toggleRead).toBeUndefined()
   })

@@ -65,6 +65,8 @@ export function commandsFor(page: {
   moveTo: (index: number) => void
   open: (index: number) => void
   refresh: () => void
+  /** Reload the list from what is stored, without a sync. */
+  showNewArticles: () => void
   close: () => void
   goToFeed: (direction: 1 | -1) => void
   scrollArticle: (pixels: number) => void
@@ -79,6 +81,7 @@ export function commandsFor(page: {
 
   const always: Commands = {
     refresh: page.refresh,
+    showNewArticles: page.showNewArticles,
     undo: list.undoLast,
     nextFeed: () => page.goToFeed(1),
     previousFeed: () => page.goToFeed(-1),

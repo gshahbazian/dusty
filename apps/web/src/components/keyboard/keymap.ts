@@ -20,6 +20,7 @@ export type Command =
   | 'markAllAbove'
   | 'undo'
   | 'refresh'
+  | 'showNewArticles'
   | 'nextFeed'
   | 'previousFeed'
   | 'goToAllUnread'
@@ -118,6 +119,11 @@ export const BINDINGS: readonly Binding[] = [
   },
   { command: 'undo', sequences: [['u']], list: 'Undo the last mark' },
   { command: 'refresh', sequences: [['r']], list: 'Refresh' },
+  {
+    command: 'showNewArticles',
+    sequences: [['R']],
+    list: 'Load new articles (reload the list, without a sync)',
+  },
   { command: 'nextFeed', sequences: [[']']], list: 'Next feed' },
   { command: 'previousFeed', sequences: [['[']], list: 'Previous feed' },
   {

@@ -68,6 +68,7 @@ bound.
 | `A` | Mark all above the cursor row as read | Same |
 | `u` | Undo the last mark action | Same |
 | `r` | Refresh | Same |
+| `R` | Load new articles (reload the list, no sync) | Same |
 | `]` / `[` | Next / previous feed | Same |
 | `ga` / `gs` | Go to all unread / settings | Same |
 | `?` | Show the shortcuts | Same |

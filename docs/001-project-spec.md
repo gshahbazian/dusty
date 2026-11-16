@@ -221,6 +221,7 @@ Every triage action can be done from the keyboard with vim-style keys, so a full
 | `A` | Mark all rows above the current one as read |
 | `u` | Undo the last mark action |
 | `r` | Refresh |
+| `R` | Load new articles (reload the list, no sync) |
 | `]` / `[` | Next / previous feed |
 | `ga` / `gs` | Go to all unread / subscriptions |
 | `?` | Show all shortcuts |

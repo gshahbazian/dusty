@@ -427,7 +427,8 @@ test('a sync after the page loaded offers its new articles', async ({
   // The list itself stays put until asked.
   await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
 
-  await ready.click()
+  // R loads them, as clicking the link does.
+  await page.keyboard.press('R')
   await expect(articleList(page).getByRole('listitem')).toHaveText([
     /Generated 4/,
     /Generated 3/,

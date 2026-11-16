@@ -117,6 +117,7 @@ export function ListHeader({
           <Button
             variant="link"
             size="sm"
+            title="Load new articles (R)"
             onClick={onShowNewArticles}
             disabled={refreshing}
             // The Refresh button's height on a touch screen too, so the row

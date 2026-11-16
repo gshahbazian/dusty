@@ -153,6 +153,7 @@ function UnreadSnapshot({
       moveTo,
       open,
       refresh: () => refresh(),
+      showNewArticles: () => reload(),
       close: () => onOpenArticle(null),
       goToFeed: (direction) => {
         const order = [null, ...feeds.map((feed) => feed.feedId)]
