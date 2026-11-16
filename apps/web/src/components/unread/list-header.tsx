@@ -119,7 +119,9 @@ export function ListHeader({
             size="sm"
             onClick={onShowNewArticles}
             disabled={refreshing}
-            className="ml-auto px-0"
+            // The Refresh button's height on a touch screen too, so the row
+            // doesn't grow when this replaces the time.
+            className="ml-auto px-0 pointer-coarse:min-h-9"
           >
             New articles ready
           </Button>
