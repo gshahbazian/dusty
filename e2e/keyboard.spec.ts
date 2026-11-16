@@ -277,3 +277,29 @@ test('j and k open the next article at its top, wherever the last one was scroll
 
   await unsubscribe(page, feed)
 })
+
+test('j on the last article (or Enter on the open one) does nothing', async ({
+  page,
+}) => {
+  const feed = feedFor('j-at-end', 3)
+  const feedId = await subscribe(page, feed)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto(`/feeds/${feedId}`)
+  await expect(heading(page)).toContainText('3 unread')
+
+  // Read the whole list with `j`.
+  await keys(page, 'Enter', 'j', 'j')
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 1')
+  // Then once more, and Enter on it: both did reload the list, which came
+  // back empty, every article now read. Give a reload time to land.
+  await keys(page, 'j', 'Enter')
+  await page.waitForTimeout(1000)
+
+  // Still the last article, and the list still shows every row.
+  await expect(article(page).getByRole('heading')).toHaveText('Generated 1')
+  await expect(articleList(page).getByRole('listitem')).toHaveCount(3)
+  await expectCursorOn(page, 'Generated 1')
+
+  await unsubscribe(page, feed)
+})

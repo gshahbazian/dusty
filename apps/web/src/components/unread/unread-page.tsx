@@ -125,6 +125,7 @@ function UnreadSnapshot({
   const { listRef, announcement, moveTo, open } = useListNavigation({
     rows,
     cursor,
+    openId: articleId,
     onCursor,
     onOpenArticle,
     markOpenedRead: list.markOpenedRead,

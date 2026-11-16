@@ -14,6 +14,8 @@ import { articleQuery } from '#/lib/queries'
 export function useListNavigation(nav: {
   rows: readonly ArticleRow[]
   cursor: number
+  /** The open article, if any. */
+  openId: number | null
   onCursor: (id: number) => void
   onOpenArticle: (id: number) => void
   markOpenedRead: (id: number) => void
@@ -57,6 +59,12 @@ export function useListNavigation(nav: {
 
     nav.onCursor(row.id)
     reveal(index)
+
+    // Already open (`j` on the last row, `k` on the first, Enter): nothing
+    // more to do. Navigating to the page already shown would make the router
+    // reload the list, and a list read to its end would come back empty.
+    if (row.id === nav.openId) return
+
     nav.onOpenArticle(row.id)
     nav.markOpenedRead(row.id)
 
