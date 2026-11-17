@@ -151,7 +151,9 @@ test('import from an OPML file', async ({ page }) => {
   await expect(page.getByRole('table', { name: 'Added' })).toBeVisible()
   await expect(page.getByRole('table', { name: 'Skipped' })).toBeVisible()
   await expect(
-    page.getByRole('cell', { name: 'Broken · 404 not found' })
+    page
+      .getByRole('table', { name: 'Failed' })
+      .getByRole('cell', { name: 'Broken' })
   ).toBeVisible()
 
   // A feed that failed is subscribed anyway, showing its error.

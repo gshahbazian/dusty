@@ -25,13 +25,10 @@ type Step =
     }
   | {
       readonly kind: 'finished'
-      readonly added: readonly ImportResult[]
-      readonly skipped: readonly SkippedFeed[]
-      readonly failed: readonly ImportResult[]
+      readonly added: readonly string[]
+      readonly skipped: readonly string[]
+      readonly failed: readonly string[]
     }
-
-/** A feed the import left out, and why, for the finished list. */
-type SkippedFeed = { readonly name: string; readonly reason: string }
 
 const plural = (count: number, one: string, many: string) =>
   `${count} ${count === 1 ? one : many}`
@@ -93,33 +90,19 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
         setDone(results.length)
       }
 
-      const failed = results.filter((result) => result.status === 'failed')
-      const added = results.filter((result) => result.status === 'added')
+      const names = (status: ImportResult['status']) =>
+        results.flatMap((result) =>
+          result.status === status ? [result.title ?? result.url] : []
+        )
 
-      const skipped: SkippedFeed[] = [
+      const skipped = [
         ...entries.flatMap((entry) =>
-          entry.skip === null
-            ? []
-            : [
-                {
-                  name: entry.title ?? entry.url,
-                  reason: SKIP_REASONS[entry.skip],
-                },
-              ]
+          entry.skip === null ? [] : [entry.title ?? entry.url]
         ),
-        ...results.flatMap((result) =>
-          result.status === 'skipped'
-            ? [
-                {
-                  name: result.title ?? result.url,
-                  reason: 'already subscribed',
-                },
-              ]
-            : []
-        ),
+        ...names('skipped'),
       ]
 
-      return { added, skipped, failed }
+      return { added: names('added'), skipped, failed: names('failed') }
     },
     onSettled: onImported,
   })
@@ -227,30 +210,9 @@ function ImportStatus({
   if (step.kind === 'finished') {
     return (
       <div className="flex flex-col gap-6">
-        <ResultTable
-          title="Added"
-          rows={step.added.map((result) => ({
-            key: result.url,
-            name: result.title ?? result.url,
-            detail: null,
-          }))}
-        />
-        <ResultTable
-          title="Skipped"
-          rows={step.skipped.map((feed, index) => ({
-            key: `${feed.name}-${index}`,
-            name: feed.name,
-            detail: feed.reason,
-          }))}
-        />
-        <ResultTable
-          title="Failed"
-          rows={step.failed.map((result) => ({
-            key: result.url,
-            name: result.title ?? result.url,
-            detail: result.status === 'failed' ? result.reason : null,
-          }))}
-        />
+        <ResultTable title="Added" names={step.added} />
+        <ResultTable title="Skipped" names={step.skipped} />
+        <ResultTable title="Failed" names={step.failed} />
       </div>
     )
   }
@@ -292,29 +254,20 @@ function ImportStatus({
 /** One group of the finished import's feeds; nothing when it is empty. */
 function ResultTable({
   title,
-  rows,
+  names,
 }: {
   title: string
-  rows: ReadonlyArray<{
-    readonly key: string
-    readonly name: string
-    readonly detail: string | null
-  }>
+  names: readonly string[]
 }) {
-  if (rows.length === 0) return null
+  if (names.length === 0) return null
 
   return (
     <table className="w-full max-w-2xl text-sm">
       <caption className="pb-1 text-left font-semibold">{title}</caption>
       <tbody>
-        {rows.map((row) => (
-          <tr key={row.key} className="border">
-            <td className="px-3 py-2 break-all">
-              {row.name}
-              {row.detail !== null && (
-                <span className="text-muted-foreground"> · {row.detail}</span>
-              )}
-            </td>
+        {names.map((name, index) => (
+          <tr key={`${name}-${index}`} className="border">
+            <td className="px-3 py-2 break-all">{name}</td>
           </tr>
         ))}
       </tbody>
