@@ -16,16 +16,15 @@ export const articleQuery = (id: number) =>
   })
 
 /**
- * The empty article pane's photo: a new pick each time the pane empties.
- * Dropped as soon as no pane shows it (an article opened), but a refresh
- * remounts the pane in the same render, so it keeps the photo it had.
+ * The empty article pane's photo for a day (the owner's local date): the
+ * same all day, so asked for once per day and kept.
  */
-export const backdropQuery = () =>
+export const backdropQuery = (day: string) =>
   queryOptions({
-    queryKey: ['backdrop'],
-    queryFn: () => getBackdrop(),
+    queryKey: ['backdrop', day],
+    queryFn: () => getBackdrop({ data: { day } }),
     staleTime: Infinity,
-    gcTime: 0,
+    gcTime: Infinity,
   })
 
 /** How often an open list asks whether newer articles are stored. */

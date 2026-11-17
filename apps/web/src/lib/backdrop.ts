@@ -1,6 +1,6 @@
 /**
- * The empty article pane's photo: what the server sends, and the one shown
- * when it has nothing better. Plain data shared by the server function
+ * The empty article pane's photo of the day: what the server sends, the
+ * one shown when it has nothing better, and which day it is. Plain data shared by the server function
  * (`server/backdrop.ts`) and the page.
  */
 
@@ -22,3 +22,14 @@ export const FALLBACK_BACKDROP: Backdrop = {
   alt: 'A river surrounded by trees',
   color: null,
 }
+
+/** A local date, YYYY-MM-DD: which day's photo to show. */
+export const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+
+/** `date`'s day where the owner is (the browser's time zone). */
+export const localDay = (date: Date): string =>
+  [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')

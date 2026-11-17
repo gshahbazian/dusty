@@ -1,6 +1,12 @@
 export { createDb, schema, type Db } from '#/client'
 
 export {
+  getDailyBackdrop,
+  saveDailyBackdrop,
+  type DailyBackdrop,
+} from '#/backdrops'
+
+export {
   getArticle,
   hasArticlesSince,
   LIST_LIMIT,

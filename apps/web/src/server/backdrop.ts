@@ -1,23 +1,16 @@
 import { createServerFn } from '@tanstack/react-start'
 import * as Schema from 'effect/Schema'
 
-import { FALLBACK_BACKDROP, type Backdrop } from '#/lib/backdrop'
+import { getDailyBackdrop, saveDailyBackdrop } from '@dusty/db'
+
+import { DAY_PATTERN, FALLBACK_BACKDROP, type Backdrop } from '#/lib/backdrop'
+import { dbFor } from '#/server/db'
 import { ownerOnly } from '#/server/middleware'
 
-/** What to ask Unsplash for, and how many at a time. */
-const QUERY = 'calm landscape'
-const BATCH = 30
-
-/** The batch is kept this long, so Unsplash sees about one request an hour. */
-const CACHE_SECONDS = 3600
-
-/** A made-up URL naming the cached batch in the Worker's cache. */
-const CACHE_KEY = 'https://dusty.cache/unsplash/calm-landscape'
-
+/** One calm landscape, picked by Unsplash. */
 const UNSPLASH_RANDOM = `https://api.unsplash.com/photos/random?${new URLSearchParams(
   {
-    query: QUERY,
-    count: String(BATCH),
+    query: 'calm landscape',
     orientation: 'landscape',
     content_filter: 'high',
   }
@@ -29,7 +22,7 @@ const Photo = Schema.Struct({
   urls: Schema.Struct({ regular: Schema.String }),
 })
 
-const decodePhotos = Schema.decodeUnknownSync(Schema.Array(Photo))
+const decodePhoto = Schema.decodeUnknownSync(Photo)
 
 /** Only Unsplash's own https image addresses become image sources. */
 const onUnsplash = (raw: string, host: string): string | null => {
@@ -42,25 +35,8 @@ const onUnsplash = (raw: string, host: string): string | null => {
   }
 }
 
-const toBackdrop = (photo: typeof Photo.Type): Backdrop | null => {
-  const imageUrl = onUnsplash(photo.urls.regular, 'images.unsplash.com')
-
-  if (imageUrl === null) return null
-
-  return {
-    imageUrl,
-    alt: photo.alt_description ?? 'A landscape photo',
-    color: photo.color,
-  }
-}
-
-/** The Unsplash response's text: from the Worker's cache, or fetched fresh. */
-const batchText = async (accessKey: string): Promise<string> => {
-  const cache = await caches.open('dusty-backdrop')
-  const cached = await cache.match(CACHE_KEY)
-
-  if (cached !== undefined) return cached.text()
-
+/** Ask Unsplash for a photo: the one API call a day. */
+const fetchPhoto = async (accessKey: string): Promise<Backdrop> => {
   const response = await fetch(UNSPLASH_RANDOM, {
     headers: {
       Authorization: `Client-ID ${accessKey}`,
@@ -70,47 +46,52 @@ const batchText = async (accessKey: string): Promise<string> => {
 
   if (!response.ok) throw new Error(`Unsplash answered ${response.status}`)
 
-  const body = await response.text()
+  const photo = decodePhoto(await response.json())
+  const imageUrl = onUnsplash(photo.urls.regular, 'images.unsplash.com')
 
-  await cache.put(
-    CACHE_KEY,
-    new Response(body, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': `max-age=${CACHE_SECONDS}`,
-      },
-    })
-  )
+  if (imageUrl === null) throw new Error('Unsplash sent an unexpected address')
 
-  return body
+  return {
+    imageUrl,
+    alt: photo.alt_description ?? 'A landscape photo',
+    color: photo.color,
+  }
 }
 
 /**
- * The latest batch of photos, cached for an hour so the list changes
- * through the day. Anything not on Unsplash's own addresses is dropped.
- */
-const photoBatch = async (accessKey: string): Promise<Backdrop[]> =>
-  decodePhotos(JSON.parse(await batchText(accessKey))).flatMap(
-    (photo) => toBackdrop(photo) ?? []
-  )
-
-/**
- * One calm landscape for the empty article pane, picked at random from
- * Unsplash's latest batch, or the fixed fallback when the API gives
- * nothing usable (no access key, an error, an empty batch).
+ * The photo of the day for the empty article pane: kept in D1, so Unsplash
+ * is asked once a day (on the first empty pane of the owner's day, `day`
+ * being their local date). The image itself is hotlinked from Unsplash, as
+ * its API terms require, and the browser caches it.
+ *
+ * The fixed fallback when there is no access key, under `alchemy dev` (so
+ * local work never spends the API's quota), or when Unsplash fails; a
+ * failure isn't kept, so the next pane tries again.
  */
 export const getBackdrop = createServerFn({ method: 'GET' })
   .middleware([ownerOnly])
-  .handler(async ({ context }): Promise<Backdrop> => {
-    const accessKey = context.env.UNSPLASH_ACCESS_KEY
+  .validator(
+    Schema.decodeUnknownSync(
+      Schema.Struct({ day: Schema.String.check(Schema.isPattern(DAY_PATTERN)) })
+    )
+  )
+  .handler(async ({ data, context }): Promise<Backdrop> => {
+    const { env } = context
+    const accessKey = env.UNSPLASH_ACCESS_KEY
 
-    if (accessKey === '') return FALLBACK_BACKDROP
+    if (accessKey === '' || env.LOCAL_DEV === 'true') return FALLBACK_BACKDROP
+
+    const db = dbFor(env)
+    const kept = await getDailyBackdrop(db, data.day)
+
+    if (kept !== null) return kept
 
     try {
-      const photos = await photoBatch(accessKey)
-
-      return (
-        photos[Math.floor(Math.random() * photos.length)] ?? FALLBACK_BACKDROP
+      return await saveDailyBackdrop(
+        db,
+        data.day,
+        await fetchPhoto(accessKey),
+        Date.now()
       )
     } catch (error) {
       console.warn('backdrop: using the fallback photo', error)

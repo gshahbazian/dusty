@@ -146,3 +146,19 @@ export const prunedItems = sqliteTable(
     index('pruned_items_last_seen_at').on(table.lastSeenAt),
   ]
 )
+
+/**
+ * The empty article pane's photo of the day: Unsplash is asked once a day,
+ * and its answer kept here, so every pane that day shows the same photo.
+ * `day` is the owner's local date (YYYY-MM-DD). Saving a day's photo
+ * deletes the earlier days' rows (`saveDailyBackdrop`).
+ */
+export const dailyBackdrops = sqliteTable('daily_backdrops', {
+  day: text('day').primaryKey(),
+  /** An images.unsplash.com address (Unsplash requires hotlinking). */
+  imageUrl: text('image_url').notNull(),
+  alt: text('alt').notNull(),
+  /** The photo's main colour, shown while it loads. */
+  color: text('color'),
+  fetchedAt: integer('fetched_at').notNull(),
+})

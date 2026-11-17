@@ -64,8 +64,8 @@ export class Web extends Cloudflare.Website.Vite<Web>()(
 
     const access = yield* deployedAccess(dev, ownerEmail)
 
-    // Optional: the empty article pane's photo (Unsplash). A secret on the
-    // Worker; without it the pane is just blank.
+    // Optional: the empty article pane's photo of the day (Unsplash). A
+    // secret on the Worker; without it the pane shows one fixed photo.
     const unsplashKey = yield* Config.Redacted('UNSPLASH_ACCESS_KEY').pipe(
       Config.withDefault(Redacted.make('')),
       Effect.orDie
