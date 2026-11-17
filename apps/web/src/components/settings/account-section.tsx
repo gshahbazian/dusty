@@ -12,13 +12,7 @@ export function AccountSection({
   logoutUrl: string
 }) {
   return (
-    <section
-      aria-labelledby="account-heading"
-      className="flex flex-col items-start gap-2"
-    >
-      <h2 id="account-heading" className="font-medium">
-        Account
-      </h2>
+    <section className="flex flex-col items-start gap-2">
       <p className="text-muted-foreground text-xs">Signed in as {email}</p>
       <a
         href={logoutUrl}
