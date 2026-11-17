@@ -183,16 +183,18 @@ test('junk in the URL falls back to the default view', async ({ page }) => {
   await expect(
     page.getByRole('navigation', { name: 'Settings sections' })
   ).toBeVisible()
-  await expect(page.getByRole('combobox')).toHaveValue('attention')
   await expect(
-    page.getByRole('checkbox', { name: 'Only feeds that need attention' })
-  ).not.toBeChecked()
+    page.getByRole('button', { name: 'Sort: Problems first' })
+  ).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'Filter: All feeds' })
+  ).toBeVisible()
   await expect(page).toHaveURL(/\/settings$/)
 
   // A good value next to a bad one is kept.
   await page.goto('/settings?sort=name&attention=maybe')
-  await expect(page.getByRole('combobox')).toHaveValue('name')
+  await expect(page.getByRole('button', { name: 'Sort: Name' })).toBeVisible()
   await expect(
-    page.getByRole('checkbox', { name: 'Only feeds that need attention' })
-  ).not.toBeChecked()
+    page.getByRole('button', { name: 'Filter: All feeds' })
+  ).toBeVisible()
 })

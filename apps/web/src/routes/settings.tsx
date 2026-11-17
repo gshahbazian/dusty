@@ -7,11 +7,9 @@ import {
 import { useEffect, useState } from 'react'
 
 import { cn } from 'cn'
+import { ArrowDownWideNarrowIcon, ListFilterIcon } from 'lucide-react'
 
-import { Checkbox } from '#/components/ui/checkbox'
-import { Label } from '#/components/ui/label'
-import { NativeSelect, NativeSelectOption } from '#/components/ui/native-select'
-
+import { ChoiceMenu } from '#/components/subscriptions/choice-menu'
 import { AccountSection } from '#/components/settings/account-section'
 import { AddFeedForm } from '#/components/subscriptions/add-feed-form'
 import {
@@ -46,8 +44,10 @@ const TABS: ReadonlyArray<{
   { value: 'account', label: 'Account' },
 ]
 
-const isSortOrder = (value: string): value is SortOrder =>
-  SORTS.some((sort) => sort.value === value)
+const FILTERS = [
+  { value: 'all', label: 'All feeds' },
+  { value: 'attention', label: 'Needs attention' },
+] as const
 
 export const Route = createFileRoute('/settings')({
   validateSearch: parseSubscriptionsSearch,
@@ -96,7 +96,6 @@ function Settings() {
   const [highlighted, setHighlighted] = useHighlight()
 
   const reload = () => void router.invalidate()
-  const attentionCount = subscriptions.filter(needsAttention).length
 
   const shown = sortSubscriptions(
     attention ? subscriptions.filter(needsAttention) : subscriptions,
@@ -141,57 +140,31 @@ function Settings() {
                   }}
                 />
                 <div className="flex flex-col gap-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <h2 className="font-medium">
-                      {subscriptions.length === 1
-                        ? '1 feed'
-                        : `${subscriptions.length} feeds`}
-                      {attentionCount > 0 && (
-                        <span className="text-muted-foreground">
-                          {' '}
-                          · {attentionCount} need attention
-                        </span>
-                      )}
-                    </h2>
-                    <div className="flex flex-wrap items-center gap-4">
-                      {/* Tall enough for a thumb on a touch screen: the box itself
-                  is small, and the label is what gets tapped. */}
-                      <Label className="pointer-coarse:min-h-11">
-                        <Checkbox
-                          checked={attention}
-                          onCheckedChange={(checked) =>
-                            void navigate({
-                              search: { tab, sort, attention: checked },
-                            })
-                          }
-                        />
-                        Only feeds that need attention
-                      </Label>
-                      <Label>
-                        Sort
-                        <NativeSelect
-                          value={sort}
-                          onChange={(event) => {
-                            const sort = event.target.value
-
-                            if (!isSortOrder(sort)) return
-
-                            void navigate({
-                              search: { tab, sort, attention },
-                            })
-                          }}
-                        >
-                          {SORTS.map((sort) => (
-                            <NativeSelectOption
-                              key={sort.value}
-                              value={sort.value}
-                            >
-                              {sort.label}
-                            </NativeSelectOption>
-                          ))}
-                        </NativeSelect>
-                      </Label>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ChoiceMenu
+                      label="Filter"
+                      icon={ListFilterIcon}
+                      value={attention ? 'attention' : 'all'}
+                      choices={FILTERS}
+                      onChange={(filter) =>
+                        void navigate({
+                          search: {
+                            tab,
+                            sort,
+                            attention: filter === 'attention',
+                          },
+                        })
+                      }
+                    />
+                    <ChoiceMenu
+                      label="Sort"
+                      icon={ArrowDownWideNarrowIcon}
+                      value={sort}
+                      choices={SORTS}
+                      onChange={(sort) =>
+                        void navigate({ search: { tab, sort, attention } })
+                      }
+                    />
                   </div>
 
                   {subscriptions.length === 0 && (

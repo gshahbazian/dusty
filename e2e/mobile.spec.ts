@@ -221,16 +221,10 @@ test('settings controls are at least 44 px tall', async ({ page }) => {
     page.getByRole('navigation', { name: 'Settings sections' })
   ).toBeVisible()
 
-  // The checkbox is small; its label is what a thumb hits.
-  const attention = page.locator('label', {
-    has: page.getByRole('checkbox', { name: 'Only feeds that need attention' }),
-  })
-
   const small: string[] = []
 
   for (const target of await page
     .locator('button, select')
-    .or(attention)
     .filter({ visible: true })
     .all()) {
     const box = await target.boundingBox()
