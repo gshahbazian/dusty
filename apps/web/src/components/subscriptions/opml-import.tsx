@@ -171,16 +171,10 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
   const step = stepNow()
 
   return (
-    <section className="flex flex-col gap-2" aria-labelledby="import-heading">
-      <h2 id="import-heading" className="text-xs font-medium">
-        Import from another reader
-      </h2>
-      <p className="text-muted-foreground max-w-prose text-xs">
-        Most feed readers can export your subscriptions as an OPML file, often
-        under Settings as "Export" or "Export OPML". Choose that file here to
-        subscribe to the same feeds. Feeds you already follow are skipped, and
-        existing articles arrive already read.
-      </p>
+    <section
+      className="flex flex-col gap-4"
+      aria-label="Import from another reader"
+    >
       {/* A label styled as a button, so the hidden file input opens on click. */}
       <label
         className={cn(
@@ -233,40 +227,38 @@ function ImportStatus({
 
   if (step.kind === 'finished') {
     return (
-      <div className="flex flex-col gap-3">
-        <p>
-          Import finished: {step.added.length} added, {step.skipped.length}{' '}
-          skipped, {step.failed.length} failed.{' '}
-          <Link
-            to="/settings"
-            search={{ tab: 'subscriptions' }}
-            className="font-medium underline underline-offset-2"
-          >
-            View subscriptions
-          </Link>
-        </p>
-        <ResultList
+      <div className="flex flex-col gap-6">
+        <ResultTable
           title="Added"
-          items={step.added.map((result) => ({
+          rows={step.added.map((result) => ({
             key: result.url,
-            text: result.title ?? result.url,
+            name: result.title ?? result.url,
+            detail: null,
           }))}
         />
-        <ResultList
+        <ResultTable
           title="Skipped"
-          items={step.skipped.map((feed, index) => ({
+          rows={step.skipped.map((feed, index) => ({
             key: `${feed.name}-${index}`,
-            text: `${feed.name}: ${feed.reason}`,
+            name: feed.name,
+            detail: feed.reason,
           }))}
         />
-        <ResultList
+        <ResultTable
           title="Failed"
-          note="These were added anyway; they show their error on the Subscriptions tab until a sync gets through."
-          items={step.failed.map((result) => ({
+          rows={step.failed.map((result) => ({
             key: result.url,
-            text: `${result.title ?? result.url}: ${result.status === 'failed' ? result.reason : ''}`,
+            name: result.title ?? result.url,
+            detail: result.status === 'failed' ? result.reason : null,
           }))}
         />
+        <Link
+          to="/settings"
+          search={{ tab: 'subscriptions' }}
+          className="w-fit underline underline-offset-2"
+        >
+          View subscriptions
+        </Link>
       </div>
     )
   }
@@ -306,31 +298,41 @@ function ImportStatus({
 }
 
 /** One group of the finished import's feeds; nothing when it is empty. */
-function ResultList({
+function ResultTable({
   title,
-  note,
-  items,
+  rows,
 }: {
   title: string
-  note?: string
-  items: ReadonlyArray<{ readonly key: string; readonly text: string }>
+  rows: ReadonlyArray<{
+    readonly key: string
+    readonly name: string
+    readonly detail: string | null
+  }>
 }) {
-  if (items.length === 0) return null
+  if (rows.length === 0) return null
 
   return (
-    <div className="flex flex-col gap-1">
-      <h3 className="font-medium">
-        {title} ({items.length})
-      </h3>
-      {note !== undefined && <p className="text-muted-foreground">{note}</p>}
-      <ul className="text-muted-foreground list-disc pl-5">
-        {items.map((item) => (
-          <li key={item.key} className="break-all">
-            {item.text}
-          </li>
+    <table className="w-full max-w-2xl border text-sm">
+      <thead>
+        <tr>
+          <th scope="col" className="bg-muted px-3 py-2 text-left font-medium">
+            {title} ({rows.length})
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.key} className="border-t">
+            <td className="px-3 py-2 break-all">
+              {row.name}
+              {row.detail !== null && (
+                <span className="text-muted-foreground"> · {row.detail}</span>
+              )}
+            </td>
+          </tr>
         ))}
-      </ul>
-    </div>
+      </tbody>
+    </table>
   )
 }
 

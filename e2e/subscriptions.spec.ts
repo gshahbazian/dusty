@@ -149,9 +149,14 @@ test('import from an OPML file', async ({ page }) => {
   await page.getByRole('button', { name: 'Import 3 feeds' }).click()
 
   await expect(
-    page.getByText('Import finished: 2 added, 2 skipped, 1 failed.')
+    page.getByRole('columnheader', { name: 'Added (2)' })
   ).toBeVisible()
-  await expect(page.getByText('Broken: 404 not found')).toBeVisible()
+  await expect(
+    page.getByRole('columnheader', { name: 'Skipped (2)' })
+  ).toBeVisible()
+  await expect(
+    page.getByRole('cell', { name: 'Broken · 404 not found' })
+  ).toBeVisible()
 
   // A feed that failed is subscribed anyway, showing its error.
   await page
