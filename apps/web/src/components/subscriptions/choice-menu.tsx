@@ -1,4 +1,4 @@
-import { ChevronDownIcon, type LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
 import {
@@ -20,7 +20,7 @@ export function ChoiceMenu<T extends string>({
   choices,
   onChange,
 }: {
-  /** Names the button for screen readers; the icon stands in for it. */
+  /** Names the button (with the current choice); only its icon shows. */
   label: string
   icon: LucideIcon
   value: T
@@ -32,12 +32,11 @@ export function ChoiceMenu<T extends string>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="outline" />}
+        render={<Button variant="outline" size="icon" />}
         aria-label={`${label}: ${picked?.label ?? ''}`}
+        title={`${label}: ${picked?.label ?? ''}`}
       >
-        <Icon className="text-muted-foreground" />
-        {picked?.label}
-        <ChevronDownIcon />
+        <Icon />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-auto">
         <DropdownMenuRadioGroup
