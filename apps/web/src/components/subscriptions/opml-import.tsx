@@ -305,9 +305,7 @@ function ResultTable({
 
   return (
     <table className="w-full max-w-2xl text-sm">
-      <caption className="pb-1 text-left font-semibold">
-        {title} ({rows.length})
-      </caption>
+      <caption className="pb-1 text-left font-semibold">{title}</caption>
       <tbody>
         {rows.map((row) => (
           <tr key={row.key} className="border">

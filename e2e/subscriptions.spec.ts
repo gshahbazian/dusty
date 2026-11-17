@@ -148,8 +148,8 @@ test('import from an OPML file', async ({ page }) => {
   await expect(page.getByText('Old FTP feed: not a web address')).toBeVisible()
   await page.getByRole('button', { name: 'Import 3 feeds' }).click()
 
-  await expect(page.getByRole('table', { name: 'Added (2)' })).toBeVisible()
-  await expect(page.getByRole('table', { name: 'Skipped (2)' })).toBeVisible()
+  await expect(page.getByRole('table', { name: 'Added' })).toBeVisible()
+  await expect(page.getByRole('table', { name: 'Skipped' })).toBeVisible()
   await expect(
     page.getByRole('cell', { name: 'Broken · 404 not found' })
   ).toBeVisible()
