@@ -2,6 +2,7 @@ import startHandler from '@tanstack/react-start/server-entry'
 
 import type { WebEnv } from '~/alchemy.run'
 import { authFromEnv, type AuthProvider } from '#/server/auth/index'
+import { withAssetCaching } from '#/server/asset-cache'
 import { createNonce, withSecurityHeaders } from '#/server/security-headers'
 
 let auth: AuthProvider | undefined
@@ -36,7 +37,9 @@ export default {
     ) {
       const asset = await env.ASSETS.fetch(request)
 
-      if (asset.status !== 404) return withSecurityHeaders(asset, csp)
+      if (asset.status !== 404) {
+        return withSecurityHeaders(withAssetCaching(request, asset), csp)
+      }
     }
 
     const response = await startHandler.fetch(request, {

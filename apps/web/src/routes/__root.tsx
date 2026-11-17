@@ -13,6 +13,8 @@ import { buttonVariants } from '#/components/ui/button'
 import { KeyboardShortcuts } from '#/components/keyboard/keyboard-shortcuts'
 import { requestSync } from '#/server/functions'
 import appCss from '#/styles.css?url'
+// The same file styles.css's Geist import uses (latin), so one download.
+import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -37,6 +39,15 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      // Fetched alongside the CSS, not after it, so the text draws in Geist
+      // from the start rather than swapping to it.
+      {
+        rel: 'preload',
+        href: geistUrl,
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      },
       // With credentials: Cloudflare Access is in front of everything, and
       // without its cookie the manifest request gets a login redirect.
       {
