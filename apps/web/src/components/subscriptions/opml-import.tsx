@@ -1,5 +1,6 @@
 import { cn } from 'cn'
 import { useMutation } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
@@ -25,10 +26,13 @@ type Step =
     }
   | {
       readonly kind: 'finished'
-      readonly added: number
-      readonly skipped: number
+      readonly added: readonly ImportResult[]
+      readonly skipped: readonly SkippedFeed[]
       readonly failed: readonly ImportResult[]
     }
+
+/** A feed the import left out, and why, for the finished list. */
+type SkippedFeed = { readonly name: string; readonly reason: string }
 
 const plural = (count: number, one: string, many: string) =>
   `${count} ${count === 1 ? one : many}`
@@ -70,7 +74,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
 
   const runImport = useMutation({
     mutationFn: async (entries: readonly OpmlEntry[]) => {
-      const { toImport, skipped: skippedBefore } = splitPreview(entries)
+      const { toImport } = splitPreview(entries)
       const results: ImportResult[] = []
 
       setDone(0)
@@ -91,8 +95,30 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
       }
 
       const failed = results.filter((result) => result.status === 'failed')
-      const added = results.filter((result) => result.status === 'added').length
-      const skipped = skippedBefore + results.length - added - failed.length
+      const added = results.filter((result) => result.status === 'added')
+
+      const skipped: SkippedFeed[] = [
+        ...entries.flatMap((entry) =>
+          entry.skip === null
+            ? []
+            : [
+                {
+                  name: entry.title ?? entry.url,
+                  reason: SKIP_REASONS[entry.skip],
+                },
+              ]
+        ),
+        ...results.flatMap((result) =>
+          result.status === 'skipped'
+            ? [
+                {
+                  name: result.title ?? result.url,
+                  reason: 'already subscribed',
+                },
+              ]
+            : []
+        ),
+      ]
 
       return { added, skipped, failed }
     },
@@ -149,6 +175,12 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
       <h2 id="import-heading" className="text-xs font-medium">
         Import from another reader
       </h2>
+      <p className="text-muted-foreground max-w-prose text-xs">
+        Most feed readers can export your subscriptions as an OPML file, often
+        under Settings as "Export" or "Export OPML". Choose that file here to
+        subscribe to the same feeds. Feeds you already follow are skipped, and
+        existing articles arrive already read.
+      </p>
       {/* A label styled as a button, so the hidden file input opens on click. */}
       <label
         className={cn(
@@ -201,27 +233,40 @@ function ImportStatus({
 
   if (step.kind === 'finished') {
     return (
-      <div>
+      <div className="flex flex-col gap-3">
         <p>
-          Import finished: {step.added} added, {step.skipped} skipped,{' '}
-          {step.failed.length} failed.
+          Import finished: {step.added.length} added, {step.skipped.length}{' '}
+          skipped, {step.failed.length} failed.{' '}
+          <Link
+            to="/settings"
+            search={{ tab: 'subscriptions' }}
+            className="font-medium underline underline-offset-2"
+          >
+            View subscriptions
+          </Link>
         </p>
-        {step.failed.length > 0 && (
-          <p className="text-muted-foreground mt-1">
-            Feeds that failed were added anyway; they show their error below
-            until a sync gets through.
-          </p>
-        )}
-        {step.failed.length > 0 && (
-          <ul className="text-muted-foreground mt-1 list-disc pl-5">
-            {step.failed.map((result) => (
-              <li key={result.url}>
-                {result.title ?? result.url}:{' '}
-                {result.status === 'failed' && result.reason}
-              </li>
-            ))}
-          </ul>
-        )}
+        <ResultList
+          title="Added"
+          items={step.added.map((result) => ({
+            key: result.url,
+            text: result.title ?? result.url,
+          }))}
+        />
+        <ResultList
+          title="Skipped"
+          items={step.skipped.map((feed, index) => ({
+            key: `${feed.name}-${index}`,
+            text: `${feed.name}: ${feed.reason}`,
+          }))}
+        />
+        <ResultList
+          title="Failed"
+          note="These were added anyway; they show their error on the Subscriptions tab until a sync gets through."
+          items={step.failed.map((result) => ({
+            key: result.url,
+            text: `${result.title ?? result.url}: ${result.status === 'failed' ? result.reason : ''}`,
+          }))}
+        />
       </div>
     )
   }
@@ -256,6 +301,35 @@ function ImportStatus({
           </ul>
         </details>
       )}
+    </div>
+  )
+}
+
+/** One group of the finished import's feeds; nothing when it is empty. */
+function ResultList({
+  title,
+  note,
+  items,
+}: {
+  title: string
+  note?: string
+  items: ReadonlyArray<{ readonly key: string; readonly text: string }>
+}) {
+  if (items.length === 0) return null
+
+  return (
+    <div className="flex flex-col gap-1">
+      <h3 className="font-medium">
+        {title} ({items.length})
+      </h3>
+      {note !== undefined && <p className="text-muted-foreground">{note}</p>}
+      <ul className="text-muted-foreground list-disc pl-5">
+        {items.map((item) => (
+          <li key={item.key} className="break-all">
+            {item.text}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
