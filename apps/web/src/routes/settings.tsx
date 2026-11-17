@@ -30,8 +30,8 @@ const SORTS: ReadonlyArray<{
   readonly value: SortOrder
   readonly label: string
 }> = [
-  { value: 'attention', label: 'Problems first' },
   { value: 'name', label: 'Name' },
+  { value: 'attention', label: 'Problems first' },
   { value: 'latest', label: 'Last article' },
 ]
 
@@ -87,7 +87,7 @@ function Settings() {
 
   const {
     tab = 'subscriptions',
-    sort = 'attention',
+    sort = 'name',
     attention = false,
   } = Route.useSearch()
 
