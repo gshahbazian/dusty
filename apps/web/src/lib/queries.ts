@@ -15,12 +15,16 @@ export const articleQuery = (id: number) =>
     staleTime: Infinity,
   })
 
-/** The empty article pane's photo: a new pick each time the pane empties. */
+/**
+ * The empty article pane's photo: a new pick each time the pane empties.
+ * Dropped as soon as no pane shows it (an article opened), but a refresh
+ * remounts the pane in the same render, so it keeps the photo it had.
+ */
 export const backdropQuery = () =>
   queryOptions({
     queryKey: ['backdrop'],
     queryFn: () => getBackdrop(),
-    staleTime: 0,
+    staleTime: Infinity,
     gcTime: 0,
   })
 
