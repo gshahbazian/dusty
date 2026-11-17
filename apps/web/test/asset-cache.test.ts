@@ -5,7 +5,7 @@ import { withAssetCaching } from '#/server/asset-cache'
 const cacheControl = (path: string, status = 200) =>
   withAssetCaching(
     new Request(`https://dusty.example.com${path}`),
-    new Response('body', {
+    new Response(status === 304 ? null : 'body', {
       status,
       headers: { 'Cache-Control': 'public, max-age=0, must-revalidate' },
     })
@@ -17,6 +17,12 @@ describe('asset caching', () => {
       'public, max-age=31536000, immutable'
     )
     expect(cacheControl('/assets/styles-Ce3vqsJN.css')).toBe(
+      'public, max-age=31536000, immutable'
+    )
+  })
+
+  test('so is a 304, which is what a browser already holding it gets', () => {
+    expect(cacheControl('/assets/styles-Ce3vqsJN.css', 304)).toBe(
       'public, max-age=31536000, immutable'
     )
   })

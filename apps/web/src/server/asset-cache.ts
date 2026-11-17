@@ -16,7 +16,9 @@ export const withAssetCaching = (
   request: Request,
   response: Response
 ): Response => {
-  if (!response.ok) return response
+  // A 304 too: a browser revalidating its copy takes the rules for it from
+  // the 304, and one saying max-age=0 would have it ask again every time.
+  if (!response.ok && response.status !== 304) return response
 
   if (!new URL(request.url).pathname.startsWith('/assets/')) return response
 
