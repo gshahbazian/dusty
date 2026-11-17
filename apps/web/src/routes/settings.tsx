@@ -118,7 +118,7 @@ function Settings() {
                 search={{ tab: item.value }}
                 aria-current={tab === item.value ? 'page' : undefined}
                 className={cn(
-                  'rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground',
+                  'px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground',
                   tab === item.value && 'bg-muted font-medium text-foreground'
                 )}
               >
