@@ -36,7 +36,9 @@ test('add, refuse, rename and remove feeds', async ({ page }) => {
   const rss = feedUrl('rss.xml')
 
   await page.goto('/settings')
-  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Settings sections' })
+  ).toBeVisible()
 
   // A feed URL: checked, titled, and its articles pulled straight away.
   await addFeed(page, rss)
@@ -92,7 +94,9 @@ test("a site's home page leads to its feed", async ({ page }) => {
   const advertised = `${FEEDS}/rss.xml`
 
   await page.goto('/settings')
-  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Settings sections' })
+  ).toBeVisible()
   const alreadyThere = (await row(page, advertised).count()) > 0
 
   await addFeed(page, `${FEEDS}/site.html?run=${run}`)
@@ -128,7 +132,7 @@ test('import from an OPML file', async ({ page }) => {
   <outline type="rss" text="Old FTP feed" xmlUrl="ftp://files.example.com/feed.xml"/>
 </body></opml>`
 
-  await page.goto('/settings')
+  await page.goto('/settings?tab=import')
   await page.getByLabel('Choose an OPML file').setInputFiles({
     name: 'subscriptions.opml',
     mimeType: 'text/xml',
@@ -150,7 +154,10 @@ test('import from an OPML file', async ({ page }) => {
   await expect(page.getByText('Broken: 404 not found')).toBeVisible()
 
   // A feed that failed is subscribed anyway, showing its error.
-
+  await page
+    .getByRole('navigation', { name: 'Settings sections' })
+    .getByRole('link', { name: 'Subscriptions' })
+    .click()
   await expect(row(page, broken)).toContainText('Broken')
   await expect(row(page, broken)).toContainText(
     'Last fetch failed: 404 not found'
@@ -170,7 +177,9 @@ test('junk in the URL falls back to the default view', async ({ page }) => {
   // The router spreads the validated search over the raw query, so this
   // catches a validator that drops a bad key instead of overriding it.
   await page.goto('/settings?sort=bogus&attention=maybe')
-  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Settings sections' })
+  ).toBeVisible()
   await expect(page.getByRole('combobox')).toHaveValue('attention')
   await expect(
     page.getByRole('checkbox', { name: 'Only feeds that need attention' })

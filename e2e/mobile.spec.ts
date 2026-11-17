@@ -217,7 +217,9 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
 
 test('settings controls are at least 44 px tall', async ({ page }) => {
   await page.goto('/settings')
-  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Settings sections' })
+  ).toBeVisible()
 
   // The checkbox is small; its label is what a thumb hits.
   const attention = page.locator('label', {

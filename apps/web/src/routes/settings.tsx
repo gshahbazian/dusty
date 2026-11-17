@@ -3,112 +3,109 @@ import {
   Link,
   useNavigate,
   useRouter,
-} from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+} from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
-import { cn } from "cn";
+import { cn } from 'cn'
 
-import { Checkbox } from "#/components/ui/checkbox";
-import { Label } from "#/components/ui/label";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "#/components/ui/native-select";
+import { Checkbox } from '#/components/ui/checkbox'
+import { Label } from '#/components/ui/label'
+import { NativeSelect, NativeSelectOption } from '#/components/ui/native-select'
 
-import { AccountSection } from "#/components/settings/account-section";
-import { AddFeedForm } from "#/components/subscriptions/add-feed-form";
+import { AccountSection } from '#/components/settings/account-section'
+import { AddFeedForm } from '#/components/subscriptions/add-feed-form'
 import {
   needsAttention,
   sortSubscriptions,
   type SortOrder,
-} from "#/components/subscriptions/health";
+} from '#/components/subscriptions/health'
 import {
   parseSubscriptionsSearch,
   type SettingsTab,
-} from "#/components/subscriptions/search";
-import { OpmlImport } from "#/components/subscriptions/opml-import";
-import { SubscriptionRow } from "#/components/subscriptions/subscription-row";
-import { getSession } from "#/server/functions";
-import { getSubscriptions } from "#/server/subscriptions";
+} from '#/components/subscriptions/search'
+import { OpmlImport } from '#/components/subscriptions/opml-import'
+import { SubscriptionRow } from '#/components/subscriptions/subscription-row'
+import { getSession } from '#/server/functions'
+import { getSubscriptions } from '#/server/subscriptions'
 
 const SORTS: ReadonlyArray<{
-  readonly value: SortOrder;
-  readonly label: string;
+  readonly value: SortOrder
+  readonly label: string
 }> = [
-  { value: "attention", label: "Problems first" },
-  { value: "name", label: "Name" },
-  { value: "unread", label: "Unread" },
-];
+  { value: 'attention', label: 'Problems first' },
+  { value: 'name', label: 'Name' },
+  { value: 'unread', label: 'Unread' },
+]
 
 const TABS: ReadonlyArray<{
-  readonly value: SettingsTab;
-  readonly label: string;
+  readonly value: SettingsTab
+  readonly label: string
 }> = [
-  { value: "subscriptions", label: "Subscriptions" },
-  { value: "import", label: "Import" },
-  { value: "account", label: "Account" },
-];
+  { value: 'subscriptions', label: 'Subscriptions' },
+  { value: 'import', label: 'Import' },
+  { value: 'account', label: 'Account' },
+]
 
 const isSortOrder = (value: string): value is SortOrder =>
-  SORTS.some((sort) => sort.value === value);
+  SORTS.some((sort) => sort.value === value)
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute('/settings')({
   validateSearch: parseSubscriptionsSearch,
   loader: async () => {
     const [list, session] = await Promise.all([
       getSubscriptions(),
       getSession(),
-    ]);
+    ])
 
-    return { ...list, session };
+    return { ...list, session }
   },
   component: Settings,
-});
+})
 
 /** Scroll a feed's row into view and flash it, for "already subscribed". */
 function useHighlight() {
-  const [highlighted, setHighlighted] = useState<number | null>(null);
+  const [highlighted, setHighlighted] = useState<number | null>(null)
 
   useEffect(() => {
-    if (highlighted === null) return;
+    if (highlighted === null) return
 
     document
       .getElementById(`feed-${highlighted}`)
-      ?.scrollIntoView({ block: "center", behavior: "smooth" });
+      ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
 
-    const clear = setTimeout(() => setHighlighted(null), 2500);
+    const clear = setTimeout(() => setHighlighted(null), 2500)
 
-    return () => clearTimeout(clear);
-  }, [highlighted]);
+    return () => clearTimeout(clear)
+  }, [highlighted])
 
-  return [highlighted, setHighlighted] as const;
+  return [highlighted, setHighlighted] as const
 }
 
 /** Settings: the subscriptions, with adding, importing and their health. */
 function Settings() {
-  const { subscriptions, now, session } = Route.useLoaderData();
-  const {
-    tab = "subscriptions",
-    sort = "attention",
-    attention = false,
-  } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-  const router = useRouter();
-  const [highlighted, setHighlighted] = useHighlight();
+  const { subscriptions, now, session } = Route.useLoaderData()
 
-  const reload = () => void router.invalidate();
-  const attentionCount = subscriptions.filter(needsAttention).length;
+  const {
+    tab = 'subscriptions',
+    sort = 'attention',
+    attention = false,
+  } = Route.useSearch()
+
+  const navigate = useNavigate({ from: Route.fullPath })
+  const router = useRouter()
+  const [highlighted, setHighlighted] = useHighlight()
+
+  const reload = () => void router.invalidate()
+  const attentionCount = subscriptions.filter(needsAttention).length
 
   const shown = sortSubscriptions(
     attention ? subscriptions.filter(needsAttention) : subscriptions,
-    sort,
-  );
+    sort
+  )
 
   return (
     <div className="h-full overflow-y-auto">
       <section className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6">
-        <h1 className="text-xl font-semibold">Settings</h1>
-
         <div className="flex flex-col gap-6 sm:flex-row sm:gap-10">
           <nav
             aria-label="Settings sections"
@@ -119,10 +116,10 @@ function Settings() {
                 key={item.value}
                 from={Route.fullPath}
                 search={{ tab: item.value }}
-                aria-current={tab === item.value ? "page" : undefined}
+                aria-current={tab === item.value ? 'page' : undefined}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground",
-                  tab === item.value && "bg-muted font-medium text-foreground",
+                  'rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground',
+                  tab === item.value && 'bg-muted font-medium text-foreground'
                 )}
               >
                 {item.label}
@@ -131,27 +128,27 @@ function Settings() {
           </nav>
 
           <div className="flex min-w-0 flex-1 flex-col gap-8">
-            {tab === "subscriptions" && (
+            {tab === 'subscriptions' && (
               <>
                 <AddFeedForm
                   onAdded={(feedId) => {
-                    reload();
-                    setHighlighted(feedId);
+                    reload()
+                    setHighlighted(feedId)
                   }}
                   onShowExisting={(feedId) => {
-                    void navigate({ search: { tab, sort, attention: false } });
-                    setHighlighted(feedId);
+                    void navigate({ search: { tab, sort, attention: false } })
+                    setHighlighted(feedId)
                   }}
                 />
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="font-medium">
                       {subscriptions.length === 1
-                        ? "1 feed"
+                        ? '1 feed'
                         : `${subscriptions.length} feeds`}
                       {attentionCount > 0 && (
                         <span className="text-muted-foreground">
-                          {" "}
+                          {' '}
                           · {attentionCount} need attention
                         </span>
                       )}
@@ -175,13 +172,13 @@ function Settings() {
                         <NativeSelect
                           value={sort}
                           onChange={(event) => {
-                            const sort = event.target.value;
+                            const sort = event.target.value
 
-                            if (!isSortOrder(sort)) return;
+                            if (!isSortOrder(sort)) return
 
                             void navigate({
                               search: { tab, sort, attention },
-                            });
+                            })
                           }}
                         >
                           {SORTS.map((sort) => (
@@ -223,8 +220,8 @@ function Settings() {
                 </div>
               </>
             )}
-            {tab === "import" && <OpmlImport onImported={reload} />}
-            {tab === "account" && (
+            {tab === 'import' && <OpmlImport onImported={reload} />}
+            {tab === 'account' && (
               <AccountSection
                 email={session.email}
                 logoutUrl={session.logoutUrl}
@@ -234,5 +231,5 @@ function Settings() {
         </div>
       </section>
     </div>
-  );
+  )
 }
