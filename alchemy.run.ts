@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 
 import * as Cloudflare from '@alchemy.run/cloudflare'
 import * as Alchemy from 'alchemy'
+import * as Output from 'alchemy/Output'
 import { AlchemyContext } from 'alchemy/AlchemyContext'
 import * as Config from 'effect/Config'
 import * as Effect from 'effect/Effect'
@@ -11,6 +12,7 @@ import * as Redacted from 'effect/Redacted'
 import { SETTING_DEFAULTS } from '~/apps/sync/src/config'
 import { Sync } from '~/apps/sync/src/contract'
 import SyncLive, { COMPATIBILITY_DATE } from '~/apps/sync/src/worker'
+import { PUBLIC_PATHS } from '~/apps/web/src/server/public-paths'
 import { Database } from '~/infra/database'
 import { DEV_WEB_PORT } from '~/infra/dev'
 
@@ -35,6 +37,25 @@ const deployedAccess = Effect.fn(function* (dev: boolean, ownerEmail: string) {
 
   return { teamDomain, application }
 })
+
+/**
+ * The few addresses that skip login (`PUBLIC_PATHS`: the home screen icon,
+ * for Safari's Favorites): a second Access application covering just those
+ * paths on the web Worker's hostname, letting everyone through.
+ */
+const publicPaths = (url: Output.Output<string>) =>
+  Cloudflare.Access.Application('PublicPaths', {
+    type: 'self_hosted',
+    destinations: url.pipe(
+      Output.map((webUrl) =>
+        PUBLIC_PATHS.map((path) => ({
+          type: 'public' as const,
+          uri: `${new URL(webUrl).host}${path}`,
+        }))
+      )
+    ),
+    policies: [{ decision: 'bypass', include: ['everyone'] }],
+  })
 
 const healthSetting = (
   name: 'FEED_FAILING_AFTER_HOURS' | 'FEED_STALE_AFTER_DAYS'
@@ -132,8 +153,11 @@ export default Alchemy.Stack(
     state,
   },
   Effect.gen(function* () {
+    const { dev } = yield* AlchemyContext
     const database = yield* Database
     const web = yield* Web
+
+    if (!dev) yield* publicPaths(web.url.as<string>())
 
     return {
       url: web.url.as<string>(),
