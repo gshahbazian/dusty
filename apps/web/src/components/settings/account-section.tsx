@@ -2,7 +2,7 @@ import { cn } from 'cn'
 
 import { buttonVariants } from '#/components/ui/button'
 
-/** The bottom of Settings: who is signed in, and logging out. */
+/** Settings' Account tab: who is signed in, and logging out. */
 export function AccountSection({
   email,
   logoutUrl,
@@ -14,7 +14,7 @@ export function AccountSection({
   return (
     <section
       aria-labelledby="account-heading"
-      className="flex flex-col items-start gap-2 border-t pt-6"
+      className="flex flex-col items-start gap-2"
     >
       <h2 id="account-heading" className="font-medium">
         Account
