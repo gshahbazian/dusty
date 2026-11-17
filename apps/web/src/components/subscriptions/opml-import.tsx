@@ -1,6 +1,5 @@
 import { cn } from 'cn'
 import { useMutation } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
 import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
@@ -252,13 +251,6 @@ function ImportStatus({
             detail: result.status === 'failed' ? result.reason : null,
           }))}
         />
-        <Link
-          to="/settings"
-          search={{ tab: 'subscriptions' }}
-          className="w-fit underline underline-offset-2"
-        >
-          View subscriptions
-        </Link>
       </div>
     )
   }
@@ -312,17 +304,13 @@ function ResultTable({
   if (rows.length === 0) return null
 
   return (
-    <table className="w-full max-w-2xl border text-sm">
-      <thead>
-        <tr>
-          <th scope="col" className="bg-muted px-3 py-2 text-left font-medium">
-            {title} ({rows.length})
-          </th>
-        </tr>
-      </thead>
+    <table className="w-full max-w-2xl text-sm">
+      <caption className="pb-1 text-left font-semibold">
+        {title} ({rows.length})
+      </caption>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.key} className="border-t">
+          <tr key={row.key} className="border">
             <td className="px-3 py-2 break-all">
               {row.name}
               {row.detail !== null && (
