@@ -14,17 +14,27 @@ describe('parseSubscriptionsSearch', () => {
       parseSubscriptionsSearch({ sort: 'bogus', attention: true })
     ).toEqual({ sort: undefined, attention: true })
     expect(
-      parseSubscriptionsSearch({ sort: 'unread', attention: 'maybe' })
-    ).toEqual({ sort: 'unread', attention: undefined })
+      parseSubscriptionsSearch({ sort: 'name', attention: 'maybe' })
+    ).toEqual({ sort: 'name', attention: undefined })
   })
 
   // The router spreads this over the raw query, so a key that is left out
   // would let the raw junk through.
-  test('always returns both keys, so junk in the URL is overridden', () => {
-    const search = parseSubscriptionsSearch({ sort: 'bogus', attention: 'yes' })
+  test('always returns every key, so junk in the URL is overridden', () => {
+    const search = parseSubscriptionsSearch({
+      tab: 'bogus',
+      sort: 'bogus',
+      attention: 'yes',
+    })
 
-    expect(Object.keys(search).toSorted()).toEqual(['attention', 'sort'])
-    expect({ sort: 'bogus', attention: 'yes', ...search }).toEqual({
+    expect(Object.keys(search).toSorted()).toEqual(['attention', 'sort', 'tab'])
+    expect({
+      tab: 'bogus',
+      sort: 'bogus',
+      attention: 'yes',
+      ...search,
+    }).toEqual({
+      tab: undefined,
       sort: undefined,
       attention: undefined,
     })

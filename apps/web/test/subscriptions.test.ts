@@ -6,7 +6,6 @@ import {
   failureNote,
   healthLabel,
   needsAttention,
-  removeConfirmation,
   sortSubscriptions,
 } from '#/components/subscriptions/health'
 import { duration, relativeTime } from '#/lib/time'
@@ -87,10 +86,20 @@ describe('failure note', () => {
 
 describe('sorting and filtering', () => {
   const feeds = [
-    subscription({ id: 1, title: 'beta', unread: 5 }),
-    subscription({ id: 2, title: 'Alpha', unread: 1, health: 'stale' }),
-    subscription({ id: 3, title: 'gamma', unread: 9, health: 'failing' }),
-    subscription({ id: 4, title: 'delta', unread: 0 }),
+    subscription({ id: 1, title: 'beta', lastPublishedAt: NOW - DAY }),
+    subscription({
+      id: 2,
+      title: 'Alpha',
+      health: 'stale',
+      lastPublishedAt: null,
+    }),
+    subscription({
+      id: 3,
+      title: 'gamma',
+      health: 'failing',
+      lastPublishedAt: null,
+    }),
+    subscription({ id: 4, title: 'delta', lastPublishedAt: NOW - HOUR }),
   ]
 
   const ids = (list: readonly Subscription[]) => list.map((feed) => feed.id)
@@ -103,8 +112,8 @@ describe('sorting and filtering', () => {
     expect(ids(sortSubscriptions(feeds, 'name'))).toEqual([2, 1, 4, 3])
   })
 
-  test('by unread, most first', () => {
-    expect(ids(sortSubscriptions(feeds, 'unread'))).toEqual([3, 1, 2, 4])
+  test('by last article, newest first, feeds with none last by name', () => {
+    expect(ids(sortSubscriptions(feeds, 'latest'))).toEqual([4, 1, 2, 3])
   })
 
   test('needs attention means failing or stale', () => {
@@ -130,15 +139,5 @@ describe('times', () => {
     [3 * DAY + HOUR, '3 days'],
   ])('a duration of %i reads %s', (ms, text) => {
     expect(duration(ms)).toBe(text)
-  })
-})
-
-describe('remove confirmation', () => {
-  test.each([
-    [0, 'Remove A?'],
-    [1, 'Remove A and its 1 unread article?'],
-    [12, 'Remove A and its 12 unread articles?'],
-  ])('%i unread reads %j', (unread, text) => {
-    expect(removeConfirmation(subscription({ unread }))).toBe(text)
   })
 })

@@ -11,13 +11,9 @@ import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
 
 import { RelativeTime } from '#/components/relative-time'
-import {
-  failureNote,
-  healthLabel,
-  removeConfirmation,
-} from '#/components/subscriptions/health'
+import { failureNote, healthLabel } from '#/components/subscriptions/health'
 
-/** One subscription: its name, unread count, health and actions. */
+/** One subscription: its name, health and actions. */
 export function SubscriptionRow({
   subscription,
   now,
@@ -74,9 +70,6 @@ export function SubscriptionRow({
         >
           {label.text}
         </Badge>
-        <span className="text-muted-foreground text-xs">
-          {subscription.unread} unread
-        </span>
       </div>
 
       {!untitled && (
@@ -155,7 +148,7 @@ export function SubscriptionRow({
               disabled={remove.isPending}
               onClick={() => remove.mutate()}
             >
-              {removeConfirmation(subscription)}
+              Remove {subscription.title}?
             </Button>
             <Button
               variant="ghost"

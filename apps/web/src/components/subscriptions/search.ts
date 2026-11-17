@@ -13,7 +13,7 @@ export type SubscriptionsSearch = {
 }
 
 const decodeSort = Schema.decodeUnknownOption(
-  Schema.Literals(['attention', 'name', 'unread'])
+  Schema.Literals(['attention', 'name', 'latest'])
 )
 
 const decodeTab = Schema.decodeUnknownOption(

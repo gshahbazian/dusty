@@ -45,7 +45,6 @@ test('add, refuse, rename and remove feeds', async ({ page }) => {
   await expect(
     page.getByText('Added Example RSS with 3 articles.')
   ).toBeVisible()
-  await expect(row(page, rss)).toContainText('3 unread')
   await expect(row(page, rss)).toContainText(/Last synced:\s*just now/)
 
   // The same feed again is refused, with a pointer to the one already there.
@@ -166,10 +165,8 @@ test('import from an OPML file', async ({ page }) => {
     'Last fetch failed: 404 not found'
   )
 
-  // Imported feeds' articles arrive read; the old reader's name is kept.
+  // The old reader's name is kept.
   await expect(row(page, atom)).toContainText('Atom from my old reader')
-  await expect(row(page, atom)).toContainText('0 unread')
-  await expect(row(page, json)).toContainText('0 unread')
 
   await remove(page, atom)
   await remove(page, json)

@@ -32,7 +32,7 @@ const SORTS: ReadonlyArray<{
 }> = [
   { value: 'attention', label: 'Problems first' },
   { value: 'name', label: 'Name' },
-  { value: 'unread', label: 'Unread' },
+  { value: 'latest', label: 'Last article' },
 ]
 
 const TABS: ReadonlyArray<{
