@@ -12,8 +12,11 @@ export function AccountSection({
   logoutUrl: string
 }) {
   return (
-    <section className="flex flex-col items-start gap-2">
-      <p className="text-muted-foreground text-xs">Signed in as {email}</p>
+    <section className="flex flex-col items-start gap-4">
+      <dl className="flex flex-col gap-1 text-sm">
+        <dt className="font-semibold">Email</dt>
+        <dd className="text-muted-foreground">{email}</dd>
+      </dl>
       <a
         href={logoutUrl}
         className={cn(buttonVariants({ variant: 'outline' }), 'w-fit')}
