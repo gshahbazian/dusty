@@ -458,6 +458,113 @@ describe('article content', () => {
   })
 })
 
+const prunedRows = (feedId: number) =>
+  db
+    .select()
+    .from(schema.prunedItems)
+    .where(eq(schema.prunedItems.feedId, feedId))
+
+describe('updates to pruned articles', () => {
+  /** A feed showing updates, whose article `a` (100 characters) was read and pruned. */
+  const prunedFeed = async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+    await prune(T0 + 15 * DAY)
+
+    return feedId
+  }
+
+  test('pruning keeps the text length and first-seen time', async () => {
+    const feedId = await prunedFeed()
+
+    expect(await prunedRows(feedId)).toMatchObject([
+      { itemKey: 'a', textLength: 100, firstSeenAt: T0 },
+    ])
+  })
+
+  test('an update brings it back as unread, with its content and first-seen time', async () => {
+    const feedId = await prunedFeed()
+    const now = T0 + 20 * DAY
+
+    expect(await changed(feedId, [grown('a', 150)], now)).toEqual({
+      newItems: 0,
+      editedItems: 1,
+      updatedItems: 1,
+    })
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({
+      itemKey: 'a',
+      readAt: null,
+      firstSeenAt: T0,
+      surfacedAt: now,
+      textLength: 150,
+    })
+    expect(await contentOf(feedId)).toEqual(new Map([['a', '<p>a</p>']]))
+    expect(await prunedKeys(feedId)).toEqual([])
+  })
+
+  test('a smaller edit leaves it gone, and the next update is measured from it', async () => {
+    const feedId = await prunedFeed()
+
+    expect(
+      await changed(feedId, [grown('a', 115)], T0 + 20 * DAY)
+    ).toMatchObject({ updatedItems: 0 })
+    expect(await articlesOf(feedId)).toHaveLength(0)
+    expect(await prunedRows(feedId)).toMatchObject([{ textLength: 115 }])
+
+    // 115 to 130 is too small, though 30 more than when pruned.
+    await changed(feedId, [grown('a', 130)], T0 + 21 * DAY)
+
+    expect(await articlesOf(feedId)).toHaveLength(0)
+  })
+
+  test('only in feeds with Show updates on', async () => {
+    const feedId = await prunedFeed()
+
+    await db.update(schema.feeds).set({ showUpdates: false })
+    await changed(feedId, [grown('a', 1000)], T0 + 20 * DAY)
+
+    expect(await articlesOf(feedId)).toHaveLength(0)
+  })
+
+  test('a key pruned before lengths were kept learns its length first', async () => {
+    const feedId = await prunedFeed()
+
+    await db
+      .update(schema.prunedItems)
+      .set({ textLength: null, firstSeenAt: null })
+    await changed(feedId, [grown('a', 1000)], T0 + 20 * DAY)
+
+    expect(await articlesOf(feedId)).toHaveLength(0)
+    expect(await prunedRows(feedId)).toMatchObject([{ textLength: 1000 }])
+
+    await changed(feedId, [grown('a', 1100)], T0 + 21 * DAY)
+
+    // It was first seen before it was pruned, so it counts as updated.
+    expect(await articlesOf(feedId)).toMatchObject([
+      { readAt: null, firstSeenAt: T0 + 15 * DAY, surfacedAt: T0 + 21 * DAY },
+    ])
+  })
+
+  test('other pruned keys in the feed are left alone', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100), grown('b', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+    await prune(T0 + 15 * DAY)
+    await changed(feedId, [grown('a', 200), grown('b', 100)], T0 + 20 * DAY)
+
+    expect((await articlesOf(feedId)).map((row) => row.itemKey)).toEqual(['a'])
+    expect(await prunedKeys(feedId)).toEqual(['b'])
+  })
+})
+
 describe('recordFeedFailure', () => {
   test('counts failures in a row and keeps the first failure time', async () => {
     const feedId = await addFeed('https://a.test/feed')

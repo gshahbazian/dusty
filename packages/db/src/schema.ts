@@ -166,13 +166,12 @@ export const prunedItems = sqliteTable(
     /** Last successful fetch whose feed still listed this item. */
     lastSeenAt: integer('last_seen_at').notNull(),
     /**
-     * The article's `contentHash`, `textLength` and `firstSeenAt`, kept
-     * when pruned (and the first two kept current by later edits), so an
-     * update can be told apart without keeping the HTML. Null for keys
-     * pruned before they were kept: those never come back.
+     * The article's text length: kept when pruned, then set by every fetch
+     * that lists the item, so an update can be told apart without keeping
+     * the HTML. Null until either has happened.
      */
-    contentHash: text('content_hash'),
     textLength: integer('text_length'),
+    /** The article's `firstSeenAt`, kept when pruned. */
     firstSeenAt: integer('first_seen_at'),
   },
   (table) => [

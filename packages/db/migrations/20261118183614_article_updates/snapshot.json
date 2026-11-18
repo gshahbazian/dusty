@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "e3b88711-03aa-4dc4-8327-9ab88eb0a928",
+  "id": "75d108c0-cc2c-4f7a-b187-f16b10653353",
   "prevIds": [
     "97949b2b-c547-46e7-a35d-5fcc22a0ca53"
   ],
@@ -465,16 +465,6 @@
       "name": "last_seen_at",
       "type": "integer",
       "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "entityType": "columns"
-    },
-    {
-      "table": "pruned_items",
-      "name": "content_hash",
-      "type": "text",
-      "notNull": false,
       "autoincrement": false,
       "default": null,
       "generated": null,

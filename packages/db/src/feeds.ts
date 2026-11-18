@@ -1,4 +1,4 @@
-import { asc, sql } from 'drizzle-orm'
+import { asc, sql, type SQL } from 'drizzle-orm'
 
 import type { Db } from '#/client'
 import { feeds } from '#/schema'
@@ -123,10 +123,14 @@ const jsonChunks = <T>(values: readonly T[]): [string, ...string[]] => {
  *   cleared only by an update (an edit that grows the text by at least
  *   `updateMinGrowthChars`, in a feed with `show_updates` on), which also
  *   moves `surfaced_at` to now. Keys in `pruned_items` are skipped, so
- *   pruned articles stay gone.
+ *   pruned articles stay gone, unless the same rule finds an update
+ *   against the pruned key's stored length: then the article is stored
+ *   again, unread, with its old `first_seen_at`, and its key is no longer
+ *   pruned.
  * - Write the HTML of every article inserted or changed now into
  *   `article_content`, and remove it for changed items that lost theirs.
- * - Mark pruned keys still in the feed as seen now.
+ * - Mark pruned keys still in the feed as seen now, with their current
+ *   text length.
  * - Record a successful fetch on the feed.
  *
  * Returns how many items were new, how many existing ones were edited (their
@@ -163,13 +167,23 @@ export const recordFeedChanged = async (
     return [item.itemKey]
   })
 
-  // An update: the feed shows updates and the text grew enough. A null
-  // stored length (counted before lengths were kept) makes this null, so
-  // it is never an update.
-  const isUpdate = sql`(
+  // An update: the feed shows updates and the text grew enough since it
+  // was last stored. A null stored length (not yet known) makes this null,
+  // so it is never an update.
+  const isUpdate = (newLength: SQL, storedLength: SQL) => sql`(
     (select show_updates from feeds where id = ${feedId}) = 1
-    and excluded.text_length - articles.text_length >= ${change.updateMinGrowthChars}
+    and ${newLength} - ${storedLength} >= ${change.updateMinGrowthChars}
   )`
+
+  const storedUpdated = isUpdate(
+    sql`excluded.text_length`,
+    sql`articles.text_length`
+  )
+
+  const prunedUpdated = isUpdate(
+    sql`json_extract(item.value, '$.textLength')`,
+    sql`pruned.text_length`
+  )
 
   const upsert = (chunk: string) =>
     db.all<{ firstSeenAt: number; surfacedAt: number }>(sql`
@@ -186,18 +200,19 @@ export const recordFeedChanged = async (
         json_extract(item.value, '$.author'),
         json_extract(item.value, '$.excerpt'),
         coalesce(json_extract(item.value, '$.publishedAt'), ${now}),
-        ${now},
+        -- A pruned article coming back keeps when it was first seen (the
+        -- prune time for keys pruned before that was kept).
+        coalesce(pruned.first_seen_at, pruned.pruned_at, ${now}),
         ${now},
         ${now},
         json_extract(item.value, '$.contentHash'),
         json_extract(item.value, '$.textLength'),
         ${change.newArticlesRead === true ? now : null}
       from json_each(${chunk}) as item
-      where not exists (
-        select 1 from pruned_items
-        where pruned_items.feed_id = ${feedId}
-          and pruned_items.item_key = json_extract(item.value, '$.itemKey')
-      )
+      left join pruned_items as pruned
+        on pruned.feed_id = ${feedId}
+        and pruned.item_key = json_extract(item.value, '$.itemKey')
+      where pruned.item_key is null or ${prunedUpdated}
       on conflict (feed_id, item_key) do update set
         url = excluded.url,
         title = excluded.title,
@@ -206,10 +221,10 @@ export const recordFeedChanged = async (
         updated_at = excluded.updated_at,
         content_hash = excluded.content_hash,
         text_length = excluded.text_length,
-        read_at = case when ${isUpdate} then null else articles.read_at end,
-        read_action_id = case when ${isUpdate}
+        read_at = case when ${storedUpdated} then null else articles.read_at end,
+        read_action_id = case when ${storedUpdated}
           then null else articles.read_action_id end,
-        surfaced_at = case when ${isUpdate}
+        surfaced_at = case when ${storedUpdated}
           then excluded.surfaced_at else articles.surfaced_at end
       where articles.content_hash != excluded.content_hash
       returning first_seen_at as firstSeenAt, surfaced_at as surfacedAt
@@ -250,13 +265,50 @@ export const recordFeedChanged = async (
     `)
   )
 
-  const seenPruned = jsonChunks(items.map((item) => item.itemKey)).map(
-    (chunk) =>
-      db.run(sql`
-        update pruned_items set last_seen_at = ${now}
-        where feed_id = ${feedId}
-          and item_key in (select value from json_each(${chunk}))
-      `)
+  // A pruned key that an update brought back is an article again.
+  const revivedUnpruned = db.run(sql`
+    delete from pruned_items
+    where feed_id = ${feedId}
+      and exists (
+        select 1 from articles
+        where articles.feed_id = ${feedId}
+          and articles.item_key = pruned_items.item_key
+      )
+  `)
+
+  // After the upserts, which compare against the stored length: from now
+  // on, the next update is measured from this version.
+  //
+  // Written as an upsert that only ever updates (`exists` lets through
+  // keys already pruned), so SQLite loops over the items and looks each
+  // key up. As `update ... from json_each`, it scanned every item for each
+  // of the feed's pruned keys.
+  const seenPruned = jsonChunks(
+    items.map((item) => ({
+      itemKey: item.itemKey,
+      textLength: item.textLength,
+    }))
+  ).map((chunk) =>
+    db.run(sql`
+      insert into pruned_items (
+        feed_id, item_key, pruned_at, last_seen_at, text_length
+      )
+      select
+        ${feedId},
+        json_extract(item.value, '$.itemKey'),
+        ${now},
+        ${now},
+        json_extract(item.value, '$.textLength')
+      from json_each(${chunk}) as item
+      where exists (
+        select 1 from pruned_items as pruned
+        where pruned.feed_id = ${feedId}
+          and pruned.item_key = json_extract(item.value, '$.itemKey')
+      )
+      on conflict (feed_id, item_key) do update set
+        last_seen_at = excluded.last_seen_at,
+        text_length = excluded.text_length
+    `)
   )
 
   const feedUpdate = db.run(sql`
@@ -291,6 +343,7 @@ export const recordFeedChanged = async (
     ...upserts,
     ...contentWrites,
     ...contentRemovals,
+    revivedUnpruned,
     ...seenPruned,
     feedUpdate,
   ])

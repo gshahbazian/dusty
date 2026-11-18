@@ -20,7 +20,8 @@ export interface PruneResult {
 
 /**
  * Delete read articles past retention, remembering their keys so sync never
- * brings them back, then forget keys whose items have left their feed.
+ * brings them back (unless they are updated: see `recordFeedChanged`), then
+ * forget keys whose items have left their feed.
  *
  * A key is only forgotten if a successful fetch has happened since its item
  * was last seen. A feed that has been failing has not shown the item is gone,
@@ -36,8 +37,11 @@ export const pruneArticles = async (
 
   const [, deleted, dropped] = await db.batch([
     db.run(sql`
-      insert into pruned_items (feed_id, item_key, pruned_at, last_seen_at)
-      select feed_id, item_key, ${now}, ${now} from articles
+      insert into pruned_items (
+        feed_id, item_key, pruned_at, last_seen_at, text_length, first_seen_at
+      )
+      select feed_id, item_key, ${now}, ${now}, text_length, first_seen_at
+      from articles
       where read_at is not null and read_at <= ${readCutoff}
       on conflict do nothing
     `),
