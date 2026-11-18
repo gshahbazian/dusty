@@ -268,10 +268,8 @@ export const toPlainText = (html: string): string => {
 
 const EXCERPT_LENGTH = 280
 
-/** A short plain-text summary for list rows. */
-export const excerptOf = (html: string): string | null => {
-  const text = toPlainText(html)
-
+/** A short summary for list rows, from an article's plain text. */
+export const excerptOf = (text: string): string | null => {
   if (text === '') return null
 
   if (text.length <= EXCERPT_LENGTH) return text

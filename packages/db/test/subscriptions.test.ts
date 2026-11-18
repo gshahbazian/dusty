@@ -52,6 +52,7 @@ const item = (key: string, publishedAt = NOW - DAY): StoredItem => ({
   excerpt: key,
   publishedAt,
   contentHash: `hash-${key}`,
+  textLength: key.length,
 })
 
 const store = (
@@ -67,6 +68,7 @@ const store = (
     lastModified: null,
     httpStatus: 200,
     now: options.now ?? NOW,
+    updateMinGrowthChars: 20,
     newArticlesRead: options.newArticlesRead,
   })
 

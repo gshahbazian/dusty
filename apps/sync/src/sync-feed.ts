@@ -128,6 +128,7 @@ const fetchAndStore = Effect.fnUntraced(function* (
       lastModified: fetched.lastModified,
       httpStatus: fetched.httpStatus,
       now,
+      updateMinGrowthChars: settings.updateMinGrowthChars,
     })
   ).pipe(
     Effect.withSpan('feed.store', {

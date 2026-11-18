@@ -28,6 +28,7 @@ export {
   recordFeedFailure,
   recordFeedNotModified,
   type FeedChanged,
+  type FeedChangedResult,
   type FeedFailure,
   type FeedToSync,
   type FetchErrorType,

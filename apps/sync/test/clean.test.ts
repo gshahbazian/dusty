@@ -150,13 +150,13 @@ describe('plain text', () => {
 
   test('excerpts are cut on a word boundary', () => {
     const long = `<p>${'word '.repeat(100)}</p>`
-    const excerpt = excerptOf(long)
+    const excerpt = excerptOf(toPlainText(long))
 
     expect(excerpt?.length).toBeLessThanOrEqual(281)
     expect(excerpt?.endsWith('word…')).toBe(true)
   })
 
   test('empty content has no excerpt', () => {
-    expect(excerptOf('<p> </p>')).toBeNull()
+    expect(excerptOf(toPlainText('<p> </p>'))).toBeNull()
   })
 })

@@ -54,6 +54,8 @@ const toStoredItem = async (
     `hash:${await sha256(fallbackKeyParts(title, item.published, cleaned))}`
 
   const contentHash = await sha256([item.link, title, item.author, cleaned])
+  // From the full content, so an article too big to store still has them.
+  const text = cleaned === null ? '' : toPlainText(cleaned)
 
   return {
     itemKey,
@@ -61,10 +63,10 @@ const toStoredItem = async (
     title,
     author: item.author,
     contentHtml,
-    // From the full content, so an article too big to store still has one.
-    excerpt: cleaned === null ? null : excerptOf(cleaned),
+    excerpt: excerptOf(text),
     publishedAt,
     contentHash,
+    textLength: text.length,
   }
 }
 

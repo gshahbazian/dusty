@@ -23,6 +23,8 @@ export interface StoredItem {
   /** From the feed; null when it has none (or a bad one). */
   readonly publishedAt: number | null
   readonly contentHash: string
+  /** Characters of the content's plain text, whitespace collapsed (0 for none). */
+  readonly textLength: number
 }
 
 export interface FeedToSync {
@@ -60,6 +62,21 @@ export interface FeedChanged {
    * feed does not flood the unread list with its back catalogue.
    */
   readonly newArticlesRead?: boolean
+  /**
+   * In a feed with `show_updates` on, an edit that grows an article's text
+   * by at least this many characters is an update: the article comes back
+   * as unread (`UPDATE_MIN_GROWTH_CHARS`).
+   */
+  readonly updateMinGrowthChars: number
+}
+
+export interface FeedChangedResult {
+  /** Items stored for the first time. */
+  readonly newItems: number
+  /** Items already stored whose content hash changed. */
+  readonly editedItems: number
+  /** Edits that were updates: those articles are unread again. */
+  readonly updatedItems: number
 }
 
 /**
@@ -101,21 +118,25 @@ const jsonChunks = <T>(values: readonly T[]): [string, ...string[]] => {
  * Store a feed that returned new content (a 200), in one atomic batch:
  *
  * - Upsert its items' metadata. New ones are inserted unread; existing ones
- *   are updated only if they changed. `read_at`, `read_action_id`,
- *   `first_seen_at` and `published_at` are never touched after insert.
- *   Keys in `pruned_items` are skipped, so pruned articles stay gone.
+ *   are updated only if they changed. `first_seen_at` and `published_at`
+ *   are never touched after insert. `read_at` and `read_action_id` are
+ *   cleared only by an update (an edit that grows the text by at least
+ *   `updateMinGrowthChars`, in a feed with `show_updates` on), which also
+ *   moves `surfaced_at` to now. Keys in `pruned_items` are skipped, so
+ *   pruned articles stay gone.
  * - Write the HTML of every article inserted or changed now into
  *   `article_content`, and remove it for changed items that lost theirs.
  * - Mark pruned keys still in the feed as seen now.
  * - Record a successful fetch on the feed.
  *
- * Returns how many items were new.
+ * Returns how many items were new, how many existing ones were edited (their
+ * hash changed) and how many of those edits were updates.
  */
 export const recordFeedChanged = async (
   db: Db,
   feedId: number,
   change: FeedChanged
-): Promise<{ readonly newItems: number }> => {
+): Promise<FeedChangedResult> => {
   const { items, now } = change
   const newestDated = newestDate(items)
 
@@ -127,6 +148,7 @@ export const recordFeedChanged = async (
     excerpt: item.excerpt,
     publishedAt: item.publishedAt,
     contentHash: item.contentHash,
+    textLength: item.textLength,
   }))
 
   const contents = items.flatMap((item) => {
@@ -141,11 +163,20 @@ export const recordFeedChanged = async (
     return [item.itemKey]
   })
 
+  // An update: the feed shows updates and the text grew enough. A null
+  // stored length (counted before lengths were kept) makes this null, so
+  // it is never an update.
+  const isUpdate = sql`(
+    (select show_updates from feeds where id = ${feedId}) = 1
+    and excluded.text_length - articles.text_length >= ${change.updateMinGrowthChars}
+  )`
+
   const upsert = (chunk: string) =>
-    db.all<{ itemKey: string; firstSeenAt: number }>(sql`
+    db.all<{ firstSeenAt: number; surfacedAt: number }>(sql`
       insert into articles (
         feed_id, item_key, url, title, author, excerpt,
-        published_at, first_seen_at, updated_at, content_hash, read_at
+        published_at, first_seen_at, surfaced_at, updated_at, content_hash,
+        text_length, read_at
       )
       select
         ${feedId},
@@ -157,7 +188,9 @@ export const recordFeedChanged = async (
         coalesce(json_extract(item.value, '$.publishedAt'), ${now}),
         ${now},
         ${now},
+        ${now},
         json_extract(item.value, '$.contentHash'),
+        json_extract(item.value, '$.textLength'),
         ${change.newArticlesRead === true ? now : null}
       from json_each(${chunk}) as item
       where not exists (
@@ -171,9 +204,15 @@ export const recordFeedChanged = async (
         author = excluded.author,
         excerpt = excluded.excerpt,
         updated_at = excluded.updated_at,
-        content_hash = excluded.content_hash
+        content_hash = excluded.content_hash,
+        text_length = excluded.text_length,
+        read_at = case when ${isUpdate} then null else articles.read_at end,
+        read_action_id = case when ${isUpdate}
+          then null else articles.read_action_id end,
+        surfaced_at = case when ${isUpdate}
+          then excluded.surfaced_at else articles.surfaced_at end
       where articles.content_hash != excluded.content_hash
-      returning item_key as itemKey, first_seen_at as firstSeenAt
+      returning first_seen_at as firstSeenAt, surfaced_at as surfacedAt
     `)
 
   const [firstChunk, ...moreChunks] = jsonChunks(metadata)
@@ -260,9 +299,13 @@ export const recordFeedChanged = async (
     .slice(0, upserts.length)
     .flatMap((rows) => (Array.isArray(rows) ? rows : []))
 
-  const newItems = inserted.filter((row) => row.firstSeenAt === now).length
+  const existing = inserted.filter((row) => row.firstSeenAt !== now)
 
-  return { newItems }
+  return {
+    newItems: inserted.length - existing.length,
+    editedItems: existing.length,
+    updatedItems: existing.filter((row) => row.surfacedAt === now).length,
+  }
 }
 
 /**

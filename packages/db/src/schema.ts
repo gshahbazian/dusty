@@ -59,6 +59,14 @@ export const feeds = sqliteTable(
     consecutiveFailures: integer('consecutive_failures').notNull().default(0),
     /** The latest error in plain words, e.g. "404 not found". */
     lastError: text('last_error'),
+    /**
+     * The owner's choice: an article of this feed whose text grows by at
+     * least `UPDATE_MIN_GROWTH_CHARS` comes back as unread (see
+     * `docs/008-article-updates-design.md`).
+     */
+    showUpdates: integer('show_updates', { mode: 'boolean' })
+      .notNull()
+      .default(false),
   },
   (table) => [
     uniqueIndex('feeds_url_unique').on(table.url),
@@ -68,8 +76,10 @@ export const feeds = sqliteTable(
 
 /**
  * One row per feed item: metadata only (the HTML is in `articleContent`).
- * Sync inserts and updates these, but never writes `readAt` or
- * `readActionId`, and never changes `firstSeenAt` after insert.
+ * Sync inserts and updates these, and never changes `firstSeenAt` after
+ * insert. It writes `readAt` and `readActionId` in one case only: an
+ * update to an article of a feed with `showUpdates` on clears them, so the
+ * article is unread again.
  */
 export const articles = sqliteTable(
   'articles',
@@ -86,11 +96,24 @@ export const articles = sqliteTable(
     /** Plain text, for list rows. */
     excerpt: text('excerpt'),
     publishedAt: integer('published_at').notNull(),
-    /** When sync first stored it. M3's snapshot filter depends on this. */
+    /** When sync first stored it. */
     firstSeenAt: integer('first_seen_at').notNull(),
+    /**
+     * When sync last put it in front of the owner: when first stored, or
+     * when an update brought it back as unread. The lists' snapshot filter
+     * and "mark all above" check this. Later than `firstSeenAt` means it
+     * was updated.
+     */
+    surfacedAt: integer('surfaced_at').notNull(),
     /** Last time sync changed this article or its content. */
     updatedAt: integer('updated_at').notNull(),
     contentHash: text('content_hash').notNull(),
+    /**
+     * Characters of the content's plain text (whitespace collapsed), for
+     * telling an update from an edit. Null for articles stored before it
+     * was counted: unknown, so never an update.
+     */
+    textLength: integer('text_length'),
     readAt: integer('read_at'),
     /** Which "mark read" action set `readAt`; undo matches on it. */
     readActionId: text('read_action_id'),
@@ -109,7 +132,7 @@ export const articles = sqliteTable(
       table.id
     ),
     // The page asks often whether anything arrived after its snapshot.
-    index('articles_first_seen').on(table.firstSeenAt),
+    index('articles_surfaced').on(table.surfacedAt),
   ]
 )
 
@@ -127,8 +150,10 @@ export const articleContent = sqliteTable('article_content', {
 
 /**
  * Keys of read articles that pruning deleted. Sync skips these keys, so a
- * deleted article still listed in its feed never comes back as unread. A
- * row is dropped once its item has been gone from the feed for a while.
+ * deleted article still listed in its feed never comes back as unread,
+ * unless it is updated in a feed with `showUpdates` on: then it is stored
+ * again, unread, and its row here is deleted. A row is dropped once its
+ * item has been gone from the feed for a while.
  */
 export const prunedItems = sqliteTable(
   'pruned_items',
@@ -140,6 +165,15 @@ export const prunedItems = sqliteTable(
     prunedAt: integer('pruned_at').notNull(),
     /** Last successful fetch whose feed still listed this item. */
     lastSeenAt: integer('last_seen_at').notNull(),
+    /**
+     * The article's `contentHash`, `textLength` and `firstSeenAt`, kept
+     * when pruned (and the first two kept current by later edits), so an
+     * update can be told apart without keeping the HTML. Null for keys
+     * pruned before they were kept: those never come back.
+     */
+    contentHash: text('content_hash'),
+    textLength: integer('text_length'),
+    firstSeenAt: integer('first_seen_at'),
   },
   (table) => [
     primaryKey({ columns: [table.feedId, table.itemKey] }),

@@ -56,6 +56,7 @@ const item = (
   excerpt: key,
   publishedAt: T0,
   contentHash: `hash-${key}`,
+  textLength: key.length,
   ...overrides,
 })
 
@@ -68,6 +69,7 @@ const changed = (feedId: number, items: readonly StoredItem[], now: number) =>
     lastModified: null,
     httpStatus: 200,
     now,
+    updateMinGrowthChars: 20,
   })
 
 const articlesOf = (feedId: number) =>
@@ -136,6 +138,8 @@ describe('recordFeedChanged', () => {
 
     expect(await changed(feedId, [item('a'), item('b')], T0)).toEqual({
       newItems: 2,
+      editedItems: 0,
+      updatedItems: 0,
     })
 
     const rows = await articlesOf(feedId)
@@ -153,6 +157,8 @@ describe('recordFeedChanged', () => {
 
     expect(await changed(feedId, [item('a'), item('b')], T0 + HOUR)).toEqual({
       newItems: 1,
+      editedItems: 0,
+      updatedItems: 0,
     })
     expect(await articlesOf(feedId)).toHaveLength(2)
   })
@@ -171,6 +177,8 @@ describe('recordFeedChanged', () => {
 
     expect(await changed(feedId, [edited], T0 + 2 * HOUR)).toEqual({
       newItems: 0,
+      editedItems: 1,
+      updatedItems: 0,
     })
 
     const [row] = await articlesOf(feedId)
@@ -204,7 +212,7 @@ describe('recordFeedChanged', () => {
     const feedId = await addFeed('https://a.test/feed')
     const many = Array.from({ length: 250 }, (_, i) => item(`item-${i}`))
 
-    expect(await changed(feedId, many, T0)).toEqual({ newItems: 250 })
+    expect(await changed(feedId, many, T0)).toMatchObject({ newItems: 250 })
   })
 
   test("stores a fetch bigger than D1's limit on one value, split into chunks", async () => {
@@ -216,7 +224,7 @@ describe('recordFeedChanged', () => {
       item(`big-${i}`, { contentHtml: `<p>${i}${body}</p>` })
     )
 
-    expect(await changed(feedId, big, T0)).toEqual({ newItems: 250 })
+    expect(await changed(feedId, big, T0)).toMatchObject({ newItems: 250 })
 
     const content = await contentOf(feedId)
 
@@ -256,6 +264,137 @@ describe('recordFeedChanged', () => {
     await changed(feedId, [item('old', { publishedAt: T0 - DAY })], T0 + HOUR)
 
     expect((await feedRow(feedId)).lastPublishedAt).toBe(T0)
+  })
+})
+
+const showUpdates = (feedId: number) =>
+  db
+    .update(schema.feeds)
+    .set({ showUpdates: true })
+    .where(eq(schema.feeds.id, feedId))
+
+/** The article `key` edited so its text is `length` characters long. */
+const grown = (key: string, length: number) =>
+  item(key, { contentHash: `hash-${key}-${length}`, textLength: length })
+
+describe('updates', () => {
+  test('an edit that adds enough text brings a read article back as unread', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+
+    expect(await changed(feedId, [grown('a', 120)], T0 + DAY)).toEqual({
+      newItems: 0,
+      editedItems: 1,
+      updatedItems: 1,
+    })
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({
+      readAt: null,
+      readActionId: null,
+      firstSeenAt: T0,
+      surfacedAt: T0 + DAY,
+      publishedAt: T0,
+      textLength: 120,
+    })
+  })
+
+  test('a smaller edit leaves it read, and small edits never add up', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+
+    expect(await changed(feedId, [grown('a', 119)], T0 + DAY)).toEqual({
+      newItems: 0,
+      editedItems: 1,
+      updatedItems: 0,
+    })
+    // 119 to 138: 38 more than first stored, but only 19 more than last time.
+    await changed(feedId, [grown('a', 138)], T0 + 2 * DAY)
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({
+      readAt: T0 + HOUR,
+      readActionId: 'action-1',
+      surfacedAt: T0,
+      textLength: 138,
+    })
+  })
+
+  test('an edit that removes text never counts', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 500)], T0)
+    await markRead(feedId, T0 + HOUR)
+    await changed(feedId, [grown('a', 100)], T0 + DAY)
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row?.readAt).toBe(T0 + HOUR)
+  })
+
+  test('only in feeds with Show updates on', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(feedId, [grown('a', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+
+    expect(await changed(feedId, [grown('a', 1000)], T0 + DAY)).toEqual({
+      newItems: 0,
+      editedItems: 1,
+      updatedItems: 0,
+    })
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({ readAt: T0 + HOUR, surfacedAt: T0 })
+  })
+
+  test('an article stored before lengths were counted is never updated', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100)], T0)
+    await markRead(feedId, T0 + HOUR)
+    await db.update(schema.articles).set({ textLength: null })
+    await changed(feedId, [grown('a', 1000)], T0 + DAY)
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({ readAt: T0 + HOUR, textLength: 1000 })
+  })
+
+  test('an unread article that is updated stays unread, marked as updated', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await showUpdates(feedId)
+    await changed(feedId, [grown('a', 100)], T0)
+
+    expect(await changed(feedId, [grown('a', 200)], T0 + DAY)).toMatchObject({
+      updatedItems: 1,
+    })
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({ readAt: null, surfacedAt: T0 + DAY })
+  })
+
+  test('a new article is surfaced when first seen', async () => {
+    const feedId = await addFeed('https://a.test/feed')
+
+    await changed(feedId, [grown('a', 100)], T0)
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({ firstSeenAt: T0, surfacedAt: T0 })
   })
 })
 
@@ -392,7 +531,7 @@ describe('pruning', () => {
         [item('a', { contentHash: 'edited' })],
         T0 + 15 * DAY
       )
-    ).toEqual({ newItems: 0 })
+    ).toEqual({ newItems: 0, editedItems: 0, updatedItems: 0 })
     expect(await articlesOf(feedId)).toHaveLength(0)
   })
 

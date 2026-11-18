@@ -26,6 +26,7 @@ export const testSettings = (
   prunedItemRetentionMs: 30 * 24 * 3_600_000,
   failingAfterMs: 48 * 3_600_000,
   staleAfterMs: 90 * 24 * 3_600_000,
+  updateMinGrowthChars: 20,
   ...overrides,
 })
 

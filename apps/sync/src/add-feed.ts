@@ -161,7 +161,7 @@ const subscribe = Effect.fnUntraced(function* (
   const direct = yield* parse(fetched.body, url, now).pipe(Effect.option)
 
   if (Option.isSome(direct)) {
-    return yield* store(db, url, fetched, direct.value, now, options)
+    return yield* store(db, url, fetched, direct.value, now, settings, options)
   }
 
   // Not a feed. Adding by hand also accepts a web page that advertises one.
@@ -181,7 +181,15 @@ const subscribe = Effect.fnUntraced(function* (
   const feedNow = yield* Clock.currentTimeMillis
   const parsed = yield* parse(feedBody.body, advertised, feedNow)
 
-  return yield* store(db, advertised, feedBody, parsed, feedNow, options)
+  return yield* store(
+    db,
+    advertised,
+    feedBody,
+    parsed,
+    feedNow,
+    settings,
+    options
+  )
 })
 
 const fetchBody = Effect.fnUntraced(function* (
@@ -266,6 +274,7 @@ const store = Effect.fnUntraced(function* (
   fetched: Fetched,
   parsed: Parsed,
   now: number,
+  settings: SyncSettings,
   options: AddFeedOptions
 ) {
   const ownTitle = options.title === null ? null : plainTitle(options.title)
@@ -298,6 +307,7 @@ const store = Effect.fnUntraced(function* (
       httpStatus: fetched.httpStatus,
       now,
       newArticlesRead: options.articlesRead,
+      updateMinGrowthChars: settings.updateMinGrowthChars,
     })
   ).pipe(
     Effect.tapError(() =>

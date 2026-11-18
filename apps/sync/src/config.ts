@@ -32,6 +32,11 @@ export interface SyncSettings {
   readonly prunedItemRetentionMs: number
   readonly failingAfterMs: number
   readonly staleAfterMs: number
+  /**
+   * In a feed with Show updates on, an edit that grows an article's text by
+   * at least this many characters brings it back as unread.
+   */
+  readonly updateMinGrowthChars: number
 }
 
 /**
@@ -49,6 +54,7 @@ export const SETTING_DEFAULTS = {
   PRUNED_ITEM_RETENTION_DAYS: 30,
   FEED_FAILING_AFTER_HOURS: 48,
   FEED_STALE_AFTER_DAYS: 90,
+  UPDATE_MIN_GROWTH_CHARS: 20,
 } as const
 
 type SettingName = keyof typeof SETTING_DEFAULTS
@@ -96,6 +102,7 @@ export const SyncConfig = Config.all({
     prunedItemRetentionDays: int('PRUNED_ITEM_RETENTION_DAYS'),
     failingAfterHours: int('FEED_FAILING_AFTER_HOURS'),
     staleAfterDays: int('FEED_STALE_AFTER_DAYS'),
+    updateMinGrowthChars: int('UPDATE_MIN_GROWTH_CHARS'),
   }).pipe(Config.map(toSettings)),
 })
 
@@ -109,6 +116,7 @@ interface RawSettings {
   readonly prunedItemRetentionDays: number
   readonly failingAfterHours: number
   readonly staleAfterDays: number
+  readonly updateMinGrowthChars: number
 }
 
 function toSettings(raw: RawSettings): SyncSettings {
@@ -125,6 +133,7 @@ function toSettings(raw: RawSettings): SyncSettings {
     prunedItemRetentionMs: raw.prunedItemRetentionDays * DAY,
     failingAfterMs: raw.failingAfterHours * HOUR,
     staleAfterMs: raw.staleAfterDays * DAY,
+    updateMinGrowthChars: raw.updateMinGrowthChars,
   }
 }
 

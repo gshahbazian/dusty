@@ -29,6 +29,7 @@ describe('SyncConfig', () => {
       failingAfterMs: 48 * 3_600_000,
       onDemandBudgetMs: 25_000,
       concurrency: 6,
+      updateMinGrowthChars: 20,
     })
   })
 
@@ -66,6 +67,7 @@ describe('syncSettingsEnv', () => {
       PRUNED_ITEM_RETENTION_DAYS: '30',
       FEED_FAILING_AFTER_HOURS: '48',
       FEED_STALE_AFTER_DAYS: '90',
+      UPDATE_MIN_GROWTH_CHARS: '20',
     })
   })
 

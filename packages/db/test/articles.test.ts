@@ -57,6 +57,7 @@ const item = (key: string, publishedAt: number): StoredItem => ({
   excerpt: key,
   publishedAt,
   contentHash: `hash-${key}`,
+  textLength: key.length,
 })
 
 /** A sync storing these items (by key, published at the given times) now. */
@@ -73,6 +74,7 @@ const sync = (
     lastModified: null,
     httpStatus: 200,
     now,
+    updateMinGrowthChars: 20,
   })
 
 const keysOf = (rows: ReadonlyArray<{ readonly title: string | null }>) =>
