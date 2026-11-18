@@ -25,6 +25,10 @@ export interface FeedResult {
   readonly durationMs: number
   readonly itemsFound: number
   readonly itemsNew: number
+  /** Stored or pruned articles whose content changed. */
+  readonly itemsEdited: number
+  /** Edits that brought an article back as unread (or marked it updated). */
+  readonly itemsUpdated: number
 }
 
 type Stored = Omit<FeedResult, 'feedId' | 'durationMs'>
@@ -71,6 +75,8 @@ export const syncFeed = Effect.fn('sync.feed')(function* (
     duration_ms: durationMs,
     items_found: result.itemsFound,
     items_new: result.itemsNew,
+    items_edited: result.itemsEdited,
+    items_updated: result.itemsUpdated,
   }
 
   yield* Effect.annotateCurrentSpan(fields)
@@ -84,6 +90,8 @@ export const syncFeed = Effect.fn('sync.feed')(function* (
     durationMs,
     itemsFound: result.itemsFound,
     itemsNew: result.itemsNew,
+    itemsEdited: result.itemsEdited,
+    itemsUpdated: result.itemsUpdated,
   })
 
   return result
@@ -112,6 +120,8 @@ const fetchAndStore = Effect.fnUntraced(function* (
       httpStatus: 304,
       itemsFound: 0,
       itemsNew: 0,
+      itemsEdited: 0,
+      itemsUpdated: 0,
     }
 
     return unchanged
@@ -119,7 +129,7 @@ const fetchAndStore = Effect.fnUntraced(function* (
 
   const parsed = yield* parse(fetched.body, feed.url, now)
 
-  const { newItems } = yield* query('record_feed_changed', () =>
+  const counts = yield* query('record_feed_changed', () =>
     recordFeedChanged(db, feed.id, {
       items: parsed.items,
       title: parsed.title,
@@ -136,13 +146,19 @@ const fetchAndStore = Effect.fnUntraced(function* (
     })
   )
 
-  yield* Effect.annotateCurrentSpan('items.new', newItems)
+  yield* Effect.annotateCurrentSpan({
+    'items.new': counts.newItems,
+    'items.edited': counts.editedItems,
+    'items.updated': counts.updatedItems,
+  })
 
   const changed: Stored = {
     outcome: 'ok',
     httpStatus: fetched.httpStatus,
     itemsFound: parsed.items.length,
-    itemsNew: newItems,
+    itemsNew: counts.newItems,
+    itemsEdited: counts.editedItems,
+    itemsUpdated: counts.updatedItems,
   }
 
   return changed
@@ -212,6 +228,8 @@ const recordFailure = Effect.fnUntraced(function* (
     httpStatus: error.httpStatus,
     itemsFound: 0,
     itemsNew: 0,
+    itemsEdited: 0,
+    itemsUpdated: 0,
   }
 
   return failed

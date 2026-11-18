@@ -94,6 +94,12 @@ export const runSync = Effect.fn('sync.run')(function* (
   const feedsSkipped = results.length - synced.length
   const feedsOk = synced.filter((result) => isSuccess(result)).length
   const itemsNew = synced.reduce((sum, result) => sum + result.itemsNew, 0)
+
+  const itemsUpdated = synced.reduce(
+    (sum, result) => sum + result.itemsUpdated,
+    0
+  )
+
   const outcome = feedsSkipped > 0 ? 'cut_short' : 'completed'
 
   const pruned = yield* prune(db, settings)
@@ -124,6 +130,7 @@ export const runSync = Effect.fn('sync.run')(function* (
     feeds_failed: synced.length - feedsOk,
     feeds_skipped: feedsSkipped,
     items_new: itemsNew,
+    items_updated: itemsUpdated,
     articles_pruned: pruned.articlesDeleted,
     feeds_healthy: health.healthy,
     feeds_stale: health.stale,
@@ -156,6 +163,7 @@ export const runSync = Effect.fn('sync.run')(function* (
     itemsNew,
     articlesPruned: pruned.articlesDeleted,
     health,
+    itemsUpdated,
   })
 
   const ran: SyncRunResult = {

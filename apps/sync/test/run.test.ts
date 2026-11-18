@@ -472,6 +472,58 @@ describe('a run', () => {
     ])
   })
 
+  test('in a feed showing updates, an added update brings a read article back; a typo fix does not', async () => {
+    const url = 'https://updates.example.com/feed'
+    const feedId = await addFeed(url)
+
+    await db
+      .update(schema.feeds)
+      .set({ showUpdates: true })
+      .where(eq(schema.feeds.id, feedId))
+
+    // Written the way mjtsai.com adds updates to a post.
+    const post = (body: string) => () =>
+      new Response(
+        `<rss version="2.0"><channel><title>U</title><item><guid>https://updates.example.com/1</guid><title>Post</title><link>https://updates.example.com/1</link><pubDate>Mon, 02 Nov 2026 09:00:00 GMT</pubDate><description><![CDATA[${body}]]></description></item></channel></rss>`
+      )
+
+    const original = '<p>Apple released an update to macOS today.</p>'
+    const typoFixed = '<p>Apple released an update for macOS today.</p>'
+    const updated = `${typoFixed}<p>Update (2026-11-04): See also: Hacker News.</p>`
+
+    // Read just now, so the run's pruning keeps it.
+    const readAt = Date.now()
+
+    const readAll = () =>
+      db
+        .update(schema.articles)
+        .set({ readAt, readActionId: 'read' })
+        .where(eq(schema.articles.feedId, feedId))
+
+    await sync({ [url]: post(original) })
+    await readAll()
+
+    const fixed = await sync({ [url]: post(typoFixed) })
+
+    expect(fixed.metrics.feeds).toMatchObject([
+      { itemsEdited: 1, itemsUpdated: 0 },
+    ])
+    expect(await articlesOf(feedId)).toMatchObject([{ readAt }])
+
+    const update = await sync({ [url]: post(updated) })
+
+    expect(update.metrics.feeds).toMatchObject([
+      { itemsNew: 0, itemsEdited: 1, itemsUpdated: 1 },
+    ])
+    expect(update.metrics.runs).toMatchObject([{ itemsUpdated: 1 }])
+
+    const [row] = await articlesOf(feedId)
+
+    expect(row).toMatchObject({ readAt: null, readActionId: null })
+    expect(row?.surfacedAt).toBeGreaterThan(row?.firstSeenAt ?? Infinity)
+    expect(row?.contentHtml).toContain('Update (2026-11-04)')
+  })
+
   test('the run reports feed health in its metrics', async () => {
     const threeDaysAgo = Date.now() - 3 * 24 * 3_600_000
 

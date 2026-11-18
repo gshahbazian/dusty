@@ -18,6 +18,8 @@ export interface RunMetrics {
   readonly itemsNew: number
   readonly articlesPruned: number
   readonly health: HealthCounts
+  /** Read articles brought back as unread by an update (and unread ones updated). */
+  readonly itemsUpdated: number
 }
 
 export interface FeedMetrics {
@@ -29,6 +31,10 @@ export interface FeedMetrics {
   readonly durationMs: number
   readonly itemsFound: number
   readonly itemsNew: number
+  /** Stored or pruned articles whose content changed. */
+  readonly itemsEdited: number
+  /** Edits that were updates (see `recordFeedChanged`). */
+  readonly itemsUpdated: number
 }
 
 /**
@@ -39,11 +45,13 @@ export interface FeedMetrics {
  * Run points: index `run`.
  * - blobs: kind (`run`), trigger, outcome
  * - doubles: duration_ms, feeds_total, feeds_ok, feeds_failed,
- *   feeds_skipped, items_new, articles_pruned, healthy, stale, failing
+ *   feeds_skipped, items_new, articles_pruned, healthy, stale, failing,
+ *   items_updated
  *
  * Feed points: index = feed id.
  * - blobs: kind (`feed`), trigger, outcome, feed url
- * - doubles: duration_ms, http_status (0 when none), items_found, items_new
+ * - doubles: duration_ms, http_status (0 when none), items_found, items_new,
+ *   items_edited, items_updated
  */
 export class Metrics extends Context.Service<
   Metrics,
@@ -94,6 +102,7 @@ export const analyticsEngineMetrics = (dataset: DataPointWriter) => {
           point.health.healthy,
           point.health.stale,
           point.health.failing,
+          point.itemsUpdated,
         ],
       }),
     feedFetched: (point) =>
@@ -105,6 +114,8 @@ export const analyticsEngineMetrics = (dataset: DataPointWriter) => {
           point.httpStatus ?? 0,
           point.itemsFound,
           point.itemsNew,
+          point.itemsEdited,
+          point.itemsUpdated,
         ],
       }),
   })

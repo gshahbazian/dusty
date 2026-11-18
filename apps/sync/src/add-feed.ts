@@ -134,6 +134,8 @@ export const addFeed = Effect.fn('sync.add_feed')(function* (
       durationMs,
       itemsFound: result.itemsNew,
       itemsNew: result.itemsNew,
+      itemsEdited: 0,
+      itemsUpdated: 0,
     })
   }
 
