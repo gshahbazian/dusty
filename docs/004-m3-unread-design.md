@@ -50,6 +50,9 @@ on screen changes.
   - Only listed IDs can change, so an article that arrived after the list
     was loaded is never touched, even if it would sort above the row.
   - `first_seen_at <= snapshotAt` is a second guard against the same thing.
+    (Since 008 it is `surfaced_at <= snapshotAt`, which also covers an
+    article an update brings back after the list loaded; see
+    `docs/008-article-updates-design.md`.)
   - Rows already read stay read and are not part of the action.
   - `json_each` takes the IDs as one JSON parameter, so any number fits
     under D1's 100-parameter limit.

@@ -18,9 +18,12 @@ what and why; this says how, where the spec leaves it open.
   - Identity is `(feed_id, item_key)`, unique. `item_key` is the item's
     guid or id, else its link, else a hash of its title and date.
   - `first_seen_at` never changes after insert. M3's snapshot filter
-    (`first_seen_at <= snapshotAt`) depends on it.
+    (`first_seen_at <= snapshotAt`) depends on it. (Since 008 the filter
+    checks `surfaced_at`; see `docs/008-article-updates-design.md`.)
   - `read_at` and `read_action_id` are never written by sync, so a
-    re-fetch or a source edit cannot mark a read article unread.
+    re-fetch or a source edit cannot mark a read article unread. (Since
+    008 one exception: in a feed with Show updates on, an edit that adds
+    enough text brings the article back as unread.)
   - `content_hash` lets an unchanged item skip its write.
 - `article_content`: the cleaned HTML, one row per article that has
   content, keyed by `article_id` and deleted with its article. Opening an
@@ -101,7 +104,9 @@ short (time limit)" to be logged.
 ## Pruning
 
 - Read articles are deleted `READ_RETENTION_DAYS` (14) after `read_at`.
-  Their keys go into `pruned_items` in the same batch.
+  Their keys go into `pruned_items` in the same batch. (Since 008 with
+  their text length and first-seen time, so an update can still bring one
+  back.)
 - A `pruned_items` row is dropped once its item has been absent from the
   feed for `PRUNED_ITEM_RETENTION_DAYS` (30). "Absent" needs evidence:
   - a 200 response refreshes `last_seen_at` for the keys it contains;

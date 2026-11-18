@@ -40,6 +40,13 @@ Read the matching `SKILL.md` before doing these:
   stored and shown under a strict Content Security Policy.
 - "Mark all above as read" acts on exactly the article IDs the client had
   on screen, in one atomic write, and undo matches on `read_action_id`.
+  Lists, counts and "mark all above" share one snapshot rule:
+  `surfaced_at <= snapshotAt` (when an article was first stored, or last
+  brought back by an update), not `first_seen_at`.
+- Sync writes read state in one case only: in a feed with Show updates on,
+  an edit that grows an article's text by `UPDATE_MIN_GROWTH_CHARS` brings
+  it back as unread, even after it was pruned. The rule lives in the
+  `recordFeedChanged` upsert; see `docs/008-article-updates-design.md`.
 - Times are integer epoch milliseconds in the database.
 - Sync work must be traced: wrap units of work in `Effect.fn` /
   `Effect.withSpan` and annotate spans with the same details as logs.
