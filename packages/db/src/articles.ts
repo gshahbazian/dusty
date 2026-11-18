@@ -40,9 +40,12 @@ export const LIST_LIMIT = 5000
  * is oldest first; a feed's list is newest first. `id` breaks ties in the
  * same direction, so the order never shuffles between loads.
  *
- * Only articles first seen by `seenBy` (the list's snapshot time) are
- * listed: the same rule "mark all above" checks, so every row on screen is
- * one it will act on, even if a sync lands while the list is being read.
+ * Only articles surfaced by `seenBy` (the list's snapshot time) are listed:
+ * the same rule "mark all above" checks, so every row on screen is one it
+ * will act on, even if a sync lands while the list is being read.
+ * `surfaced_at` is when an article was first stored or last brought back
+ * unread by an update, so one updated after the snapshot is left out
+ * until the next load, like a new one.
  */
 export const listArticles = (
   db: Db,
@@ -60,7 +63,7 @@ export const listArticles = (
       select ${ROW_COLUMNS}
       from articles join feeds on feeds.id = articles.feed_id
       where articles.read_at is null
-        and articles.first_seen_at <= ${options.seenBy}
+        and articles.surfaced_at <= ${options.seenBy}
       order by articles.published_at asc, articles.id asc
       limit ${limit}
     `)
@@ -73,7 +76,7 @@ export const listArticles = (
     select ${ROW_COLUMNS}
     from articles join feeds on feeds.id = articles.feed_id
     where articles.feed_id = ${options.feedId} ${unreadOnly}
-      and articles.first_seen_at <= ${options.seenBy}
+      and articles.surfaced_at <= ${options.seenBy}
     order by articles.published_at desc, articles.id desc
     limit ${limit}
   `)
@@ -81,9 +84,9 @@ export const listArticles = (
 
 /**
  * Whether a list would gain articles if it were loaded again: any article
- * (in this feed, or any feed) first seen after the list's snapshot. An
- * article first seen later is always unread, so this holds for unread and
- * all lists alike. Indexed lookups only; the page polls it.
+ * (in this feed, or any feed) surfaced after the list's snapshot, new or
+ * brought back by an update. Either is unread, so this holds for unread
+ * and all lists alike. Indexed lookups only; the page polls it.
  */
 export const hasArticlesSince = async (
   db: Db,
@@ -94,7 +97,7 @@ export const hasArticlesSince = async (
 
   const rows = await db.all<{ found: number }>(sql`
     select 1 as found from articles
-    where first_seen_at > ${options.after} ${inFeed}
+    where surfaced_at > ${options.after} ${inFeed}
     limit 1
   `)
 
@@ -109,7 +112,7 @@ export interface FeedCount {
 
 /**
  * Unread counts for every feed (zeros included), in one query, counting
- * the same articles the list shows: those first seen by `seenBy`.
+ * the same articles the list shows: those surfaced by `seenBy`.
  */
 export const unreadCounts = (
   db: Db,
@@ -121,7 +124,7 @@ export const unreadCounts = (
     from feeds
     left join articles
       on articles.feed_id = feeds.id and articles.read_at is null
-        and articles.first_seen_at <= ${options.seenBy}
+        and articles.surfaced_at <= ${options.seenBy}
     group by feeds.id
     order by lower(${FEED_TITLE}), feeds.id
   `)
@@ -157,8 +160,8 @@ export interface MarkRead {
   /** Exactly the articles to mark, e.g. the rows above the chosen one. */
   readonly ids: readonly number[]
   /**
-   * The list's snapshot time: articles first seen after it are never
-   * marked, even if listed. Null for actions not tied to a list (opening an
+   * The list's snapshot time: articles surfaced after it (new, or brought
+   * back by an update) are never marked, even if listed. Null for actions not tied to a list (opening an
    * article).
    */
   readonly snapshotAt: number | null
@@ -177,7 +180,7 @@ export const markRead = async (db: Db, mark: MarkRead): Promise<number[]> => {
     update articles set read_at = ${mark.now}, read_action_id = ${mark.actionId}
     where id in (select value from json_each(${JSON.stringify(mark.ids)}))
       and read_at is null
-      and (${mark.snapshotAt} is null or first_seen_at <= ${mark.snapshotAt})
+      and (${mark.snapshotAt} is null or surfaced_at <= ${mark.snapshotAt})
     returning id
   `)
 

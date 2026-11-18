@@ -482,6 +482,98 @@ describe('mark all above as read', () => {
   })
 })
 
+describe('an update landing after the snapshot', () => {
+  /**
+   * A feed showing updates with one article, `post`, stored at T0 and read;
+   * then the list is loaded (snapshot T0 + MINUTE), and a sync brings `post`
+   * back with more text at T0 + 2 minutes.
+   */
+  const updatedAfterLoad = async () => {
+    const a = await addFeed('https://a.test/feed')
+
+    const post = (textLength: number) => ({
+      ...item('post', T0),
+      contentHash: `hash-${textLength}`,
+      textLength,
+    })
+
+    const store = (textLength: number, now: number) =>
+      recordFeedChanged(db, a, {
+        items: [post(textLength)],
+        title: 'Feed',
+        siteUrl: null,
+        etag: null,
+        lastModified: null,
+        httpStatus: 200,
+        now,
+        updateMinGrowthChars: 20,
+      })
+
+    await db
+      .update(schema.feeds)
+      .set({ showUpdates: true })
+      .where(eq(schema.feeds.id, a))
+    await store(100, T0)
+    await markRead(db, {
+      ids: await idsOf(['post']),
+      snapshotAt: null,
+      actionId: 'opened',
+      now: T0,
+    })
+
+    const loadedAt = T0 + MINUTE
+
+    const onScreen = await listArticles(db, {
+      feedId: a,
+      seenBy: loadedAt,
+      show: 'all',
+    })
+
+    await store(200, T0 + 2 * MINUTE)
+
+    return { a, loadedAt, onScreen }
+  }
+
+  test('"mark all above" never marks it read, though its row was on screen', async () => {
+    const { loadedAt, onScreen } = await updatedAfterLoad()
+
+    expect(onScreen.map((row) => row.readAt)).toEqual([T0])
+
+    const changed = await markRead(db, {
+      ids: onScreen.map((row) => row.id),
+      snapshotAt: loadedAt,
+      actionId: 'action-1',
+      now: T0 + 3 * MINUTE,
+    })
+
+    expect(changed).toEqual([])
+    expect(await readState()).toEqual({ post: false })
+  })
+
+  test('the list offers to load it, and the next load lists and counts it', async () => {
+    const { a, loadedAt } = await updatedAfterLoad()
+
+    expect(await hasArticlesSince(db, { feedId: a, after: loadedAt })).toBe(
+      true
+    )
+    expect(
+      await listArticles(db, { feedId: null, seenBy: loadedAt })
+    ).toHaveLength(0)
+    expect(await unreadCounts(db, { seenBy: loadedAt })).toMatchObject([
+      { unread: 0 },
+    ])
+
+    const reloadedAt = T0 + 3 * MINUTE
+
+    expect(
+      keysOf(await listArticles(db, { feedId: null, seenBy: reloadedAt }))
+    ).toEqual(['post'])
+    expect(await unreadCounts(db, { seenBy: reloadedAt })).toMatchObject([
+      { unread: 1 },
+    ])
+  })
+})
+
 describe('undo and mark unread', () => {
   test('undo restores exactly the rows its action changed', async () => {
     const a = await addFeed('https://a.test/feed')
