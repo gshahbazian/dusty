@@ -74,6 +74,14 @@ function ArticleBody({ article }: { article: Article }) {
           <time dateTime={new Date(article.publishedAt).toISOString()}>
             {exactTime(article.publishedAt)}
           </time>
+          {article.updatedAt !== null && (
+            <span className="text-primary font-medium">
+              {' · Updated '}
+              <time dateTime={new Date(article.updatedAt).toISOString()}>
+                {exactTime(article.updatedAt)}
+              </time>
+            </span>
+          )}
         </p>
       </header>
       {article.html !== null && <ArticleHtml html={article.html} />}

@@ -12,6 +12,8 @@
 //                             &count=<n> on the first request)
 //   /generated/add?run=<id>   adds one item to that feed, newer than the rest
 //                             (lets a test land new articles mid-test)
+//   /generated/update?run=<id>&n=<n>   adds an "Update (…)" paragraph to item
+//                             n, the way mjtsai.com updates a post
 import { createHash } from 'node:crypto'
 import { readFile, readdir } from 'node:fs/promises'
 import { createServer } from 'node:http'
@@ -60,6 +62,8 @@ const serveFixture = async (name, request, response) => {
 
 /** Item counts for /generated.xml, by `run`. */
 const generated = new Map()
+/** How many updates each item has had, by `run`, then item number. */
+const updates = new Map()
 const GENERATED_START = Date.UTC(2026, 0, 1)
 
 const generatedFeed = (run) => {
@@ -67,8 +71,13 @@ const generatedFeed = (run) => {
   const items = Array.from({ length: count }, (_, i) => {
     const n = i + 1
     const date = new Date(GENERATED_START + n * 3_600_000).toUTCString()
+    const updated = Array.from(
+      { length: updates.get(run)?.get(n) ?? 0 },
+      (_, u) =>
+        `<p>Update (2026-01-${String(u + 2).padStart(2, '0')}): More about item ${n}, added later.</p>`
+    ).join('')
 
-    return `<item><title>Generated ${n}</title><guid>generated-${run}-${n}</guid><link>https://generated.example.com/${run}/${n}</link><pubDate>${date}</pubDate><description><![CDATA[<p>Item ${n} of ${run}</p><p><a href="https://generated.example.com/${run}/${n}/more">More</a></p><img src="https://generated.example.com/${run}/${n}.png" alt="Picture ${n}">]]></description></item>`
+    return `<item><title>Generated ${n}</title><guid>generated-${run}-${n}</guid><link>https://generated.example.com/${run}/${n}</link><pubDate>${date}</pubDate><description><![CDATA[<p>Item ${n} of ${run}</p><p><a href="https://generated.example.com/${run}/${n}/more">More</a></p><img src="https://generated.example.com/${run}/${n}.png" alt="Picture ${n}">${updated}]]></description></item>`
   })
 
   return `<?xml version="1.0"?><rss version="2.0"><channel><title>Generated ${run}</title><link>https://generated.example.com/</link>${items.join('')}</channel></rss>`
@@ -96,6 +105,17 @@ const server = createServer(async (request, response) => {
   if (path === '/generated/add') {
     generated.set(run, (generated.get(run) ?? 3) + 1)
     response.writeHead(200).end(String(generated.get(run)))
+
+    return
+  }
+
+  if (path === '/generated/update') {
+    const n = Number(requestUrl.searchParams.get('n') ?? 1)
+    const items = updates.get(run) ?? new Map()
+
+    items.set(n, (items.get(n) ?? 0) + 1)
+    updates.set(run, items)
+    response.writeHead(200).end(String(items.get(n)))
 
     return
   }

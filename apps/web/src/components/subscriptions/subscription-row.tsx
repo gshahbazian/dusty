@@ -4,11 +4,16 @@ import { useState, type FormEvent } from 'react'
 
 import type { Subscription } from '@dusty/db'
 
-import { removeSubscription, renameSubscription } from '#/server/subscriptions'
+import {
+  removeSubscription,
+  renameSubscription,
+  setSubscriptionShowUpdates,
+} from '#/server/subscriptions'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
+import { Switch } from '#/components/ui/switch'
 
 import { RelativeTime } from '#/components/relative-time'
 import {
@@ -135,6 +140,8 @@ export function SubscriptionRow({
         </p>
       )}
 
+      <ShowUpdatesSwitch subscription={subscription} onChanged={onChanged} />
+
       <div className="-ml-2 flex flex-wrap items-center gap-1">
         {!renaming && (
           <Button
@@ -180,6 +187,58 @@ export function SubscriptionRow({
         )}
       </div>
     </li>
+  )
+}
+
+/**
+ * Show updates, saved as soon as it is flipped. It shows the new setting
+ * at once; if saving fails, it goes back and says so.
+ */
+function ShowUpdatesSwitch({
+  subscription,
+  onChanged,
+}: {
+  subscription: Subscription
+  onChanged: () => void
+}) {
+  const save = useMutation({
+    mutationFn: (showUpdates: boolean) =>
+      setSubscriptionShowUpdates({
+        data: { id: subscription.id, showUpdates },
+      }),
+    onSuccess: onChanged,
+  })
+
+  const id = `show-updates-${subscription.id}`
+  // The setting just chosen, until the reloaded list confirms it; the
+  // stored one again if saving failed.
+  const chosen = save.isError ? undefined : save.variables
+  const checked = chosen ?? subscription.showUpdates
+
+  return (
+    <div className="flex flex-col gap-1 py-1">
+      <div className="flex items-center gap-2">
+        <Switch
+          id={id}
+          size="sm"
+          checked={checked}
+          disabled={save.isPending}
+          onCheckedChange={(next) => save.mutate(next)}
+          aria-describedby={`${id}-hint`}
+        />
+        <Label htmlFor={id} className="text-xs font-normal">
+          Show updates
+        </Label>
+      </div>
+      <p id={`${id}-hint`} className="text-muted-foreground text-xs">
+        An article that gets more text comes back as unread.
+      </p>
+      {save.isError && (
+        <p role="alert" className="text-destructive text-xs">
+          Something went wrong. Please try again.
+        </p>
+      )}
+    </div>
   )
 }
 

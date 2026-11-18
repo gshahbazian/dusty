@@ -147,6 +147,11 @@ export function ArticleListItem({
             now={now}
             className="relative z-10"
           />
+          {row.updatedAt !== null && (
+            <span className="text-primary relative z-10 font-medium">
+              Updated <RelativeTime at={row.updatedAt} now={now} />
+            </span>
+          )}
         </div>
         {/*
         Actions get their own line, and both read toggles are the same size,

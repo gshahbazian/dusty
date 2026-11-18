@@ -24,6 +24,7 @@ const row = (id: number, feedId: number): ArticleRow => ({
   excerpt: null,
   publishedAt: id,
   readAt: null,
+  updatedAt: null,
 })
 
 describe('mark all above', () => {

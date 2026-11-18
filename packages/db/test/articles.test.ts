@@ -152,6 +152,7 @@ describe('lists', () => {
       excerpt: 'x',
       publishedAt: T0,
       readAt: null,
+      updatedAt: null,
     })
   })
 
@@ -565,9 +566,17 @@ describe('an update landing after the snapshot', () => {
 
     const reloadedAt = T0 + 3 * MINUTE
 
-    expect(
-      keysOf(await listArticles(db, { feedId: null, seenBy: reloadedAt }))
-    ).toEqual(['post'])
+    const reloaded = await listArticles(db, {
+      feedId: null,
+      seenBy: reloadedAt,
+    })
+
+    expect(keysOf(reloaded)).toEqual(['post'])
+    // Rows and the article say when the update brought it back.
+    expect(reloaded[0]?.updatedAt).toBe(T0 + 2 * MINUTE)
+    expect(await getArticle(db, reloaded[0]?.id ?? 0)).toMatchObject({
+      updatedAt: T0 + 2 * MINUTE,
+    })
     expect(await unreadCounts(db, { seenBy: reloadedAt })).toMatchObject([
       { unread: 1 },
     ])

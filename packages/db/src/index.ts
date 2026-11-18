@@ -51,6 +51,7 @@ export {
   listSubscriptions,
   removeFeed,
   renameFeed,
+  setShowUpdates,
   type FeedRef,
   type Subscription,
 } from '#/subscriptions'

@@ -5,7 +5,13 @@ import { createServerFn } from '@tanstack/react-start'
 import * as Schema from 'effect/Schema'
 import { parseOpml } from 'feedsmith'
 
-import { listSubscriptions, removeFeed, renameFeed, schema } from '@dusty/db'
+import {
+  listSubscriptions,
+  removeFeed,
+  renameFeed,
+  schema,
+  setShowUpdates,
+} from '@dusty/db'
 
 import type { RequestContext } from '#/server/context'
 import { dbFor } from '#/server/db'
@@ -63,6 +69,18 @@ export const renameSubscription = createServerFn({ method: 'POST' })
   )
   .handler(({ context, data }) =>
     renameFeed(dbFor(context.env), data.id, data.title)
+  )
+
+/** Turn Show updates on or off: updated articles come back as unread. */
+export const setSubscriptionShowUpdates = createServerFn({ method: 'POST' })
+  .middleware([ownerOnly])
+  .validator(
+    Schema.decodeUnknownSync(
+      Schema.Struct({ id: Schema.Int, showUpdates: Schema.Boolean })
+    )
+  )
+  .handler(({ context, data }) =>
+    setShowUpdates(dbFor(context.env), data.id, data.showUpdates)
   )
 
 /** Unsubscribe; the feed's articles leave every list at once. */

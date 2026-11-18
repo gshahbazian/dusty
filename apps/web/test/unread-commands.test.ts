@@ -17,6 +17,7 @@ const row = (id: number, url: string | null = `https://a.test/${id}`) =>
     excerpt: null,
     publishedAt: id,
     readAt: null,
+    updatedAt: null,
   }) satisfies ArticleRow
 
 const rows = [row(10), row(11), row(12, null), row(13)]

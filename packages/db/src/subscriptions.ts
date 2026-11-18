@@ -69,6 +69,24 @@ export const renameFeed = async (
 }
 
 /**
+ * Turn Show updates on or off: whether an update to one of the feed's
+ * articles brings it back as unread. Returns whether the feed exists.
+ */
+export const setShowUpdates = async (
+  db: Db,
+  feedId: number,
+  showUpdates: boolean
+): Promise<{ readonly found: boolean }> => {
+  const rows = await db
+    .update(feeds)
+    .set({ showUpdates })
+    .where(eq(feeds.id, feedId))
+    .returning({ id: feeds.id })
+
+  return { found: rows.length > 0 }
+}
+
+/**
  * Unsubscribe. The feed's articles, their content and its pruned keys are
  * deleted with it (foreign keys cascade), so they leave every list and
  * count at once.
@@ -103,17 +121,21 @@ export interface Subscription {
   readonly firstFailureAt: number | null
   readonly consecutiveFailures: number
   readonly lastError: string | null
+  /** An update to one of its articles brings it back as unread. */
+  readonly showUpdates: boolean
 }
 
 /**
  * Every subscription with its unread count and health, in one query. Health
  * uses `feedHealthSql`, the same definition the sync metrics count.
  */
-export const listSubscriptions = (
+export const listSubscriptions = async (
   db: Db,
   health: HealthOptions
-): Promise<Subscription[]> =>
-  db.all<Subscription>(sql`
+): Promise<Subscription[]> => {
+  const rows = await db.all<
+    Omit<Subscription, 'showUpdates'> & { readonly showUpdates: number }
+  >(sql`
     select
       feeds.id as id,
       feeds.url as url,
@@ -132,7 +154,12 @@ export const listSubscriptions = (
       feeds.last_fetched_at as lastFetchedAt,
       feeds.first_failure_at as firstFailureAt,
       feeds.consecutive_failures as consecutiveFailures,
-      feeds.last_error as lastError
+      feeds.last_error as lastError,
+      feeds.show_updates as showUpdates
     from feeds
     order by lower(coalesce(feeds.custom_title, feeds.title, feeds.url)), feeds.id
   `)
+
+  // SQLite has no booleans: the flag comes back as 0 or 1.
+  return rows.map((row) => ({ ...row, showUpdates: row.showUpdates === 1 }))
+}

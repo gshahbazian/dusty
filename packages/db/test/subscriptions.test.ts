@@ -12,6 +12,7 @@ import {
   removeFeed,
   renameFeed,
   schema,
+  setShowUpdates,
   type Db,
   type StoredItem,
 } from '#/index'
@@ -131,6 +132,27 @@ describe('renaming', () => {
 
   test('says when there was no such feed', async () => {
     expect(await renameFeed(db, 999, 'x')).toEqual({ renamed: false })
+  })
+})
+
+describe('show updates', () => {
+  test('is off for a new feed, and can be turned on and off', async () => {
+    const id = await add('https://a.test/feed')
+
+    const shown = async () =>
+      (await listSubscriptions(db, health)).map((row) => row.showUpdates)
+
+    expect(await shown()).toEqual([false])
+    expect(await setShowUpdates(db, id, true)).toEqual({ found: true })
+    expect(await shown()).toEqual([true])
+
+    await setShowUpdates(db, id, false)
+
+    expect(await shown()).toEqual([false])
+  })
+
+  test('says when there was no such feed', async () => {
+    expect(await setShowUpdates(db, 999, true)).toEqual({ found: false })
   })
 })
 

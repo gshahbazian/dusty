@@ -119,6 +119,9 @@ The sync service fetches real HTTP, so give it something to fetch:
   and each `curl localhost:5175/generated/add?run=<id>` adds one newer than
   the rest. Use it to land new articles mid-test (the unread browser tests
   do), then `trigger-cron.sh` to sync them in, or to make a long list.
+  `curl 'localhost:5175/generated/update?run=<id>&n=<n>'` adds an "Update
+  (…)" paragraph to item n, for seeing an update bring a read article back
+  (`e2e/updates.spec.ts`).
 - The dev stack starts empty: no feeds until you run
   `seed-local-dev-feeds.sh`. It subscribes to the seven real feeds and two
   failing URLs (no made-up articles), syncs them, and prints each feed's

@@ -43,7 +43,7 @@ export const openArticle = (page: Page, title: string) =>
 
 export const heading = (page: Page) => page.getByRole('heading', { level: 1 })
 
-const subscriptionRow = (page: Page, feed: Feed) =>
+export const subscriptionRow = (page: Page, feed: Feed) =>
   page
     .getByRole('list', { name: 'Subscriptions' })
     .getByRole('listitem')

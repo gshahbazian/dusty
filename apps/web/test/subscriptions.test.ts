@@ -32,6 +32,7 @@ const subscription = (overrides: Partial<Subscription> = {}): Subscription => ({
   firstFailureAt: null,
   consecutiveFailures: 0,
   lastError: null,
+  showUpdates: false,
   ...overrides,
 })
 

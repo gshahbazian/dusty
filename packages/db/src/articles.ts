@@ -13,6 +13,11 @@ export interface ArticleRow {
   readonly publishedAt: number
   /** When it was read; null while unread (always null in an unread list). */
   readonly readAt: number | null
+  /**
+   * When an update last brought it back (or, already unread, changed it);
+   * null if it never has. See `docs/008-article-updates-design.md`.
+   */
+  readonly updatedAt: number | null
 }
 
 /** Which articles a list shows: the unread ones, or all that are stored. */
@@ -20,11 +25,15 @@ export type ListShow = 'unread' | 'all'
 
 const FEED_TITLE = sql`coalesce(feeds.custom_title, feeds.title, feeds.url)`
 
+/** `ArticleRow.updatedAt` (not the `updated_at` column, any edit's time). */
+const UPDATED_AT = sql`case when articles.surfaced_at > articles.first_seen_at
+  then articles.surfaced_at end`
+
 /** A list row's columns (articles joined to feeds). */
 const ROW_COLUMNS = sql`articles.id as id, articles.feed_id as feedId,
   ${FEED_TITLE} as feedTitle, articles.title as title, articles.url as url,
   articles.excerpt as excerpt, articles.published_at as publishedAt,
-  articles.read_at as readAt`
+  articles.read_at as readAt, ${UPDATED_AT} as updatedAt`
 
 /**
  * Most rows one list loads (about 2.5 MB of JSON). Counts still count
@@ -146,7 +155,7 @@ export const getArticle = async (
       articles.url as url, articles.excerpt as excerpt,
       articles.published_at as publishedAt, articles.author as author,
       article_content.html as html, articles.read_at as readAt,
-      feeds.site_url as siteUrl
+      ${UPDATED_AT} as updatedAt, feeds.site_url as siteUrl
     from articles
     join feeds on feeds.id = articles.feed_id
     left join article_content on article_content.article_id = articles.id
