@@ -2,7 +2,7 @@ import { cn } from 'cn'
 
 import { buttonVariants } from '#/components/ui/button'
 
-/** The bottom of Settings: who is signed in, and logging out. */
+/** Who is signed in, and logging out. */
 export function AccountSection({
   email,
   logoutUrl,
@@ -12,20 +12,17 @@ export function AccountSection({
   logoutUrl: string
 }) {
   return (
-    <section
-      aria-labelledby="account-heading"
-      className="flex flex-col items-start gap-2 border-t pt-6"
-    >
-      <h2 id="account-heading" className="font-medium">
-        Account
-      </h2>
-      <p className="text-muted-foreground text-xs">Signed in as {email}</p>
+    <div className="flex flex-col items-start gap-4">
+      <dl className="flex flex-col gap-1 text-sm">
+        <dt className="font-semibold">Email</dt>
+        <dd className="text-muted-foreground">{email}</dd>
+      </dl>
       <a
         href={logoutUrl}
         className={cn(buttonVariants({ variant: 'outline' }), 'w-fit')}
       >
         Log out
       </a>
-    </section>
+    </div>
   )
 }

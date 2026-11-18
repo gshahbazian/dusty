@@ -217,18 +217,19 @@ test('tap targets are at least 44 px tall', async ({ page }) => {
 
 test('settings controls are at least 44 px tall', async ({ page }) => {
   await page.goto('/settings')
-  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
-
-  // The checkbox is small; its label is what a thumb hits.
-  const attention = page.locator('label', {
-    has: page.getByRole('checkbox', { name: 'Only feeds that need attention' }),
-  })
+  await expect(
+    page.getByRole('heading', { name: 'Subscriptions' })
+  ).toBeAttached()
 
   const small: string[] = []
 
   for (const target of await page
     .locator('button, select')
-    .or(attention)
+    .or(
+      page
+        .getByRole('navigation', { name: 'Settings sections' })
+        .getByRole('link')
+    )
     .filter({ visible: true })
     .all()) {
     const box = await target.boundingBox()
@@ -239,6 +240,24 @@ test('settings controls are at least 44 px tall', async ({ page }) => {
   }
 
   expect(small).toEqual([])
+})
+
+test('on a skinny screen the settings nav scrolls, not the page', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 280, height: 640 })
+  await page.goto('/settings/import')
+
+  const nav = page.getByRole('navigation', { name: 'Settings sections' })
+
+  await expect(nav).toBeVisible()
+  expect(await page.evaluate('document.documentElement.scrollWidth')).toBe(280)
+  // The nav itself is wider than the screen: it scrolls on its own.
+  expect(
+    await page.evaluate(
+      `(() => { const nav = document.querySelector('nav[aria-label="Settings sections"]'); return nav.scrollWidth > nav.clientWidth })()`
+    )
+  ).toBe(true)
 })
 
 test('a wide article never scrolls the page sideways', async ({ page }) => {

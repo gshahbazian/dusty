@@ -1,5 +1,6 @@
 import { cn } from 'cn'
 import { useMutation } from '@tanstack/react-query'
+import { LoaderCircleIcon } from 'lucide-react'
 import { useState, type ChangeEvent } from 'react'
 
 import type { ImportEntry, ImportResult } from '@dusty/sync/contract'
@@ -20,29 +21,45 @@ type Step =
   | { readonly kind: 'preview'; readonly entries: readonly OpmlEntry[] }
   | {
       readonly kind: 'importing'
+      readonly entries: readonly OpmlEntry[]
       readonly done: number
-      readonly total: number
     }
   | {
       readonly kind: 'finished'
-      readonly added: number
-      readonly skipped: number
-      readonly failed: readonly ImportResult[]
+      readonly added: readonly ImportedFeed[]
+      readonly skipped: readonly ImportedFeed[]
+      readonly failed: readonly ImportedFeed[]
     }
+
+/** A feed in the finished import's lists, and why, unless it was added. */
+interface ImportedFeed {
+  readonly url: string
+  readonly name: string
+  readonly reason: string | null
+}
+
+const imported = (
+  entry: ImportEntry,
+  reason: string | null = null
+): ImportedFeed => ({ url: entry.url, name: entry.title ?? entry.url, reason })
+
+/** The server skips a feed already subscribed, or one listed twice. */
+const skipReason = (result: ImportResult & { status: 'skipped' }) =>
+  result.feed === null ? SKIP_REASONS.duplicate : SKIP_REASONS.subscribed
 
 const plural = (count: number, one: string, many: string) =>
   `${count} ${count === 1 ? one : many}`
 
-/** Entries the preview will send, and how many it already skips. */
+/** Entries the preview will send, and the ones it already skips (why). */
 function splitPreview(entries: readonly OpmlEntry[]) {
   const toImport: ImportEntry[] = []
-  let skipped = 0
+  const skipped: ImportedFeed[] = []
 
   for (const entry of entries) {
     if (entry.skip === null) {
       toImport.push({ url: entry.url, title: entry.title })
     } else {
-      skipped += 1
+      skipped.push(imported(entry, SKIP_REASONS[entry.skip]))
     }
   }
 
@@ -70,7 +87,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
 
   const runImport = useMutation({
     mutationFn: async (entries: readonly OpmlEntry[]) => {
-      const { toImport, skipped: skippedBefore } = splitPreview(entries)
+      const { toImport, skipped } = splitPreview(entries)
       const results: ImportResult[] = []
 
       setDone(0)
@@ -90,11 +107,22 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
         setDone(results.length)
       }
 
-      const failed = results.filter((result) => result.status === 'failed')
-      const added = results.filter((result) => result.status === 'added').length
-      const skipped = skippedBefore + results.length - added - failed.length
-
-      return { added, skipped, failed }
+      return {
+        added: results.flatMap((result) =>
+          result.status === 'added' ? [imported(result)] : []
+        ),
+        skipped: [
+          ...skipped,
+          ...results.flatMap((result) =>
+            result.status === 'skipped'
+              ? [imported(result, skipReason(result))]
+              : []
+          ),
+        ],
+        failed: results.flatMap((result) =>
+          result.status === 'failed' ? [imported(result, result.reason)] : []
+        ),
+      }
     },
     onSettled: onImported,
   })
@@ -114,9 +142,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
   /** Where the import is, from the two steps' states. */
   const stepNow = (): Step => {
     if (runImport.isPending) {
-      const total = splitPreview(runImport.variables).toImport.length
-
-      return { kind: 'importing', done, total }
+      return { kind: 'importing', entries: runImport.variables, done }
     }
 
     if (runImport.isError) {
@@ -145,10 +171,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
   const step = stepNow()
 
   return (
-    <section className="flex flex-col gap-2" aria-labelledby="import-heading">
-      <h2 id="import-heading" className="text-xs font-medium">
-        Import from another reader
-      </h2>
+    <div className="flex flex-col gap-4">
       {/* A label styled as a button, so the hidden file input opens on click. */}
       <label
         className={cn(
@@ -171,7 +194,7 @@ export function OpmlImport({ onImported }: { onImported: () => void }) {
           onImport={(entries) => runImport.mutate(entries)}
         />
       </output>
-    </section>
+    </div>
   )
 }
 
@@ -190,73 +213,79 @@ function ImportStatus({
     return <p className="text-destructive">Couldn't import: {step.reason}.</p>
   }
 
-  if (step.kind === 'importing') {
-    return (
-      <p>
-        Importing… {step.done} of {step.total}. Keep this page open until it
-        finishes (closing it stops the rest; importing again skips what's done).
-      </p>
-    )
-  }
-
   if (step.kind === 'finished') {
     return (
-      <div>
-        <p>
-          Import finished: {step.added} added, {step.skipped} skipped,{' '}
-          {step.failed.length} failed.
-        </p>
-        {step.failed.length > 0 && (
-          <p className="text-muted-foreground mt-1">
-            Feeds that failed were added anyway; they show their error below
-            until a sync gets through.
-          </p>
-        )}
-        {step.failed.length > 0 && (
-          <ul className="text-muted-foreground mt-1 list-disc pl-5">
-            {step.failed.map((result) => (
-              <li key={result.url}>
-                {result.title ?? result.url}:{' '}
-                {result.status === 'failed' && result.reason}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="flex flex-col gap-6">
+        <ResultList title="Added" feeds={step.added} />
+        <ResultList title="Skipped" feeds={step.skipped} />
+        <ResultList title="Failed" feeds={step.failed} />
       </div>
     )
   }
 
+  // Importing looks just like the preview: only the button and its
+  // progress change, so a quick import doesn't flash the page.
   const { toImport, skipped } = splitPreview(step.entries)
-  const skippedEntries = step.entries.filter((entry) => entry.skip !== null)
+  const importing = step.kind === 'importing'
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <p>
-        {plural(toImport.length, 'feed', 'feeds')} to import
-        {skipped > 0 && `, ${skipped} skipped`}.
-      </p>
+    <div className="flex flex-col gap-6">
       {toImport.length > 0 && (
-        <Button onClick={() => onImport(step.entries)}>
-          Import {plural(toImport.length, 'feed', 'feeds')}
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button disabled={importing} onClick={() => onImport(step.entries)}>
+            Import {plural(toImport.length, 'feed', 'feeds')}
+          </Button>
+          {importing && (
+            <p className="text-muted-foreground flex items-center gap-2">
+              <LoaderCircleIcon
+                aria-hidden
+                className="size-4 animate-spin motion-reduce:animate-none"
+              />
+              {step.done} of {toImport.length} imported
+            </p>
+          )}
+        </div>
       )}
-      {skippedEntries.length > 0 && (
-        <details className="text-muted-foreground w-full">
-          <summary className="cursor-pointer">
-            Show the{' '}
-            {plural(skippedEntries.length, 'skipped feed', 'skipped feeds')}
-          </summary>
-          <ul className="mt-1 list-disc pl-5">
-            {skippedEntries.map((entry, index) => (
-              <li key={`${entry.url}-${index}`} className="break-all">
-                {entry.title ?? entry.url}:{' '}
-                {SKIP_REASONS[entry.skip ?? 'duplicate']}
-              </li>
-            ))}
-          </ul>
-        </details>
+      {toImport.length === 0 && (
+        <p>Nothing new to import: every feed in this file is skipped.</p>
       )}
+      <ResultList
+        title="To import"
+        feeds={toImport.map((entry) => imported(entry))}
+      />
+      <ResultList title="Skipped" feeds={skipped} />
     </div>
+  )
+}
+
+/** One group of an import's feeds; nothing when it is empty. */
+function ResultList({
+  title,
+  feeds,
+}: {
+  title: string
+  feeds: readonly ImportedFeed[]
+}) {
+  if (feeds.length === 0) return null
+
+  const id = `import-${title.toLowerCase().replaceAll(' ', '-')}`
+
+  return (
+    <section aria-labelledby={id} className="flex max-w-2xl flex-col gap-1">
+      <h2 id={id} className="text-sm font-semibold">
+        {title}
+      </h2>
+      <ul aria-labelledby={id} className="divide-y border text-sm">
+        {feeds.map((feed, index) => (
+          <li key={`${feed.url}-${index}`} className="px-3 py-2 break-all">
+            {feed.name}
+            {feed.reason !== null && (
+              <span className="text-muted-foreground">: {feed.reason}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 

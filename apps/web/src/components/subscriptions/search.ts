@@ -3,14 +3,14 @@ import * as Schema from 'effect/Schema'
 
 import type { SortOrder } from '#/components/subscriptions/health'
 
-/** `?sort=name&attention=true`; both optional, so links need neither. */
+/** `?sort=latest&attention=true`; both optional, so links need neither. */
 export type SubscriptionsSearch = {
   readonly sort?: SortOrder | undefined
   readonly attention?: boolean | undefined
 }
 
 const decodeSort = Schema.decodeUnknownOption(
-  Schema.Literals(['attention', 'name', 'unread'])
+  Schema.Literals(['name', 'attention', 'latest'])
 )
 
 const decodeAttention = Schema.decodeUnknownOption(Schema.Boolean)

@@ -14,8 +14,13 @@ describe('parseSubscriptionsSearch', () => {
       parseSubscriptionsSearch({ sort: 'bogus', attention: true })
     ).toEqual({ sort: undefined, attention: true })
     expect(
-      parseSubscriptionsSearch({ sort: 'unread', attention: 'maybe' })
-    ).toEqual({ sort: 'unread', attention: undefined })
+      parseSubscriptionsSearch({ sort: 'latest', attention: 'maybe' })
+    ).toEqual({ sort: 'latest', attention: undefined })
+    // A sort that no longer exists falls back too.
+    expect(parseSubscriptionsSearch({ sort: 'unread' })).toEqual({
+      sort: undefined,
+      attention: undefined,
+    })
   })
 
   // The router spreads this over the raw query, so a key that is left out

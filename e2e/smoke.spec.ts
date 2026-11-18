@@ -18,7 +18,7 @@ test('the app loads as the owner and starts a background sync', async ({
   ).toBeVisible()
   expect((await syncRequest).status()).toBe(200)
 
-  // Logging out lives at the bottom of Settings.
-  await page.goto('/settings')
+  // Logging out lives in Settings' Account section.
+  await page.goto('/settings/account')
   await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible()
 })

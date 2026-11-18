@@ -63,8 +63,10 @@ Read the matching `SKILL.md` before doing these:
   so their `cva` class maps are fine (the inline-classes rule is for our
   own components). A link styled as a button stays a link: use
   `buttonVariants` on `<Link>` / `<a>`, not `<Button render>`, which
-  would give it `role="button"`. Dropdowns are `NativeSelect` (a real
-  `<select>`, so phones get their own picker). Colours come from the
+  would give it `role="button"`. Dropdowns in a form are `NativeSelect` (a
+  real `<select>`, so phones get their own picker); a list's view options
+  (the subscriptions filter and sort) are an icon button opening a
+  `DropdownMenu` of radio items (`ChoiceMenu`). Colours come from the
   theme in `styles.css` (`text-muted-foreground`, `bg-primary`…), and dark
   mode follows the system setting through `prefers-color-scheme`.
 - The web app has two ways to load data, on purpose. Article lists come

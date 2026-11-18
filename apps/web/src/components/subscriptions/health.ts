@@ -3,7 +3,7 @@ import type { Subscription } from '@dusty/db'
 import { duration } from '#/lib/time'
 import { compareNames } from '#/lib/names'
 
-export type SortOrder = 'attention' | 'name' | 'unread'
+export type SortOrder = 'name' | 'attention' | 'latest'
 
 export interface HealthLabel {
   readonly text: string
@@ -63,15 +63,23 @@ const ATTENTION_ORDER = { failing: 0, stale: 1, healthy: 2 } as const
 const byName = (a: Subscription, b: Subscription) =>
   compareNames(a.title, b.title)
 
-/** Sort for display. `attention` puts failing, then stale, feeds first. */
+/**
+ * Sort for display. `attention` puts failing, then stale, feeds first;
+ * `latest` puts the feed with the newest article first, and feeds with no
+ * articles yet last.
+ */
 export function sortSubscriptions(
   subscriptions: readonly Subscription[],
   order: SortOrder
 ): Subscription[] {
   if (order === 'name') return subscriptions.toSorted(byName)
 
-  if (order === 'unread') {
-    return subscriptions.toSorted((a, b) => b.unread - a.unread || byName(a, b))
+  if (order === 'latest') {
+    return subscriptions.toSorted(
+      (a, b) =>
+        (b.lastPublishedAt ?? -Infinity) - (a.lastPublishedAt ?? -Infinity) ||
+        byName(a, b)
+    )
   }
 
   return subscriptions.toSorted(

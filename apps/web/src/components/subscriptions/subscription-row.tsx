@@ -17,7 +17,7 @@ import {
   removeConfirmation,
 } from '#/components/subscriptions/health'
 
-/** One subscription: its name, unread count, health and actions. */
+/** One subscription: its name, health and actions. */
 export function SubscriptionRow({
   subscription,
   now,
@@ -62,7 +62,21 @@ export function SubscriptionRow({
           />
         )}
         {!renaming && (
-          <h3 className="font-medium break-words">{subscription.title}</h3>
+          // The name links to the website's home page (sync keeps only
+          // http(s) addresses), when the feed names one.
+          <h3 className="font-medium break-words">
+            {subscription.siteUrl === null && subscription.title}
+            {subscription.siteUrl !== null && (
+              <a
+                href={subscription.siteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline-offset-4 hover:underline"
+              >
+                {subscription.title}
+              </a>
+            )}
+          </h3>
         )}
         <Badge
           variant="outline"
@@ -74,9 +88,6 @@ export function SubscriptionRow({
         >
           {label.text}
         </Badge>
-        <span className="text-muted-foreground text-xs">
-          {subscription.unread} unread
-        </span>
       </div>
 
       {!untitled && (
