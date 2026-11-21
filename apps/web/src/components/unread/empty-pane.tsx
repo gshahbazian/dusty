@@ -3,11 +3,17 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { backdropQuery } from '#/lib/queries'
-import { FALLBACK_BACKDROP, localDay } from '#/lib/backdrop'
+import {
+  FALLBACK_BACKDROP,
+  UNSPLASH_HOME,
+  localDay,
+  withReferral,
+} from '#/lib/backdrop'
 
 /**
  * The article pane with no article open: a calm landscape from Unsplash,
- * centred, with no credit line (the owner's choice). One photo a day
+ * centred, credited as Unsplash's API guidelines ask ("Photo by <name> on
+ * Unsplash", both linked back with referral tags). One photo a day
  * (`server/backdrop.ts`), or a fixed one when Unsplash can't be asked
  * (local dev, no access key). Blank only while it loads.
  */
@@ -22,12 +28,15 @@ export function EmptyPane() {
   if (backdrop === undefined) return null
 
   return (
-    <figure className="flex h-full items-center justify-center p-8">
-      {/* The photo's own colour holds its place while it loads. */}
-      <div
+    <figure className="flex h-full flex-col items-center justify-center gap-3 p-8 has-[img[data-failed]]:hidden">
+      <a
+        href={withReferral(backdrop.photoUrl)}
+        target="_blank"
+        rel="noreferrer"
         // Rounded like the images in an article (Typeset uses --radius).
-        // Gone (colour and all) if the photo can't load.
-        className="w-full max-w-[29rem] overflow-hidden rounded-lg has-[img[data-failed]]:hidden"
+        // The photo's own colour holds its place while it loads. Gone
+        // (colour, credit and all) if the photo can't load.
+        className="block w-full max-w-[29rem] overflow-hidden rounded-lg"
         style={{ backgroundColor: backdrop.color ?? undefined }}
       >
         <img
@@ -50,7 +59,28 @@ export function EmptyPane() {
               'opacity-0 transition-opacity duration-500 data-loaded:opacity-100'
           )}
         />
-      </div>
+      </a>
+      {/* The credit Unsplash's API guidelines ask for, in their words. */}
+      <figcaption className="text-muted-foreground text-xs">
+        Photo by{' '}
+        <a
+          href={withReferral(backdrop.photographerUrl)}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:text-foreground underline underline-offset-2"
+        >
+          {backdrop.photographerName}
+        </a>{' '}
+        on{' '}
+        <a
+          href={withReferral(UNSPLASH_HOME)}
+          target="_blank"
+          rel="noreferrer"
+          className="hover:text-foreground underline underline-offset-2"
+        >
+          Unsplash
+        </a>
+      </figcaption>
     </figure>
   )
 }

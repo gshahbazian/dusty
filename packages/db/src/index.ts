@@ -2,6 +2,7 @@ export { createDb, schema, type Db } from '#/client'
 
 export {
   getDailyBackdrop,
+  getLatestBackdrop,
   saveDailyBackdrop,
   type DailyBackdrop,
 } from '#/backdrops'

@@ -160,5 +160,11 @@ export const dailyBackdrops = sqliteTable('daily_backdrops', {
   alt: text('alt').notNull(),
   /** The photo's main colour, shown while it loads. */
   color: text('color'),
+  /** The credit Unsplash requires: who took it, and where. */
+  photographerName: text('photographer_name').notNull(),
+  /** The photographer's unsplash.com profile (no referral tags). */
+  photographerUrl: text('photographer_url').notNull(),
+  /** The photo's own unsplash.com page (no referral tags). */
+  photoUrl: text('photo_url').notNull(),
   fetchedAt: integer('fetched_at').notNull(),
 })

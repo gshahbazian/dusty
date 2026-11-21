@@ -3,6 +3,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest'
 import {
   createDb,
   getDailyBackdrop,
+  getLatestBackdrop,
   saveDailyBackdrop,
   schema,
   type Db,
@@ -15,12 +16,18 @@ const river = {
   imageUrl: 'https://images.unsplash.com/photo-river',
   alt: 'A river',
   color: '#405060',
+  photographerName: 'Ann River',
+  photographerUrl: 'https://unsplash.com/@annriver',
+  photoUrl: 'https://unsplash.com/photos/river',
 }
 
 const hills = {
   imageUrl: 'https://images.unsplash.com/photo-hills',
   alt: 'Green hills',
   color: null,
+  photographerName: 'Hal Hills',
+  photographerUrl: 'https://unsplash.com/@halhills',
+  photoUrl: 'https://unsplash.com/photos/hills',
 }
 
 let db: Db
@@ -68,4 +75,17 @@ test("a tab still on yesterday never deletes today's photo", async () => {
 
   expect(await saveDailyBackdrop(db, '2026-11-16', river, T0)).toEqual(river)
   expect(await getDailyBackdrop(db, '2026-11-17')).toEqual(hills)
+})
+
+test("with no photo for today, the latest is yesterday's", async () => {
+  expect(await getLatestBackdrop(db)).toBeNull()
+
+  await saveDailyBackdrop(db, '2026-11-16', river, T0)
+
+  expect(await getDailyBackdrop(db, '2026-11-17')).toBeNull()
+  expect(await getLatestBackdrop(db)).toEqual(river)
+
+  await saveDailyBackdrop(db, '2026-11-17', hills, T0 + 86_400_000)
+
+  expect(await getLatestBackdrop(db)).toEqual(hills)
 })

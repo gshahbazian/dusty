@@ -77,6 +77,13 @@ Read the matching `SKILL.md` before doing these:
   refetch-on-focus off. Don't move lists into Query, or articles out of
   it. Read state lives in `useUnreadList`: ask `list.isRead(id)`; its
   writes also update the cached article's `readAt`.
+- The empty pane's Unsplash photo follows Unsplash's API guidelines,
+  which production API access depends on: the image is hotlinked from
+  `images.unsplash.com`; every photo shown (the fallback too) is credited
+  "Photo by <name> on Unsplash" with both links tagged by `withReferral`
+  (`utm_source=dusty&utm_medium=referral`); the day's photo has its
+  `download_location` called once when it is chosen; the access key stays
+  on the server.
 - Imports are never relative and never end in `.ts` / `.tsx`; lint
   enforces both. Within a package, `#/…` (its `src/`, from the package's
   `package.json` `imports`; the sync tests also have `#test/…`). Another
